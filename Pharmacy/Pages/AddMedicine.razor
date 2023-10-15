@@ -1,0 +1,126 @@
+﻿@page "/addmedicine"
+
+<PageTitle>Medicines</PageTitle>
+
+@using FluentValidation
+
+<MudCard>
+    <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
+        <MudCardContent>
+            <MudTextField @bind-Value="model.Name"
+                          For="@(() => model.Name)"
+                          Immediate="true"
+                          Label="Medicine Name" />
+
+            <MudTextField @bind-Value="model.UnitPrice"
+                          For="@(() => model.UnitPrice)"
+                          Immediate="true"
+                          Label="UnitPrice" />
+
+            <MudTextField @bind-Value="model.Location"
+                          For="@(() => model.Location)"
+                          Immediate="true"
+                          Label="Location" />
+
+            <MudTextField @bind-Value="model.Stock"
+                          For="@(() => model.Stock)"
+                          Immediate="true"
+                          Label="Stock" />
+
+            <MudTextField @bind-Value="model.Manufacturer"
+                          For="@(() => model.Manufacturer)"
+                          Immediate="true"
+                          Label="Manufacturer" />
+
+            <MudTextField @bind-Value="model.Supplier"
+                          For="@(() => model.Supplier)"
+                          Immediate="true"
+                          Label="Supplier" />
+        
+                <MudTextField @bind-Value="model.MfgDate"
+                              For="@(() => model.MfgDate)"
+                              Immediate="true"
+                              Label="MfgDate" />
+                <MudTextField @bind-Value="model.ExpDate"
+                              For="@(() => model.ExpDate)"
+                              Immediate="true"
+                              Label="ExpDate" />
+           
+        </MudCardContent>
+       
+    </MudForm>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Order</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Inject] ISnackbar? Snackbar { get; set; }
+
+    MudForm? form;
+
+
+    EntMedicineRecord model = new EntMedicineRecord();
+
+    OrderModelFluentValidator orderValidator = new OrderModelFluentValidator();
+
+    OrderDetailsModelFluentValidator orderDetailsValidator = new OrderDetailsModelFluentValidator();
+
+    public class OrderModelFluentValidator : AbstractValidator<EntMedicineRecord>
+    {
+        public OrderModelFluentValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty()
+                .Length(1, 50);
+
+            RuleFor(x => x.Location)
+                .NotEmpty()
+                .Length(1, 50);
+
+            RuleFor(x => x.Manufacturer)
+                .NotEmpty()
+                .Length(1, 50);
+
+            RuleFor(x => x.Supplier)
+                .NotEmpty()
+                .Length(1, 100);
+
+            
+                
+        }
+       
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+
+
+    private async Task Submit()
+    {
+        await form!.Validate();
+
+        if (form.IsValid)
+        {
+            Snackbar!.Add("Submited!");
+        }
+    }
+
+    public class OrderDetailsModelFluentValidator : AbstractValidator<EntMedicineRecord>
+    {
+       
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+    
+}
