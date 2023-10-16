@@ -1,11 +1,21 @@
-﻿@page "/addmedicine"
+﻿@page "/medicinerecord"
 
 <PageTitle>Medicines</PageTitle>
 
 @using FluentValidation
+<style >
+    .container {
+        max-width: 700px;
+        margin: 0px auto 0px; 
+        border-radius: 3px;
+        padding: 40px;
+        margin-top: 50px;
+    }
+</style>
 
-<MudCard>
+<MudCard Class="container justify-content-center h-100 mb-5">
     <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
+        <MudText Typo="Typo.h4" Class="fw-bold text-center">Medicine Record</MudText>
         <MudCardContent>
             <MudTextField @bind-Value="model.Name"
                           For="@(() => model.Name)"
@@ -36,21 +46,20 @@
                           For="@(() => model.Supplier)"
                           Immediate="true"
                           Label="Supplier" />
-        
-                <MudTextField @bind-Value="model.MfgDate"
-                              For="@(() => model.MfgDate)"
-                              Immediate="true"
-                              Label="MfgDate" />
-                <MudTextField @bind-Value="model.ExpDate"
-                              For="@(() => model.ExpDate)"
-                              Immediate="true"
-                              Label="ExpDate" />
-           
+
+
+            <div class="d-flex flex-grow-1 gap-4">
+                <MudDatePicker For="@(() => model.MfgDate)" @bind-Date="model.MfgDate" Label="MfgDate" />
+                <MudDatePicker For="@(() => model.ExpDate)" @bind-Date="model.ExpDate" Label="ExpDate" />  
+            </div>
+            
+
         </MudCardContent>
-       
+
     </MudForm>
     <MudCardActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Order</MudButton>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" Class="ml-auto" OnClick="@(async () => await SaveMedicineRecord())">Save</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await SaveMedicineRecord())">Order</MudButton> *@
     </MudCardActions>
 </MudCard>
 
@@ -86,10 +95,10 @@
                 .NotEmpty()
                 .Length(1, 100);
 
-            
-                
+
+
         }
-       
+
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
             var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
@@ -100,27 +109,42 @@
     }
 
 
-    private async Task Submit()
+   
+
+    public class OrderDetailsModelFluentValidator : AbstractValidator<EntMedicineRecord>
+    {
+
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+    protected async Task SaveMedicineRecord()
     {
         await form!.Validate();
+        SqlParameter[] sp =
+        {
+            new SqlParameter("@fkUserId",1),
+            new SqlParameter("@Name",model.Name),
+            new SqlParameter("@UnitPrice", model.UnitPrice),
+            new SqlParameter("@Location", model.Location),
+            new SqlParameter("@Stock", model.Stock),
+            new SqlParameter("@Manufacturer", model.Manufacturer),
+            new SqlParameter("@Supplier", model.Supplier),
+            new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+            new SqlParameter("@ExpDate", model.ExpDate.ToString())
+    };
+        await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+       
 
         if (form.IsValid)
         {
             Snackbar!.Add("Submited!");
         }
+        
     }
-
-    public class OrderDetailsModelFluentValidator : AbstractValidator<EntMedicineRecord>
-    {
-       
-
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
-            if (result.IsValid)
-                return Array.Empty<string>();
-            return result.Errors.Select(e => e.ErrorMessage);
-        };
-    }
-    
 }
