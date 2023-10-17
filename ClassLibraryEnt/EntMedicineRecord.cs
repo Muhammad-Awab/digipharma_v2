@@ -16,8 +16,8 @@ namespace ClassLibraryEnt
         public int Stock { get;set; }
         public string? Manufacturer { get;set; }
         public string? Supplier { get;set; }
-        public string? MfgDate { get;set; }
-        public string? ExpDate { get;set; }
+        public DateTime? MfgDate { get;set; }
+        public DateTime? ExpDate { get;set; }
         public string? EntryDate { get;set; }
 
     }
