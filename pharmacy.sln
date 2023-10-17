@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryEnt", "ClassLib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryDAL", "ClassLibraryDAL\ClassLibraryDAL.csproj", "{B96E28EF-63D4-4679-B427-63E132BC2E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pharmacy", "Pharmacy\Pharmacy.csproj", "{D9B03DEA-F9BA-4F44-9AA3-B3167A88E30B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pharmacy", "Pharmacy\Pharmacy.csproj", "{D9B03DEA-F9BA-4F44-9AA3-B3167A88E30B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

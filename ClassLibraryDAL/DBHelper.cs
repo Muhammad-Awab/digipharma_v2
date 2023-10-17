@@ -12,7 +12,7 @@ namespace ClassLibraryDAL
         public static SqlConnection GetConnection()
         {
 
-            SqlConnection con = new SqlConnection(@"Data Source=.;Initial Catalog=db_nest;Integrated Security=True");
+            SqlConnection con = new SqlConnection(@"Data Source=.;Initial Catalog=db_pharmacy;Integrated Security=True");
 
             return con;
         }
