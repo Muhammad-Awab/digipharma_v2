@@ -1,0 +1,101 @@
+﻿@page "/medicinerecords"
+
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+
+<MudTable Items="@medicineList" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<EntMedicineRecord,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>pk_MedicineId</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>UnitPrice</MudTh>
+        <MudTh>Location</MudTh>
+        <MudTh>Manufacturer</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.pk_MedicineId</MudTd>
+        <MudTd DataLabel="Sign">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.UnitPrice</MudTd>
+        <MudTd DataLabel="Position">@context.Location</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Manufacturer</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSpacer />
+    <div style="min-width:200px;">
+        <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.Name</MudText>
+    </div>
+</div>
+
+@code {
+    DataTable dt = new DataTable();
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+
+    private string searchString1 = "";
+    private EntMedicineRecord selectedItem1 = null;
+    private HashSet<EntMedicineRecord> selectedItems = new HashSet<EntMedicineRecord>();
+    List<EntMedicineRecord> medicineList = new List<EntMedicineRecord>();
+
+    private IEnumerable<EntMedicineRecord> Elements = new List<EntMedicineRecord>();
+  
+    private bool FilterFunc1(EntMedicineRecord element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(EntMedicineRecord element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Manufacturer!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Location!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.UnitPrice} {element.pk_MedicineId} ".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    private void ConvertDataIntoArray()
+    {
+        foreach (DataRow row in dt.Rows)
+        {
+            EntMedicineRecord entMedicineRecord = new EntMedicineRecord
+                {
+                    pk_MedicineId = Convert.ToInt32(row["pk_MedicineId"]), // Adjust column names as needed
+                    fk_UserId = Convert.ToInt32(row["fk_UserId"]),
+                    Name = row["Name"].ToString(),
+                    UnitPrice = Convert.ToInt32(row["UnitPrice"]),
+                    Location = row["Location"].ToString(),
+                    Stock = Convert.ToInt32(row["Stock"]),
+                    Manufacturer = row["Manufacturer"].ToString(),
+                    Supplier = row["Supplier"].ToString(),
+                    // MfgDate = Convert.ToDateTime(row["MfgDate"]),
+                    // ExpDate = Convert.ToDateTime(row["ExpDate"]),
+                    // EntryDate = row["EntryDate"].ToString(),
+                };
+
+            medicineList.Add(entMedicineRecord);
+        }
+       
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
+        ConvertDataIntoArray();
+    }
+}

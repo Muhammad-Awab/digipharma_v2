@@ -26,7 +26,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 //    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 //});
 builder.Services.AddMudServices();
-
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

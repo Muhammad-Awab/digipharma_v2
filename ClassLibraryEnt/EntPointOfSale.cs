@@ -12,10 +12,10 @@ namespace ClassLibraryEnt
         public int fk_BillingId { get; set; }
         public int fk_UserId { get; set; }
         public int fk_MedicineId { get; set; }
-        public string CustomerName { get; set; }
-        public string CurrentDate { get; set; }
-        public string Quantity { get; set; }
-        public string TotalPrice { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CurrentDate { get; set; }
+        public string? Quantity { get; set; }
+        public string? TotalPrice { get; set; }
 
     }
 }
