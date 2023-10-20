@@ -1,0 +1,80 @@
+﻿@using FluentValidation
+@using System.Data.SqlClient;
+
+<h3>SalesRecord</h3>
+
+<MudCard Class="container justify-content-center h-100 mb-5">
+    <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
+        <MudText Typo="Typo.h4" Class="fw-bold text-center">Medicine Record</MudText>
+        <MudCardContent>
+
+            <div class="d-flex flex-grow-1 gap-4">
+                <MudDatePicker For="@(() => model.From)" @bind-Date="model.From" Label="MfgDate" />
+                <MudDatePicker For="@(() => model.To)" @bind-Date="model.To" Label="ExpDate" />
+            </div>
+
+        </MudCardContent>
+
+    </MudForm>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" Class="ml-auto" OnClick="@(async () => await SaveMedicineRecord())">Save</MudButton>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await SaveMedicineRecord())">Order</MudButton> *@
+    </MudCardActions>
+</MudCard>
+
+
+
+@code {
+
+
+
+
+    [Inject] ISnackbar? Snackbar { get; set; }
+
+    MudForm? form;
+
+
+    EntSalesRecord model = new EntSalesRecord();
+
+    OrderModelFluentValidator orderValidator = new OrderModelFluentValidator();
+
+    OrderDetailsModelFluentValidator orderDetailsValidator = new OrderDetailsModelFluentValidator();
+    
+    public class OrderDetailsModelFluentValidator : AbstractValidator<EntMedicineRecord>
+    {
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<EntMedicineRecord>.CreateWithOptions((EntMedicineRecord)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+    protected async Task GetSalesRecord()
+    {
+        await form!.Validate();
+        SqlParameter[] sp =
+        {
+            new SqlParameter("@fkUserId",1),
+            new SqlParameter("@Name",model.Name),
+            new SqlParameter("@UnitPrice", model.UnitPrice),
+            new SqlParameter("@Location", model.Location),
+            new SqlParameter("@Stock", model.Stock),
+            new SqlParameter("@Manufacturer", model.Manufacturer),
+            new SqlParameter("@Supplier", model.Supplier),
+            new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+            new SqlParameter("@ExpDate", model.ExpDate.ToString())
+    };
+        await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+
+
+        if (form.IsValid)
+        {
+            Snackbar!.Add("Submited!");
+        }
+
+    }
+}
+
+
