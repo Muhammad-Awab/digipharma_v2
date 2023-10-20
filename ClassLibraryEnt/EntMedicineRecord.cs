@@ -21,7 +21,7 @@ namespace ClassLibraryEnt
         public DateTime? ExpDate { get;set; }
         public string? Group { get; set; }
         public int Position { get; set; }
-        public string? EntryDate { get;set; }
+        public DateTime? EntryDate { get;set; }
         public int Number { get; set; }
 
         [JsonPropertyName("small")]

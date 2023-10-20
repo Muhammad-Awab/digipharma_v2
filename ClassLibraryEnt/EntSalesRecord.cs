@@ -13,9 +13,9 @@ namespace ClassLibraryEnt
         public float DiscountPrice { get; set; }
         public string DiscountPercentage { get; set; }
         public string GrandTotal { get; set; }
-        public string CurrentDate { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
+        public DateTime CurrentDate { get; set; }
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
 
     }
 }

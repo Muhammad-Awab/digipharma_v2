@@ -15,6 +15,9 @@
         <MudTh>UnitPrice</MudTh>
         <MudTh>Location</MudTh>
         <MudTh>Manufacturer</MudTh>
+        <MudTh>MFg Date</MudTh>
+        <MudTh>Expire Date</MudTh>
+        <MudTh>Entry Date</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.pk_MedicineId</MudTd>
@@ -22,6 +25,9 @@
         <MudTd DataLabel="Name">@context.UnitPrice</MudTd>
         <MudTd DataLabel="Position">@context.Location</MudTd>
         <MudTd DataLabel="Molar mass">@context.Manufacturer</MudTd>
+        <MudTd DataLabel="Molar mass">@context.MfgDate</MudTd>
+        <MudTd DataLabel="Molar mass">@context.ExpDate</MudTd>
+        <MudTd DataLabel="Molar mass">@context.EntryDate</MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
@@ -84,9 +90,9 @@
                     Stock = Convert.ToInt32(row["Stock"]),
                     Manufacturer = row["Manufacturer"].ToString(),
                     Supplier = row["Supplier"].ToString(),
-                    // MfgDate = Convert.ToDateTime(row["MfgDate"]),
-                    // ExpDate = Convert.ToDateTime(row["ExpDate"]),
-                    // EntryDate = row["EntryDate"].ToString(),
+                    MfgDate = Convert.ToDateTime(row["MfgDate"]),
+                    ExpDate = Convert.ToDateTime(row["ExpDate"]),
+                    EntryDate = Convert.ToDateTime(row["EntryDate"]),
                 };
 
             medicineList.Add(entMedicineRecord);
