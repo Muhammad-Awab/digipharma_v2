@@ -17,6 +17,7 @@ namespace ClassLibraryDAL
                 using (SqlConnection con = DBHelper.GetConnection())
                 {
                     await con.OpenAsync();
+                   
                     using (SqlCommand cmd = new SqlCommand(ProcedureName, con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -100,7 +101,6 @@ namespace ClassLibraryDAL
             return new DataTable();
 
         }
-
 
 
     }
