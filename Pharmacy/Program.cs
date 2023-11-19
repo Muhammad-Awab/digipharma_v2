@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
-using MudBlazor.Services;
 using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 
@@ -25,7 +24,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 //    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
 //    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 //});
-builder.Services.AddMudServices();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 

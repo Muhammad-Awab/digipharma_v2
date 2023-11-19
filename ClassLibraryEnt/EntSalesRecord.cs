@@ -11,8 +11,8 @@ namespace ClassLibraryEnt
         public int pk_SalesId { get; set; }
         public int fk_BillingId { get; set; }
         public float DiscountPrice { get; set; }
-        public string DiscountPercentage { get; set; }
-        public string GrandTotal { get; set; }
+        public string? DiscountPercentage { get; set; }
+        public string? GrandTotal { get; set; }
         public DateTime CurrentDate { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
