@@ -1,1 +1,89 @@
-﻿
+﻿@page "/salesrecord"
+
+<PageTitle>Sales Record</PageTitle>
+<h1 class="text-center"> Sales Record</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="birthday">StartDate:</label>
+                <input type="date" @bind="model.From" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label for="birthday">EndDate:</label>
+            <input type="date" @bind="model.To" class="form-control" />
+        </div>
+        <div class="col-md-2" >
+            
+
+            <button class="btn btn-primary " style="margin-top:2rem;" @onclick="GetSalesRecord">Get Record</button>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sales Record</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+        <table id="myTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>CustomerName</th>
+                    <th>Quantity</th>
+                    <th>TotalPrice</th>
+                    <th>DiscountPrice </th>
+                    <th>DiscountPercentage</th>
+                    <th>GrandTotal</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (DataRow row in dt.Rows)
+                {
+                    <tr>
+                        <td>@row["CustomerName"]</td>
+                        <td>@row["Quantity"]</td>
+                        <td>@row["TotalPrice"]</td>
+                        <td>@row["DiscountPrice"]</td>
+                        <td>@row["DiscountPercentage"]</td>
+                        <td>@row["GrandTotal"]</td>
+                      
+                      
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>CustomerName</th>
+                    <th>Quantity</th>
+                    <th>TotalPrice</th>
+                    <th>DiscountPrice </th>
+                    <th>DiscountPercentage</th>
+                    <th>GrandTotal</th>
+
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+@code{
+    EntPointOfSale model = new EntPointOfSale();
+    DataTable dt = new DataTable();
+    protected  async Task GetSalesRecord()
+    {
+        SqlParameter[] sp =
+        {
+            new SqlParameter("@From",model.From),
+            new SqlParameter("@To",model.To),
+
+    };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetSalesRecord", sp);
+    }
+}
