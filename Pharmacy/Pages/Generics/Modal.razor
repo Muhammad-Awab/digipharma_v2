@@ -1,0 +1,50 @@
+﻿<div class="modal fade show" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@MedicineName</h4>
+                <button type="button" class="close" @onclick="@ModelCancel">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Select the Quantity</label>
+                <input @bind="Quantity" class="form-control" placeholder="Enter the quantity" />
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" @onclick="@ModalOk">Cancel</button>
+                <button type="submit" class="btn btn-danger" @onclick="@SendQuantity">Sell</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? MedicineName { get; set; }
+    [Parameter]
+    public Action FunDel { get; set; }
+    [Parameter]
+    public string? Quantity { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+    [Parameter]
+    public EventCallback<string> sendQuantity { get; set; }
+    private Task ModelCancel()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+    private Task ModalOk()
+    {
+        return OnClose.InvokeAsync(true);
+    }
+    private Task SendQuantity()
+    {
+        return sendQuantity.InvokeAsync(Quantity);
+    }
+
+
+
+}

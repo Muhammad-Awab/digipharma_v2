@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using ClassLibraryEnt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace ClassLibraryDAL
                 using (SqlConnection con = DBHelper.GetConnection())
                 {
                     await con.OpenAsync();
-                   
+
                     using (SqlCommand cmd = new SqlCommand(ProcedureName, con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -102,6 +103,30 @@ namespace ClassLibraryDAL
 
         }
 
+        public static EntBilling GetBillingRecordById(int BillingId)
+        {
+            EntBilling ee = new EntBilling();
 
+
+            SqlConnection con = DBHelper.GetConnection();
+            con.Open();
+            SqlCommand cmd = new SqlCommand("SP_GetBillingRecordById", con);
+            cmd.Parameters.AddWithValue("@pk_BillingId", BillingId);
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlDataReader sdr = cmd.ExecuteReader();
+
+            while (sdr.Read())
+            {
+                ee.pk_BillingId = (int)sdr["pk_BillingId"];
+                
+                ee.TotalPrice = (decimal)sdr["TotalPrice"];
+                ee.Discount = (decimal)sdr["Discount"];
+                ee.DiscountPerc = (int)sdr["DiscountPerc"];
+                ee.GrandTotal = (decimal)sdr["GrandTotal"];
+            }
+            con.Close();
+
+            return ee;
+        }
     }
 }

@@ -9,8 +9,8 @@ namespace ClassLibraryEnt
 {
     public class EntMedicineRecord
     {
-        public int pk_MedicineId { get; set; }
-        public int fk_UserId { get; set; }
+        public int pk_MedId { get; set; }
+        public int Enterer { get; set; }
         public string? Name { get;set; }
         public float UnitPrice { get;set; }
         public string? Location { get;set; }
