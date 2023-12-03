@@ -1,0 +1,19 @@
+﻿@* 
+@inject NavigationManager nm
+
+@code{
+    protected override void OnInitialized()
+    {
+        loadpage();
+    }
+
+
+    public void loadpage()
+    {
+        nm.NavigateTo("/Identity/Account/Login", forceLoad: true);
+        
+    }
+
+}
+
+ *@
