@@ -171,8 +171,8 @@
     private EntBilling? pointOfSale { get; set; } = new EntBilling();
     // public bool check = true;
     public int ID { get; set; }
-    public string MedicineName { get; set; }
-    public string Quantity { get; set; }
+    public string? MedicineName { get; set; }
+    public string? Quantity { get; set; }
     public decimal Medicineprice { get; set; }
     public decimal MedicineTotalprice { get; set; }
     public decimal MedicineGrandTotal { get; set; } = 100;
@@ -253,10 +253,10 @@
         {
             // If the medicine exists in the list, update its quantity and price
             existingMedicine.Quantity += int.Parse(quantity);
+            MedicineTotalQuantity += int.Parse(quantity);
+            MedicineTotalprice += existingMedicine.Medicineprice;
             existingMedicine.Medicineprice = Medicineprice * existingMedicine.Quantity;
             // Update the price or perform actions based on the new price
-            MedicineTotalprice += existingMedicine.Medicineprice;
-            MedicineTotalQuantity += existingMedicine.Quantity;
 
             // Other actions you need to perform after updating the existing entry
 
