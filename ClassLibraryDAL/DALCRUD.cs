@@ -118,7 +118,6 @@ namespace ClassLibraryDAL
             while (sdr.Read())
             {
                 ee.pk_BillingId = (int)sdr["pk_BillingId"];
-                
                 ee.TotalPrice = (decimal)sdr["TotalPrice"];
                 ee.Discount = (decimal)sdr["Discount"];
                 ee.DiscountPerc = (int)sdr["DiscountPerc"];

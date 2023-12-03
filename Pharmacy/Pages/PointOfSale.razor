@@ -5,17 +5,17 @@
 
     <!-- /.card-header -->
     <div class="card-body">
-        
+
         <div class="d-flex gap-2">
-            
+
             <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
         </div>
         <div class="row">
             <div class="table-responsive col-md-7">
-                
-                <table id="myTable" class="table table-bordered table-striped table-hover">
-                    <thead>
+
+                <table id="myTable" class="table table-hover">
+                    <thead class="table-primary">
                         <tr>
                             <th>pk_MedicineId</th>
                             <th>Name</th>
@@ -29,7 +29,7 @@
 
                         @foreach (DataRow row in pagedData)
                         {
-                            <tr @onclick="@(()=>OpenQuantityDialog(@row["pk_MedId"].ToString(),@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                            <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
                                 <td>@row["pk_MedId"]</td>
                                 <td>@row["Name"]</td>
                                 <td>@row["UnitPrice"]</td>
@@ -40,7 +40,7 @@
                         }
                     </tbody>
                     <tfoot>
-                   
+
                         <tr>
                             <td colspan="10">
                                 <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
@@ -52,8 +52,8 @@
             </div>
             <div class="table-responsive col-md-5">
                 <h2 class="sub-header">Billing</h2>
-                <table id="myTable" class="table table-bordered table-striped ">
-                    <thead>
+                <table id="myTable" class="table table-bordered ">
+                    <thead class="table-primary">
                         <tr>
                             <th>POS_Id</th>
                             <th>Medicine Name</th>
@@ -75,7 +75,15 @@
                         }
                     </tbody>
                     <tfoot>
-                        <button class="btn btn-success w-100 mt-4">Checkout</button>
+                        <tr>
+                            <td class="fw-bold ml-5">Total</td>
+                            <td class="fw-bold">@MedicineTotalQuantity </td>
+                            <td class="fw-bold">@MedicineTotalprice </td>
+                        </tr>
+
+
+
+                        <button class="btn btn-success w-100 mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
                     </tfoot>
                 </table>
 
@@ -90,6 +98,67 @@
 }
 
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">CheckOut</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <table id="myTable" class="table table-bordered ">
+            <thead class="table-primary">
+                <tr>
+
+                    <th>Medicine Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var item in modelList)
+                {
+                    <tr>
+
+                        <td>@item.MedicineName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Medicineprice</td>
+
+                    </tr>
+                }
+            </tbody>
+
+            <tr>
+                <td class="fw-bold">Total</td>
+                <td class="fw-bold">@MedicineTotalQuantity </td>
+                <td class="fw-bold">@MedicineTotalprice </td>
+            </tr>
+
+            <button @onclick="Checkout" class="btn btn-primary"> Sell</button>
+
+        </table>
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Discount Price (Rs)</label>
+            <input type="text" class="form-control" @bind="DiscountPrice" id="exampleFormControlInput1" placeholder="Price ">
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
+            <input class="form-control" @bind="DiscountPerc" id="exampleFormControlTextarea1" placeholder="Percentage" />
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <div class="d-flex gap-5">
+                <p class="fs-3 fw-bold">Grand Total :</p>
+                <p class="fs-3 fw-bold ml-3">@MedicineTotalprice</p>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 
@@ -101,23 +170,59 @@
     // protected EntBilling? model_point_of_sale { get; set; }
     private EntBilling? pointOfSale { get; set; } = new EntBilling();
     // public bool check = true;
-    public string ID { get; set; }
+    public int ID { get; set; }
     public string MedicineName { get; set; }
     public string Quantity { get; set; }
     public decimal Medicineprice { get; set; }
-
+    public decimal MedicineTotalprice { get; set; }
+    public decimal MedicineGrandTotal { get; set; } = 100;
+    public decimal MedicineTotalQuantity { get; set; }
+    public int DiscountPrice { get; set; } = 25;
+    public int DiscountPerc { get; set; } = 3;
+    public int POSId { get; set; } = 1;
+    public int BillingId { get; set; } = 1;
     public bool DeleteDialogOpen { get; set; }
+
+
     private async Task Checkout()
     {
-        SqlParameter[] parameters = new SqlParameter[]
+        foreach (var data in modelList)
         {
-            new SqlParameter("@User_Id",1),
+            SqlParameter[] parameters = new SqlParameter[]
+             {
+                 new SqlParameter("@pk_POSId",data.pk_POSId),
+                 new SqlParameter("@fk_BillingId",data.fk_BillingId),
+                 new SqlParameter("@fk_MedId",data.fk_MedId),
+                 new SqlParameter("@Quantity",data.Quantity),
+             };
+            await DALCRUD.CRUD("SP_checkout", parameters);
+        }
 
-            new SqlParameter("@TotalPrice",pointOfSale.TotalPrice),
-            new SqlParameter("@TDiscountPrice",pointOfSale.Discount),
-            new SqlParameter("@GrandTotal",pointOfSale.GrandTotal),
-        };
-        await DALCRUD.CRUD("SP_checkout", parameters);
+        AddPointOfSale(BillingId, MedicineTotalprice);
+        modelList.Clear();
+        MedicineTotalprice = 0;
+        MedicineTotalQuantity = 0;
+        POSId += 1;
+        Random rnd = new Random();
+        BillingId = rnd.Next();
+
+
+
+    }
+
+
+    public async Task AddPointOfSale(int BillingId, decimal MedicineTotalprice)
+    {
+        SqlParameter[] parameters = new SqlParameter[]
+           {
+                 new SqlParameter("@pk_BillingId",BillingId),
+                 new SqlParameter("@SellerId",1),
+                 new SqlParameter("@TotalPrice",MedicineTotalprice),
+                 new SqlParameter("@Discount",DiscountPrice),
+                 new SqlParameter("@DiscountPerc",DiscountPerc),
+                 new SqlParameter("@GrandTotal",MedicineGrandTotal),
+           };
+        await DALCRUD.CRUD("SP_checkoutBilling", parameters);
     }
     private void OnDeleteDialogClose(bool accepted)
     {
@@ -130,7 +235,7 @@
     {
         modelList.RemoveAt(modelList.FindIndex(x => x.fk_MedId == id));
     }
-    private void OpenQuantityDialog(string? Id, string medicineName, string price)
+    private void OpenQuantityDialog(int Id, string medicineName, string price)
     {
         MedicineName = medicineName;
         Medicineprice = decimal.Parse(price);
@@ -141,7 +246,8 @@
     }
     private async Task OnSell(string quantity)
     {
-        EntPointOfSale existingMedicine = modelList.FirstOrDefault(m => m.fk_MedId == int.Parse(ID));
+
+        EntPointOfSale existingMedicine = modelList.FirstOrDefault(m => m.fk_MedId == ID);
 
         if (existingMedicine != null)
         {
@@ -149,7 +255,8 @@
             existingMedicine.Quantity += int.Parse(quantity);
             existingMedicine.Medicineprice = Medicineprice * existingMedicine.Quantity;
             // Update the price or perform actions based on the new price
-
+            MedicineTotalprice += existingMedicine.Medicineprice;
+            MedicineTotalQuantity += existingMedicine.Quantity;
 
             // Other actions you need to perform after updating the existing entry
 
@@ -162,11 +269,15 @@
             // If the medicine is not in the list, create a new entry
             EntPointOfSale newMedicine = new EntPointOfSale
                 {
+                    fk_MedId = ID,
                     MedicineName = MedicineName,
                     Quantity = int.Parse(quantity),
                     Medicineprice = Medicineprice * decimal.Parse(quantity),
-                    pk_POSId = 1
+                    pk_POSId = POSId,
+                    fk_BillingId = BillingId
                 };
+            MedicineTotalprice += newMedicine.Medicineprice;
+            MedicineTotalQuantity += newMedicine.Quantity;
 
             modelList.Add(newMedicine);
 
@@ -177,6 +288,7 @@
 
             StateHasChanged();
         }
+
     }
 
 
@@ -208,8 +320,8 @@
 
         // Apply search filter
         var filteredData = allDataRows.Where(row =>
-      row["Name"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-      row["Location"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+          row["Name"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+          row["Location"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
         pagingInfo.TotalItems = filteredData.Count;
 

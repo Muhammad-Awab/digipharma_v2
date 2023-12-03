@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibraryEnt", "ClassLibraryEnt\ClassLibraryEnt.csproj", "{B600E212-2A3E-4EF8-875F-D8C87BD5B803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryEnt", "ClassLibraryEnt\ClassLibraryEnt.csproj", "{B600E212-2A3E-4EF8-875F-D8C87BD5B803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibraryDAL", "ClassLibraryDAL\ClassLibraryDAL.csproj", "{EA4C3D59-DC05-47A2-935C-C49EC1617206}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryDAL", "ClassLibraryDAL\ClassLibraryDAL.csproj", "{EA4C3D59-DC05-47A2-935C-C49EC1617206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pharmacy", "Pharmacy\Pharmacy.csproj", "{BEA2E97E-1A1D-407E-8323-56825D9D698B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pharmacy", "Pharmacy\Pharmacy.csproj", "{BEA2E97E-1A1D-407E-8323-56825D9D698B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
