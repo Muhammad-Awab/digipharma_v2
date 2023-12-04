@@ -1,0 +1,68 @@
+﻿    @page "/registration"
+    @layout NavLayout
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center pt-5">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header text-center">
+                        <h3>Pharmacy Registration</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form>
+                        <div class="card-body no form-control-border">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Pharmacy Name</label>
+                                <input type="text" class="form-control" @bind="model!.PharmacyName" placeholder="Enter Medicine">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Owner Name</label>
+                                <input type="text" @bind="model.PharmacyOwnerName" class="form-control" placeholder="Enter Owner Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Username</label>
+                                <input type="text" class="form-control" @bind="model.Username" placeholder="Enter Username">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Password</label>
+                                <input type="text" class="form-control" @bind="model.Password" placeholder="Enter Password">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Confirm Password</label>
+                                <input type="text" class="form-control" @bind="model.ConfirmPassword" placeholder="Enter Confirm Password">
+                            </div>
+
+
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+
+@code {
+
+    protected EntRegistration model { get; set; } = new EntRegistration();
+
+}

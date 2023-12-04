@@ -1,0 +1,57 @@
+﻿    @page "/login"
+    @layout NavLayout
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center pt-5">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header text-center">
+                        <h3>Pharmacy Login</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form>
+                        <div class="card-body no form-control-border">
+                            
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">UserName</label>
+                                <input type="text" @bind="model.Username" class="form-control" placeholder="Enter Username">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Username</label>
+                                <input type="text" class="form-control" @bind="model.Password" placeholder="Enter Password">
+                            </div>
+
+                            
+
+
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+
+@code {
+
+    protected EntLogin model { get; set; } = new EntLogin();
+
+}
