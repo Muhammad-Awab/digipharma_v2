@@ -1,88 +1,94 @@
 ﻿    @page "/add_medicine_record"
+    @page "/add_medicine_record/{id}"
 
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row justify-content-center pt-5">
-                    <!-- left column -->
-                    <div class="col-md-6">
-                        <!-- general form elements -->
-                        <div class="card card-primary">
-                            <div class="card-header text-center">
-                                <h3>Medicince Record</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
-                            <form>
-                                <div class="card-body no form-control-border">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Medicine Name</label>
-                                        <input type="text" class="form-control" @bind="model!.Name" placeholder="Enter Medicine">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">UnitPrice</label>
-                                        <input type="text" @bind="model.UnitPrice" class="form-control" placeholder="0">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Location</label>
-                                        <input type="text" class="form-control" @bind="model.Location" placeholder="Enter Location">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock</label>
-                                        <input type="text" class="form-control" @bind="model.Stock" placeholder="0">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Manufacture</label>
-                                        <input type="text" class="form-control" @bind="model.Manufacturer" placeholder="Manufacture">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Suppiler</label>
-                                        <input type="text" class="form-control" @bind="model.Supplier" placeholder="Suppiler">
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label for="birthday">MfgDate:</label>
-                                        <input type="date" @bind="model.MfgDate" class="form-control" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="birthday">ExpDate:</label>
-                                        <input type="date" @bind="model.ExpDate" class="form-control" />
-                                    </div>
-
-                                </div>
-                                <!-- /.card-body -->
-
-                                <div class="card-footer">
-                                    <button @onclick="SaveMedicineRecord" class="btn btn-primary">Submit</button>
-                                </div>
-                            </form>
-                        </div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center pt-5">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header text-center">
+                        <h3>@PageName</h3>
                     </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form>
+                        <div class="card-body no form-control-border">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Medicine Name</label>
+                                <input type="text" class="form-control" @bind="model!.Name" placeholder="Enter Medicine">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">UnitPrice</label>
+                                <input type="text" @bind="model.UnitPrice" class="form-control" placeholder="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Location</label>
+                                <input type="text" class="form-control" @bind="model.Location" placeholder="Enter Location">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Stock</label>
+                                <input type="text" class="form-control" @bind="model.Stock" placeholder="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Manufacture</label>
+                                <input type="text" class="form-control" @bind="model.Manufacturer" placeholder="Manufacture">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Suppiler</label>
+                                <input type="text" class="form-control" @bind="model.Supplier" placeholder="Suppiler">
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="birthday">MfgDate:</label>
+                                <input type="date" @bind="model.MfgDate" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="birthday">ExpDate:</label>
+                                <input type="date" @bind="model.ExpDate" class="form-control" />
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button @onclick="SaveMedicineRecord" class="btn btn-primary">@ButtonName</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-        </section>
+</section>
 
 
 
 
 
 @code {
-
+    public string? PageName { get; set; }= "Add Medicine Record";
+    public string? ButtonName { get; set; } = "Save";
+    [Parameter]
+    public string? id { get; set; }
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
 
     protected async Task SaveMedicineRecord()
     {
 
-
-        SqlParameter[] sp =
+        if (id == null)
         {
+            
+            SqlParameter[] sp =
+            {
              new SqlParameter("@EntererId",2),
             new SqlParameter("@Name",model!.Name),
             new SqlParameter("@UnitPrice", model.UnitPrice),
@@ -93,7 +99,67 @@
             new SqlParameter("@MfgDate",model.MfgDate.ToString()),
             new SqlParameter("@ExpDate", model.ExpDate.ToString())
     };
-        await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
-        // nm.NavigateTo("/");
+            await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+        }
+        else
+        {
+            SqlParameter[] sp =
+            {
+              
+                new SqlParameter("@pk_MedId",id),
+                new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@UnitPrice", model.UnitPrice),
+                new SqlParameter("@Location", model.Location),
+                new SqlParameter("@Stock", model.Stock),
+                new SqlParameter("@Manufacturer", model.Manufacturer),
+                new SqlParameter("@Supplier", model.Supplier),
+                new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+                new SqlParameter("@ExpDate", model.ExpDate.ToString())
+
+    };
+            await DALCRUD.CRUD("SP_UpdateMedicine", sp);
     }
+    }
+    DataTable dt = new DataTable();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (id != null)
+        {
+
+            PageName = "Update Medicine Record";
+            ButtonName= "Update";
+            SqlParameter[] sp =
+            {
+                new SqlParameter("@id",id)
+    };
+            dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordByID", sp);
+            ConvertDataIntoArray();
+        }
+    }
+
+    private void ConvertDataIntoArray()
+    {
+        foreach (DataRow row in dt.Rows)
+        {
+            model = new EntMedicineRecord
+                {
+                    pk_MedId = Convert.ToInt32(row["pk_MedId"]),
+                    Name = row["Name"].ToString(),
+                    UnitPrice = Convert.ToInt32(row["UnitPrice"]),
+                    Location = row["Location"].ToString(),
+                    Stock = Convert.ToInt32(row["Stock"]),
+                    Manufacturer = row["Manufacturer"].ToString(),
+                    Supplier = row["Supplier"].ToString(),
+                    MfgDate = Convert.ToDateTime(row["MfgDate"]),
+                    ExpDate = Convert.ToDateTime(row["ExpDate"])
+                };
+
+
+        }
+
+    }
+
+    
 }

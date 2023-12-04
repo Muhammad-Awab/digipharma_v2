@@ -8,19 +8,20 @@
     </div> *@
     <!-- /.card-header -->
     <div class="card-body">
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
         </div>
         <div class="table-responsive">
-            <table id="myTable" class="table table-bordered table-striped ">
-                <thead>
+            <table id="myTable" class="table table-bordered">
+                <thead class="table-primary">
                     <tr>
                         <th>pk_MedicineId</th>
                         <th>Name</th>
                         <th>UnitPrice</th>
                         <th>Location</th>
                         <th>Stock</th>
+                        <th>Actions</th>
 
                     </tr>
                 </thead>
@@ -34,6 +35,10 @@
                             <td>@row["UnitPrice"]</td>
                             <td>@row["Location"]</td>
                             <td>@row["Stock"]</td>
+                            <td>
+                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                            </td>
 
                         </tr>
                     }
@@ -52,9 +57,40 @@
     <!-- /.card-body -->
 </div>
 
+
+
+@if (DeleteDialogOpen) {
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}
 @code {
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
+    public bool DeleteDialogOpen { get; set; }
+    public string? ID { get; set; }
+    private async Task OnDeleteDialogClose(bool accepted)
+    {
+        DeleteDialogOpen = false;
+       await OnInitializedAsync();
+        StateHasChanged();
 
+    }
+    private void OpenDeleteDialog(string? Id)
+    {
+        DeleteDialogOpen = true;
+        ID = Id;
+        StateHasChanged();
+    }
+    private async Task OnDelete(string id)
+    {
+        SqlParameter[] sp =
+           {
+             new SqlParameter("@id",int.Parse(id)),
+          
+    };
+        await DALCRUD.CRUD("SP_DeleteMedicineRecord", sp);
+        DeleteDialogOpen = false;
+        await OnInitializedAsync();
+
+    }
     DataTable dt = new DataTable();
     List<DataRow> allDataRows = new List<DataRow>();
     string searchTerm = "";
