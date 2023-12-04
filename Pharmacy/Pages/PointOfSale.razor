@@ -104,7 +104,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-
+        <h3>@BillingId</h3>
         <table id="myTable" class="table table-bordered ">
             <thead class="table-primary">
                 <tr>
@@ -134,7 +134,7 @@
                 <td class="fw-bold">@MedicineTotalprice </td>
             </tr>
 
-            <button @onclick="Checkout" data-bs-dismiss="offcanvas" class="btn btn-primary"> Sell</button>
+
 
         </table>
 
@@ -157,6 +157,9 @@
             </div>
 
         </div>
+
+        <button @onclick="Checkout" data-bs-dismiss="offcanvas" class="btn btn-primary"> Sell</button>
+
     </div>
 </div>
 
@@ -196,9 +199,22 @@
                  new SqlParameter("@Quantity",data.Quantity),
              };
             await DALCRUD.CRUD("SP_checkout", parameters);
+
+
+            SqlParameter[] sp =
+          {
+            new SqlParameter("@medId",data.fk_MedId),
+            new SqlParameter("@quantity", data.Quantity),
+    };
+            await DALCRUD.CRUD("SP_SellMedicine", sp);
+
         }
 
         AddPointOfSale(BillingId, MedicineTotalprice);
+
+
+
+
         modelList.Clear();
         MedicineTotalprice = 0;
         MedicineTotalQuantity = 0;
@@ -206,6 +222,9 @@
         Random rnd = new Random();
         BillingId = rnd.Next();
 
+
+        StateHasChanged();
+        await OnInitializedAsync();
 
 
     }
@@ -288,6 +307,8 @@
 
             StateHasChanged();
         }
+
+
 
     }
 
