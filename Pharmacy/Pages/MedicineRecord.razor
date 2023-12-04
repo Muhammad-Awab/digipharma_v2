@@ -9,7 +9,8 @@
     <!-- /.card-header -->
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
         </div>
         <div class="table-responsive">
@@ -69,7 +70,7 @@
     private async Task OnDeleteDialogClose(bool accepted)
     {
         DeleteDialogOpen = false;
-       await OnInitializedAsync();
+        await OnInitializedAsync();
         StateHasChanged();
 
     }
@@ -84,7 +85,7 @@
         SqlParameter[] sp =
            {
              new SqlParameter("@id",int.Parse(id)),
-          
+
     };
         await DALCRUD.CRUD("SP_DeleteMedicineRecord", sp);
         DeleteDialogOpen = false;
@@ -142,5 +143,14 @@
         page = newPage;
         CreatePagingInfo();
 
+    }
+
+
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
     }
 }
