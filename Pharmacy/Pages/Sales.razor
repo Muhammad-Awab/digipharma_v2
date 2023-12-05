@@ -1,65 +1,41 @@
-﻿@page "/medicinerecord/{Page:int}"
-@page "/medicinerecord"
-
+﻿@*@page "/sales/{Page:int}"*@
+@page "/sales"
 
 <div class="card">
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
-        </div>
-        <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
-                    <tr>
-                        <th>pk_MedicineId</th>
-                        <th>Name</th>
-                        <th>UnitPrice</th>
-                        <th>Location</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach (DataRow row in pagedData)
-                    {
-                        <tr>
-                            <td>@row["pk_MedId"]</td>
-                            <td>@row["Name"]</td>
-                            <td>@row["UnitPrice"]</td>
-                            <td>@row["Location"]</td>
-                            <td>@row["Stock"]</td>
-                            <td>
-                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
-                            </td>
-
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-
-                    @*  <tr>
-                    <td colspan="10">
-                    <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
-                    </td>
-                    </tr> *@
-                </tfoot>
-            </table>
         </div>
     </div>
     <!-- /.card-body -->
 </div>
 
+<div class="card mb-4 bg-light">
+    <div class="row g-4">
+        @foreach (DataRow row in pagedData)
+        {
+            <div class="col-md-2 border">
+                <img src="https://cdn-icons-png.flaticon.com/512/9597/9597322.png" class="img-fluid rounded-start" alt="Medicine Image">
+            </div>
+            <div class="col-md-4"style="border-block:double;">
+                <div class="card-body">
+                    <p class="card-title" style="font-size:20px;">Medicine ID: @row["pk_MedId"]</p>
+                    <p class="card-text" style="font-size:20px;">Name: @row["Name"]</p>
+                    <p class="card-text" style="font-size:20px;">Unit Price: @row["UnitPrice"] <i class="fas fa-dollar-sign"></i></p>
+                    <p class="card-text" style="font-size:20px;">Location: @row["Location"] <i class="fas fa-map-marker-alt"></i></p>
+                    <p class="card-text" style="font-size:20px;">Stock: @row["Stock"] <i class="fas fa-box"></i></p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
 
-
-@if (DeleteDialogOpen) {
-    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
-}
+@*@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}*@
 @code {
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
     public bool DeleteDialogOpen { get; set; }
