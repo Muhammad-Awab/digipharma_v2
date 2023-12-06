@@ -1,73 +1,115 @@
-﻿    @page "/add_medicine_record"
+﻿@page "/add_medicine_record"
     @page "/add_medicine_record/{id}"
-
-
-<section class="content">
+<section class="content" style="background-color: #f0f6f9;">
     <div class="container-fluid">
+
         <div class="row justify-content-center pt-5">
-            <!-- left column -->
-            <div class="col-md-6">
-                <!-- general form elements -->
-                <div class="card card-primary">
-                    <div class="card-header text-center">
-                        <h3>@PageName</h3>
+            <div class="col-md-9">
+                <div class="card card-primary" style="border: 2px solid #288AA7; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-header text-center" style="background-color: #288AA7; color: #fff; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                        <h3 style="font-weight: bold;"><i class="fas fa-plus-circle"></i> Add Medicine Record</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form>
-                        <div class="card-body no form-control-border">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Medicine Name</label>
-                                <input type="text" class="form-control" @bind="model!.Name" placeholder="Enter Medicine">
+
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="medicineName">Medicine Name</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-prescription-bottle"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="model!.Name" placeholder="Enter Medicine Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="unitPrice">Unit Price</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            </div>
+                                            <input type="text" @bind="model.UnitPrice" class="form-control" placeholder="Enter Unit Price">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="model.Location" placeholder="Enter Location">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="stock">Stock</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-cubes"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="model.Stock" placeholder="Enter Stock">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="manufacturer">Manufacturer</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="model.Manufacturer" placeholder="Enter Manufacturer">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="supplier">Supplier</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-truck"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" @bind="model.Supplier" placeholder="Enter Supplier">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="mfgDate">Manufacture Date</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="date" @bind="model.MfgDate" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="expDate">Expiry Date</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-times"></i></span>
+                                            </div>
+                                            <input type="date" @bind="model.ExpDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">UnitPrice</label>
-                                <input type="text" @bind="model.UnitPrice" class="form-control" placeholder="0">
+                            <div class="card-footer text-center" style="background-color: #fff; border-top: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                                <button @onclick="SaveMedicineRecord" class="btn btn-primary" style="background-color: #288AA7; border: none;"><i class="fas fa-check"></i> Submit</button>
+                                <a href="/medicinerecord" class="btn btn-secondary" style="background-color: #288AA7; border: none;"><i class="fas fa-eye"></i> See Medicines</a>
                             </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Location</label>
-                                <input type="text" class="form-control" @bind="model.Location" placeholder="Enter Location">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Stock</label>
-                                <input type="text" class="form-control" @bind="model.Stock" placeholder="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Manufacture</label>
-                                <input type="text" class="form-control" @bind="model.Manufacturer" placeholder="Manufacture">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Suppiler</label>
-                                <input type="text" class="form-control" @bind="model.Supplier" placeholder="Suppiler">
-                            </div>
-
-                            <div class="form-group">
-
-                                <label for="birthday">MfgDate:</label>
-                                <input type="date" @bind="model.MfgDate" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label for="birthday">ExpDate:</label>
-                                <input type="date" @bind="model.ExpDate" class="form-control" />
-                            </div>
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
-                            <button @onclick="SaveMedicineRecord" class="btn btn-primary">@ButtonName</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </section>
 
 

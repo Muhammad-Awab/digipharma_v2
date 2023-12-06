@@ -31,11 +31,11 @@
                     @foreach (DataRow row in pagedData)
                     {
                         <tr>
-                            <td>@row["pk_MedId"]</td>
-                            <td>@row["Name"]</td>
-                            <td>@row["UnitPrice"]</td>
-                            <td>@row["Location"]</td>
-                            <td>@row["Stock"]</td>
+                            <td>@row["pk_MedId"]  </td>
+                            <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
+                            <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
+                            <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
+                            <td><i class="fas fa-flask ml-2"></i> @row["Stock"]  </td>
                             <td>
                                 <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
                                 <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>

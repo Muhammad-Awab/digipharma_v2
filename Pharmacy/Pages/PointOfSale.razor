@@ -3,12 +3,12 @@
 
 <div class="card">
 
-    <!-- /.card-header -->
+
     <div class="card-body">
 
-        <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+        <div class="d-flex gap-2">
 
+            <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
         </div>
         <div class="row">
@@ -183,7 +183,9 @@
     public int DiscountPrice { get; set; } = 25;
     public int DiscountPerc { get; set; } = 3;
     public int POSId { get; set; } = 1;
-    public int BillingId { get; set; } = 1;
+
+
+    public int BillingId { get; set; }
     public bool DeleteDialogOpen { get; set; }
 
 
@@ -325,6 +327,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Random rnd = new Random();
+        BillingId = rnd.Next();
         dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
@@ -364,11 +368,5 @@
         page = newPage;
         CreatePagingInfo();
 
-    }
-    private void SearchTextChanged(ChangeEventArgs e)
-    {
-        searchTerm = e.Value.ToString();
-        CreatePagingInfo();
-        // You can add additional logic here if needed
     }
 }
