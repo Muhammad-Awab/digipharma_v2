@@ -1,0 +1,91 @@
+﻿@page "/employeeinfo"
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-8 col-sm-10 col-12">
+            <div class="card bg-light rounded shadow-lg">
+                <div class="card-header text-center" style="background-color: #5E2C5E; color: #fff; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                    <h3 class="font-weight-bold"><i class="fas fa-medkit"></i> Add Medicine Record</h3>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="employeeName"><i class="fas fa-user"></i> Employee Name</label>
+                            <input type="text" class="form-control" id="employeeName" placeholder="Enter name">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact"><i class="fas fa-phone"></i> Contact</label>
+                            <input type="tel" class="form-control" id="contact" placeholder="Enter contact">
+                        </div>
+                        <div class="form-group">
+                            <label for="address"><i class="fas fa-map-marker-alt"></i> Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Enter address">
+                        </div>
+                        <div class="form-group">
+                            <label for="workExperience"><i class="fas fa-briefcase"></i> Work Experience</label>
+                            <input type="text" class="form-control" id="workExperience" placeholder="Enter past work experience">
+                        </div>
+                        <div class="form-group">
+                            <label for="qualification"><i class="fas fa-graduation-cap"></i> Qualification</label>
+                            <input type="text" class="form-control" id="qualification" placeholder="Enter qualification if any">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateOfJoining"><i class="fas fa-calendar-alt"></i> Date of Joining</label>
+                            <input type="date" class="form-control" id="dateOfJoining">
+                        </div>
+                        <div class="form-group">
+                            <label for="availability"><i class="far fa-clock"></i> Availability Hours</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="start_time">Start Time</label>
+                                    <input type="time" class="form-control" id="start_time" name="start_time" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="end_time">End Time</label>
+                                    <input type="time" class="form-control" id="end_time" name="end_time" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #5E2C5E; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                            <i class="fas fa-check"></i> Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    //protected EntEmployeeRecord? model { get; set; } = new EntemployeeRecord();
+
+    //protected async Task SaveEmployeeRecord()
+    //{
+
+
+    //    SqlParameter[] sp =
+    //    {
+    //         new SqlParameter("@fkEmployeeId",2),
+    //        new SqlParameter("@EmployeeName",model!.EmployeeName),
+    //        new SqlParameter("@Contact", model.Contact),
+    //        new SqlParameter("@Address", model.Address),
+    //        new SqlParameter("@Qualification", model.Qualification),
+    //        new SqlParameter("@PastExperience", model.PastExperience),
+    //        new SqlParameter("@DateofJoinig",model.MfgDate.ToString()),
+    //        new SqlParameter("@Starttime", model.Starttime.ToString())
+    //        new SqlParameter("@Endtime", model.Endtime.ToString())
+    //};
+    //};
+    //    await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+    //    // nm.NavigateTo("/");
+    //}
+}
+
+
+
+
+
+
