@@ -8,11 +8,17 @@ namespace ClassLibraryEnt
 {
     public class EntRegistration
     {
-        public int Id { get; set; }
+        public int pk_pharmacyId { get; set; }
         public string? PharmacyName { get; set; }
-        public string? PharmacyOwnerName { get; set;}
+        public string? PharmacyAddress { get; set; }
+        public string? City { get; set; }
+        public string? AdminName { get; set; }
+        public string? AdminPhoneNo { get; set; }
+        public string? Address { get; set; }
         public string? Username { get; set; }
         public string? Password { get; set; }
-        public string?  ConfirmPassword { get; set; }
+      
+      
+     
     }
 }
