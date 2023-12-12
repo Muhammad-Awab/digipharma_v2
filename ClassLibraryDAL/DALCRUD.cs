@@ -127,5 +127,34 @@ namespace ClassLibraryDAL
 
             return ee;
         }
+        public static EntCounts GetCount()
+        {
+            EntCounts ee = new EntCounts();
+            try
+            {
+
+                SqlConnection con = DBHelper.GetConnection();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SP_GetTableCounts", con);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    ee.MedCounts = int.Parse(sdr["Medicine_Record"].ToString());
+                    ee.UserCounts = int.Parse(sdr["Billing_Record"].ToString());
+                    ee.SalesCounts = int.Parse(sdr["User_Record"].ToString());
+                  
+                }
+                con.Close();
+
+            }
+            catch (Exception ex)
+            {
+               Console.WriteLine($"Exception Occurred: {ex.Message}");
+            }
+            return ee;
+        }
     }
 }

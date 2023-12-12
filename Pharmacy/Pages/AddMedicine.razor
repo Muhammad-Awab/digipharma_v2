@@ -131,6 +131,8 @@
             
             SqlParameter[] sp =
             {
+             
+             new SqlParameter("@pharmacyId",1),
              new SqlParameter("@EntererId",2),
             new SqlParameter("@Name",model!.Name),
             new SqlParameter("@UnitPrice", model.UnitPrice),

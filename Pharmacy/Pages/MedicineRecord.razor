@@ -104,7 +104,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
+        SqlParameter[] sp =
+           {
+
+                new SqlParameter("@pharmacyId",1),
+           };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }

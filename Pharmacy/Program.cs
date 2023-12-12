@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Pharmacy.Authentication;
-using Pharmacy.Data;
 using Pharmacy.Pages.Generics;
 
 var builder = WebApplication.CreateBuilder(args);
