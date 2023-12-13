@@ -26,10 +26,13 @@ namespace Pharmacy.Authentication
 
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-                    { new Claim(ClaimTypes.Name, userSession.UserId),
+                    { 
+                    new Claim(ClaimTypes.PostalCode, userSession.UserId),
                     new Claim(ClaimTypes.Sid, userSession.UserName),
-                       new Claim (ClaimTypes.Role ,userSession.Role)
-                    }, "CustomAuth"));
+                    new Claim (ClaimTypes.Role ,userSession.Role),
+                    new Claim (ClaimTypes.Name ,userSession.PharmacyId)
+
+                }, "CustomAuth"));
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
 
             }
@@ -51,7 +54,9 @@ namespace Pharmacy.Authentication
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                     { new Claim(ClaimTypes.Name, userSession.UserId),
                     new Claim(ClaimTypes.Sid, userSession.UserName),
-                       new Claim (ClaimTypes.Role ,userSession.Role)
+                       new Claim (ClaimTypes.Role ,userSession.Role),
+                    new Claim (ClaimTypes.PostalCode ,userSession.PharmacyId)
+
                     }));
 
             }

@@ -1,5 +1,8 @@
 ﻿@page "/add_medicine_record"
-    @page "/add_medicine_record/{id}"
+@page "/add_medicine_record/{id}"
+
+@attribute [Authorize(Roles = "admin")]
+
 <section class="content" style="background-color: #f0f6f9;">
     <div class="container-fluid">
 
@@ -117,7 +120,11 @@
 
 
 @code {
-    public string? PageName { get; set; }= "Add Medicine Record";
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    public string value { get; set; }
+    public string? PageName { get; set; } = "Add Medicine Record";
     public string? ButtonName { get; set; } = "Save";
     [Parameter]
     public string? id { get; set; }
@@ -128,7 +135,7 @@
 
         if (id == null)
         {
-            
+
             SqlParameter[] sp =
             {
              new SqlParameter("@EntererId",2),
@@ -147,7 +154,7 @@
         {
             SqlParameter[] sp =
             {
-              
+
                 new SqlParameter("@pk_MedId",id),
                 new SqlParameter("@Name",model!.Name),
                 new SqlParameter("@UnitPrice", model.UnitPrice),
@@ -160,7 +167,7 @@
 
     };
             await DALCRUD.CRUD("SP_UpdateMedicine", sp);
-    }
+        }
     }
     DataTable dt = new DataTable();
 
@@ -171,7 +178,7 @@
         {
 
             PageName = "Update Medicine Record";
-            ButtonName= "Update";
+            ButtonName = "Update";
             SqlParameter[] sp =
             {
                 new SqlParameter("@id",id)
@@ -203,5 +210,11 @@
 
     }
 
-    
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await authenticatestate;
+        value = $"{authState.User.Identity.Name}";  
+    }
+
+
 }
