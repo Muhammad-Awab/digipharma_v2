@@ -156,5 +156,39 @@ namespace ClassLibraryDAL
             }
             return ee;
         }
+
+        public static EntRegistration GetUserByName(string? username)
+        {
+            EntRegistration ee = new EntRegistration();
+
+            try
+            {
+
+
+                SqlConnection con = DBHelper.GetConnection();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SP_GetUserByName", con);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    ee.pk_pharmacyId = sdr["fk_PharmacyId"].ToString();
+                    ee.AdminName = sdr["AdminName"].ToString();
+                    ee.Username = sdr["Username"].ToString();
+                    ee.Password = sdr["Password"].ToString();
+                    ee.Role = sdr["Role"].ToString();
+
+
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception Occurred: {ex.Message}");
+            }
+            return ee;
+
+        }
     }
 }

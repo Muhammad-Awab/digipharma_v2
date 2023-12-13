@@ -26,7 +26,7 @@ namespace Pharmacy.Authentication
 
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-                    { new Claim(ClaimTypes.Name, userSession.UserId),
+                    { new Claim(ClaimTypes.Name, userSession.UserId+","+userSession.UserName),
                     new Claim(ClaimTypes.Sid, userSession.UserName),
                        new Claim (ClaimTypes.Role ,userSession.Role)
                     }, "CustomAuth"));
@@ -47,7 +47,11 @@ namespace Pharmacy.Authentication
 
             if (userSession != null)
             {
-                await _sessionStorage.SetAsync("UserSession", userSession);
+                if (_sessionStorage != null)
+                {
+                    await _sessionStorage.SetAsync("UserSession", userSession);
+                }
+
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                     { new Claim(ClaimTypes.Name, userSession.UserId),
                     new Claim(ClaimTypes.Sid, userSession.UserName),

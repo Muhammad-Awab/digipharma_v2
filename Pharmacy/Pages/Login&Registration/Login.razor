@@ -1,57 +1,59 @@
-﻿    @page "/login"
-    @layout NavLayout
+﻿@page "/login"
+@layout NavLayout
 
-<section class="content">
-    <div class="container-fluid">
-        <div class="row justify-content-center pt-5">
-            <!-- left column -->
-            <div class="col-md-6">
-                <!-- general form elements -->
-                <div class="card card-primary">
-                    <div class="card-header text-center">
-                        <h3>Pharmacy Login</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form>
-                        <div class="card-body no form-control-border">
-                            
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">UserName</label>
-                                <input type="text" @bind="model.Username" class="form-control" placeholder="Enter Username">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Username</label>
-                                <input type="text" class="form-control" @bind="model.Password" placeholder="Enter Password">
-                            </div>
-
-                            
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager nm
 
 
+<div class=" d-flex align-items-center justify-content-center mt-5">
+    <div class="card gap-3 Login-Card" style="width: 28rem;">
+        <h3 class="text-center">Login</h3>
 
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
-                            <button class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <input type="text" @bind="Username" class="form-control" placeholder="Enter Username">
+        <input type="text" class="form-control" @bind="Password" placeholder="Enter Password">
+        <button @onclick="Authenticate" class="btn btn-primary">Login</button>
+        @if (check)
+        {
+            <p class="text-danger text-center">@Message</p>
+        }
     </div>
-
-</section>
-
+</div>
 
 
 
 
 @code {
 
-    protected EntLogin model { get; set; } = new EntLogin();
+    protected EntRegistration _Model { get; set; } = new EntRegistration();
+
+    private string? Username { get; set; }
+    private string? Password { get; set; }
+    bool check = false;
+    private string? pharmacyId { get; set; }
+    public string? Message { get; set; }
+    private async Task Authenticate()
+    {
+        _Model = DALCRUD.GetUserByName(Username);
+
+        if (_Model != null && _Model.Password != null && _Model.Password == Password)
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+                {
+                    UserId = _Model.pk_pharmacyId, // Use the appropriate property from your model
+                    UserName = _Model.Username, // Use the appropriate property from your model
+                    Role = _Model.Role // Use the appropriate property from your model
+                });
+
+            // Once the authentication state has been updated, navigate to the desired location
+            nm.NavigateTo("/aboutus", forceLoad: true);
+        }
+        else
+        {
+            check = true;
+            Message = "Invalid UserName and Password ! ";
+        }
+    }
+
 
 }

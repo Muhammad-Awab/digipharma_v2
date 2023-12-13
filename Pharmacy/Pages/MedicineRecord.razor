@@ -107,7 +107,7 @@
         SqlParameter[] sp =
            {
 
-                new SqlParameter("@pharmacyId",1),
+                new SqlParameter("@pharmacyId",v[0]),
            };
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
@@ -157,5 +157,26 @@
         searchTerm = e.Value.ToString();
         CreatePagingInfo();
         // You can add additional logic here if needed
+    }
+
+
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
     }
 }

@@ -123,16 +123,35 @@
     public string? id { get; set; }
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
 
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    }
     protected async Task SaveMedicineRecord()
     {
 
         if (id == null)
         {
-            
+            int pharmacyId = Convert.ToInt32(v[0]);
+
             SqlParameter[] sp =
             {
              
-             new SqlParameter("@pharmacyId",1),
+             new SqlParameter("@pharmacyId",pharmacyId),
              new SqlParameter("@EntererId",2),
             new SqlParameter("@Name",model!.Name),
             new SqlParameter("@UnitPrice", model.UnitPrice),

@@ -8,7 +8,7 @@ namespace ClassLibraryEnt
 {
     public class EntRegistration
     {
-        public int pk_pharmacyId { get; set; }
+        public string pk_pharmacyId { get; set; }
         public string? PharmacyName { get; set; }
         public string? PharmacyAddress { get; set; }
         public string? City { get; set; }
@@ -18,7 +18,7 @@ namespace ClassLibraryEnt
         public string? Username { get; set; }
         public string? Password { get; set; }
       
-      
+       public string? Role { get; set; }
      
     }
 }
