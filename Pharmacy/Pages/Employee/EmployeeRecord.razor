@@ -1,0 +1,180 @@
+﻿@page "/employeeRecord"
+
+<div class="card">
+    @*    <div class="card-header">
+    <h3 class="card-title">DataTable with default features</h3>
+    </div> *@
+    <!-- /.card-header -->
+    <div class="card-body">
+        <div class="d-flex gap-2 mt-2 mb-3">
+            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+
+            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+        </div>
+        <div class="table-responsive">
+            <table id="myTable" class="table table-bordered">
+                <thead class="table-primary">
+                    <tr>
+
+                        <th>ID</th>
+                        <th>UserFullName</th>
+                        <th>PhoneNumber</th>
+                        @* <th>Address</th> *@
+                        <th>Qualification</th>
+                        <th>WorkExperience</th>
+                        <th>DateOfJoining</th>
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (DataRow row in pagedData)
+                    {
+                        <tr>
+                            <td>@row["pk_UserId"]  </td>
+                            <td><i class="fa-solid fa-user"></i> @row["UserFullName"]  </td>
+                            <td><i class="fa-solid fa-phone"></i> @row["PhoneNumber"] </td>
+                            @* <td><i class="fa-solid fa-money-bill"></i> @row["Address"]</td> *@
+                            <td><i class="fa-solid fa-graduation-cap"></i> @row["Qualification"]</td>
+                            <td><i class="fa-solid fa-briefcase"></i> @row["WorkExperience"]  </td>
+                            <td><i class="fa-solid fa-calendar-days"></i> @row["DateOfJoining"]  </td>
+                            <td>
+                                <a href="@($"/employeeinfo/{row["pk_UserId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_UserId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+
+
+
+
+@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}
+@code {
+    protected EntEmployeeRecord? model { get; set; } = new EntEmployeeRecord();
+    public bool DeleteDialogOpen { get; set; }
+    public string? ID { get; set; }
+    private async Task OnDeleteDialogClose(bool accepted)
+    {
+        DeleteDialogOpen = false;
+        await OnInitializedAsync();
+        StateHasChanged();
+
+    }
+    private void OpenDeleteDialog(string? Id)
+    {
+        DeleteDialogOpen = true;
+        ID = Id;
+        StateHasChanged();
+    }
+    private async Task OnDelete(string id)
+    {
+        SqlParameter[] sp =
+           {
+             new SqlParameter("@pk_UserId",int.Parse(id)),
+
+    };
+        await DALCRUD.CRUD("SP_DeleteEmployees", sp);
+        DeleteDialogOpen = false;
+        await OnInitializedAsync();
+
+    }
+    DataTable dt = new DataTable();
+    List<DataRow> allDataRows = new List<DataRow>();
+    string searchTerm = "";
+    IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
+    [Parameter]
+    public int page { get; set; } = 1;
+    int pageSize = 15; // Change this to your desired page size
+
+    PagingInfo pagingInfo = new PagingInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SqlParameter[] sp =
+           {
+
+                new SqlParameter("@pharmacyId",v[0]),
+       };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetEmployees", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        CreatePagingInfo();
+    }
+    protected override void OnParametersSet()
+    {
+        CreatePagingInfo();
+    }
+    public void CreatePagingInfo()
+    {
+        pagingInfo.CurrentPage = page;
+        pagingInfo.TotalItems = allDataRows.Count;
+        pagingInfo.ItemsPerPage = pageSize;
+
+        // Apply search filter
+        var filteredData = allDataRows.Where(row =>
+      row["UserFullName"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+      row["Username"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        pagingInfo.TotalItems = filteredData.Count;
+
+        var skip = pageSize * (page - 1);
+
+        if (searchTerm != "")
+        {
+            pagedData = filteredData;
+        }
+        else
+        {
+            pagedData = filteredData.Skip(skip).Take(pageSize);
+        }
+        Console.WriteLine($"Current Page: {page}, Total Items: {pagingInfo.TotalItems}, Page Size: {pageSize}, Skip: {skip}");
+    }
+
+    public void PageChanged(int newPage)
+    {
+        page = newPage;
+        CreatePagingInfo();
+
+    }
+
+
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
+    }
+
+
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    }
+}

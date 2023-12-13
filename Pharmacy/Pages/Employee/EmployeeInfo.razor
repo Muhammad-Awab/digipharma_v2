@@ -1,55 +1,55 @@
 ﻿@page "/employeeinfo"
-
-<div class="container mt-5">
+   @page "/employeeinfo/{id}"
+<div class="container pt-5">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-8 col-sm-10 col-12">
             <div class="card bg-light rounded shadow-lg">
                 <div class="card-header text-center" style="background-color: #5E2C5E; color: #fff; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
-                    <h3 class="font-weight-bold"><i class="fas fa-medkit"></i> Add Medicine Record</h3>
+                    <h3 class="font-weight-bold"><i class="fas fa-medkit"></i> @PageName</h3>
                 </div>
                 <div class="card-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="employeeName"><i class="fas fa-user"></i> Employee Name</label>
-                            <input type="text" class="form-control" id="employeeName" placeholder="Enter name">
-                        </div>
-                        <div class="form-group">
-                            <label for="contact"><i class="fas fa-phone"></i> Contact</label>
-                            <input type="tel" class="form-control" id="contact" placeholder="Enter contact">
-                        </div>
-                        <div class="form-group">
-                            <label for="address"><i class="fas fa-map-marker-alt"></i> Address</label>
-                            <input type="text" class="form-control" id="address" placeholder="Enter address">
-                        </div>
-                        <div class="form-group">
-                            <label for="workExperience"><i class="fas fa-briefcase"></i> Work Experience</label>
-                            <input type="text" class="form-control" id="workExperience" placeholder="Enter past work experience">
-                        </div>
-                        <div class="form-group">
-                            <label for="qualification"><i class="fas fa-graduation-cap"></i> Qualification</label>
-                            <input type="text" class="form-control" id="qualification" placeholder="Enter qualification if any">
-                        </div>
-                        <div class="form-group">
-                            <label for="dateOfJoining"><i class="fas fa-calendar-alt"></i> Date of Joining</label>
-                            <input type="date" class="form-control" id="dateOfJoining">
-                        </div>
-                        <div class="form-group">
-                            <label for="availability"><i class="far fa-clock"></i> Availability Hours</label>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="start_time">Start Time</label>
-                                    <input type="time" class="form-control" id="start_time" name="start_time" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="end_time">End Time</label>
-                                    <input type="time" class="form-control" id="end_time" name="end_time" required>
-                                </div>
+
+                    <div class="form-group">
+                        <label for="employeeName"><i class="fas fa-user"></i> Employee Name</label>
+                        <input type="text" @bind="model!.UserFullName" class="form-control" id="employeeName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact"><i class="fas fa-phone"></i> Contact</label>
+                        <input type="tel" @bind="model!.PhoneNumber" class="form-control" id="contact" placeholder="Enter contact">
+                    </div>
+                    <div class="form-group">
+                        <label for="address"><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <input type="text" @bind="model!.Address" class="form-control" id="address" placeholder="Enter address">
+                    </div>
+                    <div class="form-group">
+                        <label for="workExperience"><i class="fas fa-briefcase"></i> Work Experience</label>
+                        <input type="text" @bind="model!.WorkExperience" class="form-control" id="workExperience" placeholder="Enter past work experience">
+                    </div>
+                    <div class="form-group">
+                        <label for="qualification"><i class="fas fa-graduation-cap"></i> Qualification</label>
+                        <input type="text" @bind="model!.Qualification" class="form-control" id="qualification" placeholder="Enter qualification if any">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfJoining"><i class="fas fa-calendar-alt"></i> Date of Joining</label>
+                        <input type="date" @bind="model!.DateOfJoining" class="form-control" id="dateOfJoining">
+                    </div>
+                    <div class="form-group">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="start_time">Username</label>
+                                <input type="text" @bind="model!.Username" class="form-control" id="start_time" name="start_time" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="end_time">Password</label>
+                                <input type="text" @bind="model!.Password" class="form-control" id="end_time" name="end_time" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block" style="background-color: #5E2C5E; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                            <i class="fas fa-check"></i> Submit
-                        </button>
-                    </form>
+                    </div>
+                    <button @onclick="SaveEmployeeRecord" class="btn btn-primary btn-block" style="background-color: #5E2C5E; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <i class="fas fa-check"></i> @ButtonName
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -59,30 +59,114 @@
 
 
 @code {
+    public string? PageName { get; set; } = "Add Medicine Record";
+    public string? ButtonName { get; set; } = "Save";
+    [Parameter]
+    public string? id { get; set; }
+    protected EntEmployeeRecord? model { get; set; } = new EntEmployeeRecord();
 
-    //protected EntEmployeeRecord? model { get; set; } = new EntemployeeRecord();
+    protected async Task SaveEmployeeRecord()
+    {
 
-    //protected async Task SaveEmployeeRecord()
-    //{
+        if (id == null)
+        {
+            SqlParameter[] sp =
+            {
+            new SqlParameter("@fk_PharmacyId",int.Parse(v[0])),
+           new SqlParameter("@UserFullName",model!.UserFullName),
+           new SqlParameter("@PhoneNumber", model.PhoneNumber),
+           new SqlParameter("@Address", model.Address),
+           new SqlParameter("@WorkExperience", model.WorkExperience),
+           new SqlParameter("@Qualification", model.Qualification),
+           new SqlParameter("@DateOfJoining",model.DateOfJoining.ToString()),
+           new SqlParameter("@Username", model.Username),
+           new SqlParameter("@Password", model.Password),
+           new SqlParameter("@Role", "User"),
+    };
+            await DALCRUD.CRUD("SP_SaveEmployeeRecord", sp);
+            nm.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            SqlParameter[] sp =
+            {
+
+              new SqlParameter("@pk_UserId",int.Parse(id)),
+           new SqlParameter("@UserFullName",model!.UserFullName),
+           new SqlParameter("@PhoneNumber", model.PhoneNumber),
+           new SqlParameter("@Address", model.Address),
+           new SqlParameter("@WorkExperience", model.WorkExperience),
+           new SqlParameter("@Qualification", model.Qualification),
+           new SqlParameter("@DateOfJoining",model.DateOfJoining.ToString()),
+           new SqlParameter("@Username", model.Username),
+           new SqlParameter("@Password", model.Password),
+           
+    };
+            await DALCRUD.CRUD("SP_UpdateEmployeeRecord", sp);
+        }
+    }
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
 
 
-    //    SqlParameter[] sp =
-    //    {
-    //         new SqlParameter("@fkEmployeeId",2),
-    //        new SqlParameter("@EmployeeName",model!.EmployeeName),
-    //        new SqlParameter("@Contact", model.Contact),
-    //        new SqlParameter("@Address", model.Address),
-    //        new SqlParameter("@Qualification", model.Qualification),
-    //        new SqlParameter("@PastExperience", model.PastExperience),
-    //        new SqlParameter("@DateofJoinig",model.MfgDate.ToString()),
-    //        new SqlParameter("@Starttime", model.Starttime.ToString())
-    //        new SqlParameter("@Endtime", model.Endtime.ToString())
-    //};
-    //};
-    //    await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
-    //    // nm.NavigateTo("/");
-    //}
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    }
+
+
+    DataTable dt = new DataTable();
+    protected override async Task OnParametersSetAsync()
+    {
+        if (id != null)
+        {
+
+            PageName = "Update Employee Record";
+            ButtonName = "Update";
+            SqlParameter[] sp =
+            {
+                new SqlParameter("@pk_UserId",id)
+    };
+            dt = await DALCRUD.ReadDataSpecific("SP_GetEmployeeRecordByID", sp);
+            ConvertDataIntoArray();
+        }
+    }
+
+    private void ConvertDataIntoArray()
+    {
+        foreach (DataRow row in dt.Rows)
+        {
+            model = new EntEmployeeRecord
+                {
+                    UserFullName = row["UserFullName"].ToString(),
+                    PhoneNumber = row["PhoneNumber"].ToString(),
+                    Qualification = row["Qualification"].ToString(),
+                    WorkExperience = row["WorkExperience"].ToString(),
+                    DateOfJoining = Convert.ToDateTime(row["DateOfJoining"]),
+                    Address = row["Address"].ToString(),
+                            Username = row["Username"].ToString(),
+                            Password = row["Password"].ToString()
+                    
+                };
+
+
+        }
+
+    }
+
 }
+
 
 
 

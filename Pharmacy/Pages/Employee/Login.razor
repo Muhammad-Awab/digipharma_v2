@@ -1,0 +1,59 @@
+﻿@page "/emplogin"
+@layout NavLayout
+
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager nm
+
+
+<div class=" d-flex align-items-center justify-content-center mt-5">
+    <div class="card gap-3 Login-Card" style="width: 28rem;">
+        <h3 class="text-center">Employee Login</h3>
+
+        <input type="text" @bind="Username" class="form-control" placeholder="Enter Username">
+        <input type="text" class="form-control" @bind="Password" placeholder="Enter Password">
+        <button @onclick="Authenticate" class="btn btn-primary">Login</button>
+        @if (check)
+        {
+            <p class="text-danger text-center">@Message</p>
+        }
+    </div>
+</div>
+
+
+
+
+@code {
+
+    protected EntEmployeeRecord _Model { get; set; } = new EntEmployeeRecord();
+
+    private string? Username { get; set; }
+    private string? Password { get; set; }
+    bool check = false;
+    private string? pharmacyId { get; set; }
+    public string? Message { get; set; }
+    private async Task Authenticate()
+    {
+        _Model = DALCRUD.GetEmployeeByName(Username);
+
+        if (_Model != null && _Model.Password != null && _Model.Password == Password)
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+                {
+                    UserId = _Model.fk_PharmacyId.ToString(), // Use the appropriate property from your model
+                    UserName = _Model.UserFullName, // Use the appropriate property from your model
+                    Role = _Model.Role // Use the appropriate property from your model
+                });
+
+            // Once the authentication state has been updated, navigate to the desired location
+            nm.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            check = true;
+            Message = "Invalid UserName and Password ! ";
+        }
+    }
+
+
+}
