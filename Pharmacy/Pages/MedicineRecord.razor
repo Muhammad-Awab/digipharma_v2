@@ -1,7 +1,6 @@
 ﻿@page "/medicinerecord/{Page:int}"
 @page "/medicinerecord"
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="card">
     @*    <div class="card-header">
@@ -47,10 +46,10 @@
                 </tbody>
                 <tfoot>
 
-                    @*  <tr>
-                    <td colspan="10">
-                    <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
-                    </td>
+                   @*  <tr>
+                        <td colspan="10">
+                            <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
+                        </td>
                     </tr> *@
                 </tfoot>
             </table>
@@ -61,20 +60,13 @@
 
 
 
-@if (DeleteDialogOpen)
-{
-    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+@if (DeleteDialogOpen) {
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
 }
-
 @code {
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
     public bool DeleteDialogOpen { get; set; }
     public string? ID { get; set; }
-
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticatestate { get; set; }
-    public string value { get; set; }
-
     private async Task OnDeleteDialogClose(bool accepted)
     {
         DeleteDialogOpen = false;
@@ -112,18 +104,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        value = $"{user.Identity.Name}";
-        var claims = user.Claims;
+        SqlParameter[] sp =
+           {
 
-        //dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
-        SqlParameter[] sp1 = new SqlParameter[]
-             {
-                 new SqlParameter("@fk_PharmacyId",value)
-
-             };
-        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp1);
+                new SqlParameter("@pharmacyId",v[0]),
+           };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
@@ -171,5 +157,26 @@
         searchTerm = e.Value.ToString();
         CreatePagingInfo();
         // You can add additional logic here if needed
+    }
+
+
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
     }
 }

@@ -24,7 +24,7 @@
 
 @code {
 
-    protected EntLogin _Model { get; set; } = new EntLogin();
+    protected EntRegistration _Model { get; set; } = new EntRegistration();
 
     private string? Username { get; set; }
     private string? Password { get; set; }
@@ -40,13 +40,13 @@
             var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthStateProvider.UpdateAuthenticationState(new UserSession
                 {
-                    UserId = _Model.PharmacyId.ToString(), // Use the appropriate property from your model
+                    UserId = _Model.pk_pharmacyId, // Use the appropriate property from your model
                     UserName = _Model.Username, // Use the appropriate property from your model
                     Role = _Model.Role // Use the appropriate property from your model
                 });
 
             // Once the authentication state has been updated, navigate to the desired location
-            nm.NavigateTo("/", forceLoad: true);
+            nm.NavigateTo("/aboutus", forceLoad: true);
         }
         else
         {

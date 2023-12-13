@@ -69,10 +69,31 @@
     {
         SqlParameter[] sp =
         {
+
+            new SqlParameter("@pharmacyId",v[0]),
             new SqlParameter("@From",model.From),
             new SqlParameter("@To",model.To),
 
     };
         dt = await DALCRUD.ReadDataSpecific("SP_GetSalesRecord", sp);
+    }
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
     }
 }

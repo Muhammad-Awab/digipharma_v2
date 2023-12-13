@@ -127,70 +127,39 @@ namespace ClassLibraryDAL
 
             return ee;
         }
-
-        public static T GetEntityById<T>(String ProcedureName, SqlParameter[] parameters) where T : new()
+        public static EntCounts GetCount()
         {
-            T entity = new T();
-
+            EntCounts ee = new EntCounts();
             try
             {
-                using (SqlConnection conn = DBHelper.GetConnection())
-                {
-                    using (SqlCommand cmd = new SqlCommand(ProcedureName, conn))
-                    {
-                        // Add parameters to the command
-                        if (parameters != null)
-                        {
-                            cmd.Parameters.AddRange(parameters);
-                        }
-                        conn.Open();
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataReader rdr = cmd.ExecuteReader())
-                        {
-                            if (rdr.Read())
-                            {
-                                // this is made generic now
-                                // Assuming the entity has properties with the same names as the columns in the result set
-                                foreach (var property in typeof(T).GetProperties())
-                                {
-                                    if (rdr[property.Name] != DBNull.Value)
-                                    {
-                                        property.SetValue(entity, rdr[property.Name]);
-                                    }
-                                    else
-                                    {
-                                        // If you have values that are null inthe columns you recieve from the db, you can handle them here
-                                        if (!property.PropertyType.IsValueType || Nullable.GetUnderlyingType(property.PropertyType) != null)
-                                        {
-                                            // If the property type is a reference type or a nullable value type, set it to null
-                                            property.SetValue(entity, null);
-                                        }
-                                        else if (property.PropertyType == typeof(int))
-                                        {
-                                            // Handle DBNull for non-nullable int property, i am choosing -1 for null you can choose something else
-                                            property.SetValue(entity, -1);
-                                        }
-                                    }
-                                }
 
-                            }
-                        }
-                        conn.Close();
-                    }
+                SqlConnection con = DBHelper.GetConnection();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SP_GetTableCounts", con);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    ee.MedCounts = int.Parse(sdr["Medicine_Record"].ToString());
+                    ee.UserCounts = int.Parse(sdr["Billing_Record"].ToString());
+                    ee.SalesCounts = int.Parse(sdr["User_Record"].ToString());
+                  
                 }
+                con.Close();
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception Occurred: {ex.Message}");
+               Console.WriteLine($"Exception Occurred: {ex.Message}");
             }
-
-            return entity;
+            return ee;
         }
 
-
-        public static EntLogin GetUserByName(string? Username)
+        public static EntRegistration GetUserByName(string? username)
         {
-            EntLogin ee = new EntLogin();
+            EntRegistration ee = new EntRegistration();
 
             try
             {
@@ -198,17 +167,17 @@ namespace ClassLibraryDAL
 
                 SqlConnection con = DBHelper.GetConnection();
                 con.Open();
-                SqlCommand cmd = new SqlCommand("SP_GetAdminByUserName", con);
-                cmd.Parameters.AddWithValue("@Username", Username);
+                SqlCommand cmd = new SqlCommand("SP_GetUserByName", con);
+                cmd.Parameters.AddWithValue("@username", username);
                 cmd.CommandType = CommandType.StoredProcedure;
                 SqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
                 {
-                    ee.UserId = (int)sdr["pk_AdminId"];
-                    ee.PharmacyId = (int)sdr["fk_PharmacyId"];
-                    ee.Role = sdr["Role"].ToString();
+                    ee.pk_pharmacyId = sdr["fk_PharmacyId"].ToString();
+                    ee.AdminName = sdr["AdminName"].ToString();
+                    ee.Username = sdr["Username"].ToString();
                     ee.Password = sdr["Password"].ToString();
-                    ee.Username  = sdr["Username"].ToString();
+                    ee.Role = sdr["Role"].ToString();
 
 
                 }
@@ -221,9 +190,5 @@ namespace ClassLibraryDAL
             return ee;
 
         }
-
-
-
-
     }
 }

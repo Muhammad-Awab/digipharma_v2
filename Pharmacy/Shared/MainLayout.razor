@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿﻿ 
+@inject NavigationManager nm
+@inject AuthenticationStateProvider authStateProvider
+@inherits LayoutComponentBase
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -20,15 +23,17 @@
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
-            <h5>Muhammad Awab</h5>
-
+            <h5 class="mx-3 mt-2">@v[1]</h5>
+            <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
+                <span class="oi oi-info" aria-hidden="true"></span> Logout
+            </NavLink>
         </ul>
     </nav>
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link">
+        <a href="index3.html" class="brand-link" style="text-decoration:none;">
             <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">Pharmacy</span>
         </a>
@@ -41,8 +46,9 @@
                     <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">Muhammad Awab</a>
+                    <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
                 </div>
+               
             </div>
 
             <!-- SidebarSearch Form -->
@@ -62,127 +68,134 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                DashBoard
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
-                    </li>s
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Inventory
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                    <AuthorizeView Roles="Admin,User">
+                        <Authorized>
                             <li class="nav-item">
-                                <a href="/inventory" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Visit Inventory</p>
+                                <a href="/" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        DashBoard
+                                        <span class="right badge badge-danger">New</span>
+                                    </p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="/medicinerecord" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>List Of Medicines</p>
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link active">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>
+                                        Inventory
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
                                 </a>
-                            </li>
-                            <AuthorizeView Roles="admin">
-                                <Authorized>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/inventory" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Visit Inventory</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/medicinerecord" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>List Of Medicines</p>
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="/add_medicine_record" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Medicine Record</p>
                                         </a>
                                     </li>
-                                </Authorized>
 
-                            </AuthorizeView>
+                                </ul>
+                            </li>
 
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="pointofsale" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Point Of Sale
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/billing" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Billing
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="aboutus" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                About Us
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/salesrecord" class="nav-link">
-                            <i class="nav-icon fas fa-copy"></i>
-                            <p>
-                                Sales Record
-                                <i class="fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">6</span>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="pointofsale" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        Point Of Sale
+                                        <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/billing" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        Billing
+                                        <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="aboutus" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        About Us
+                                        <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a href="/salesrecord" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Sales Report</p>
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Sales Record
+                                        <i class="fas fa-angle-left right"></i>
+                                        <span class="badge badge-info right">6</span>
+                                    </p>
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Payments Report</p>
-                                </a>
-                            </li>
-                        </ul>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Employees
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="/employee" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>EmployeeInfo</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/employeeinfo" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Registered Employees</p>
-                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/salesrecord" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Sales Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Payments Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
+                        </Authorized>
 
-                        </ul>
-                    </li>
-                    </li>
+                    </AuthorizeView>
+
+                    <AuthorizeView Roles="Admin">
+                        <Authorized>
+                            <li class="nav-item menu-open">
+                                <a href="#" class="nav-link active">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>
+                                        Employees
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/employee" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>EmployeeInfo</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/employeeinfo" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Registered Employees</p>
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </li>
+                        </Authorized>
+
+                    </AuthorizeView>
 
 
                 </ul>
@@ -213,3 +226,33 @@
     </footer>
 </div>
 
+
+@code {
+
+    private async Task logout()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        nm.NavigateTo("/login", forceLoad:true);
+
+    }
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    }
+
+}

@@ -53,7 +53,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button class="btn btn-primary">Submit</button>
+                            <button @onclick="SaveRegistrationForm" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -68,7 +68,27 @@
 
 
 @code {
-
     protected EntRegistration model { get; set; } = new EntRegistration();
+    private int pharmacyId;
+    private async Task SaveRegistrationForm(){
+        Random rnd = new Random();
+        pharmacyId = rnd.Next();
+    SqlParameter[] sp =
+         {
+
+             new SqlParameter("@pk_PharmacyId",pharmacyId),
+             new SqlParameter("@PharmacyName",model.PharmacyName),
+            new SqlParameter("@PharmacyAddress",model!.PharmacyAddress),
+            new SqlParameter("@City", model.City),
+            new SqlParameter("@AdminName", model.AdminName),
+            new SqlParameter("@AdminPhoneNo", model.AdminPhoneNo),
+            new SqlParameter("@Address", model.Address),
+            new SqlParameter("@Username", model.Username),
+            new SqlParameter("@Password",model.Password),
+            new SqlParameter("@Role","Admin"),
+    };
+        await DALCRUD.CRUD("SP_SaveRegistrationForm", sp);
+    
+    }
 
 }

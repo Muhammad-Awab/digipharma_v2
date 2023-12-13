@@ -196,6 +196,7 @@
             SqlParameter[] parameters = new SqlParameter[]
              {
                  new SqlParameter("@pk_POSId",data.pk_POSId),
+                 new SqlParameter("@pharmacyId",v[0]),
                  new SqlParameter("@fk_BillingId",data.fk_BillingId),
                  new SqlParameter("@fk_MedId",data.fk_MedId),
                  new SqlParameter("@Quantity",data.Quantity),
@@ -237,6 +238,8 @@
         SqlParameter[] parameters = new SqlParameter[]
            {
                  new SqlParameter("@pk_BillingId",BillingId),
+
+                 new SqlParameter("@pharmacyId",@v[0]),
                  new SqlParameter("@SellerId",1),
                  new SqlParameter("@TotalPrice",MedicineTotalprice),
                  new SqlParameter("@Discount",DiscountPrice),
@@ -329,7 +332,12 @@
     {
         Random rnd = new Random();
         BillingId = rnd.Next();
-        dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
+        SqlParameter[] sp =
+           {
+
+                new SqlParameter("@pharmacyId",v[0]),
+       };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
@@ -368,5 +376,25 @@
         page = newPage;
         CreatePagingInfo();
 
+    }
+
+
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected override void OnInitialized()
+    {
+        DisplayGreeting();
+
+    }
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
     }
 }

@@ -16,11 +16,16 @@
                 <li class="nav-item">
                     <a class="nav-link navbar active text-light" aria-current="page" href="#">Home</a>
                 </li>
+
+                  <AuthorizeView>
+               
+                <NotAuthorized>
                 <li class="nav-item">
                     <a class="nav-link active text-light" href="register">Login</a>
                 </li>
 
-
+                    </NotAuthorized>
+            </AuthorizeView>
 
             </ul>
 
