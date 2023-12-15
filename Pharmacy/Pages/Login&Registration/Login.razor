@@ -42,7 +42,8 @@
                 {
                     UserId = _Model.pk_pharmacyId, // Use the appropriate property from your model
                     UserName = _Model.Username, // Use the appropriate property from your model
-                    Role = _Model.Role // Use the appropriate property from your model
+                    Role = _Model.Role, // Use the appropriate property from your model
+                    PharmacyName=_Model.PharmacyName
                 });
 
             // Once the authentication state has been updated, navigate to the desired location

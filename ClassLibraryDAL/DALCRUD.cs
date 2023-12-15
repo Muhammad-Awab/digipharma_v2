@@ -176,6 +176,7 @@ namespace ClassLibraryDAL
                     ee.pk_pharmacyId = sdr["fk_PharmacyId"].ToString();
                     ee.AdminName = sdr["AdminName"].ToString();
                     ee.Username = sdr["Username"].ToString();
+                    ee.PharmacyName = sdr["pharmacyName"].ToString();
                     ee.Password = sdr["Password"].ToString();
                     ee.Role = sdr["Role"].ToString();
 
@@ -210,6 +211,7 @@ namespace ClassLibraryDAL
                     ee.UserFullName = sdr["UserFullName"].ToString();
                     ee.Username = sdr["Username"].ToString();
                     ee.Password = sdr["Password"].ToString();
+                    ee.PharmacyName = sdr["pharmacyName"].ToString();
                     ee.Role = sdr["Role"].ToString();
 
 

@@ -13,6 +13,7 @@ namespace ClassLibraryEnt
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public string? WorkExperience { get; set; }
+        public string? PharmacyName { get; set; }
         public string? Qualification { get; set; }
         public DateTime? DateOfJoining { get; set; }
         public string? Username { get; set; }

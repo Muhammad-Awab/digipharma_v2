@@ -26,7 +26,7 @@ namespace Pharmacy.Authentication
 
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-                    { new Claim(ClaimTypes.Name, userSession.UserId+","+userSession.UserName),
+                    { new Claim(ClaimTypes.Name, userSession.UserId+","+userSession.UserName+","+userSession.PharmacyName),
                     new Claim(ClaimTypes.Sid, userSession.UserName),
                        new Claim (ClaimTypes.Role ,userSession.Role)
                     }, "CustomAuth"));

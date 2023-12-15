@@ -1,6 +1,7 @@
 ﻿@page "/billing"
 
-<h3>Billing</h3>
+<h3 style="color: #333; font-family: 'Arial', sans-serif; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 20px; text-align: center;">Billing</h3>
+
 
 
 <section>
@@ -8,50 +9,53 @@
         <table>
             <tr>
                 <td>
-                    Billing Id
+                    <strong>
+                        Billing ID
+                    </strong>
                 </td>
                 <td>
-                    <input name="ID" @bind="_ModelBilling.pk_BillingId"></input>
-                </td>
-                <td>
-                    <button @onclick="GetInitialData"> GetData</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    TotalPrice
-                </td>
-                <td>
-                    <input name="ID" @bind="_ModelBilling.TotalPrice" required></input>
+                    <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Discount
-                </td>
-                <td>
-                    <input name="Email" @bind="_ModelBilling.Discount" required></input>
+                    <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Phone
+                    <strong>Discount</strong>
+
                 </td>
                 <td>
-                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" required></input>
+                    <input name="Email" @bind="_ModelBilling.Discount" class="form-control" required></input>
+                </td>
+                <td>
+                    <strong>TotalPrice</strong>
+                </td>
+                <td>
+                    <input name="ID" @bind="_ModelBilling.TotalPrice" class="form-control" required></input>
                 </td>
             </tr>
             <tr>
                 <td>
-                    DiscountPerc
+                    <strong>DiscountPerc</strong>
+
                 </td>
                 <td>
-                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" required></input>
+                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" class="form-control" required></input>
+                </td>
+                <td>
+                    <strong>Phone</strong>
+
+                </td>
+                <td>
+                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" class="form-control" required></input>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <button type="submit" class="btn btn-primary">Change</button>
+                    <button style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
                 </td>
             </tr>
         </table>
@@ -59,16 +63,68 @@
     </EditForm>
 </section>
 
+<style>
+    /* Style for the form container */
+    .form-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    /* Style for the form input */
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Style for the strong tag */
+    strong {
+        color: #333;
+    }
+
+    /* Style for the table cells */
+    td {
+        padding: 10px;
+    }
+
+    /* Style for the floating input container */
+    .form-floating {
+        position: relative;
+    }
+
+        /* Style for the floating label */
+        .form-floating label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            padding: 10px;
+            transition: 0.2s ease all;
+        }
+
+        /* Style for the floating input when focused or not empty */
+        .form-floating input:focus,
+        .form-floating input:not(:placeholder-shown) {
+            padding-top: 18px;
+            padding-bottom: 3px;
+        }
+</style>
+
+
 <section>
     <div class="card">
 
         <!-- /.card-header -->
         <div class="card-body">
             <div class="d-flex gap-2">
-                <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-                <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+              <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+
+            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>   
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
                 <table id="myTable" class="table table-bordered table-striped ">
                     <thead>
                         <tr>
@@ -108,6 +164,7 @@
         <!-- /.card-body -->
     </div>
 </section>
+
 
 @code {
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
@@ -190,5 +247,11 @@
         page = newPage;
         CreatePagingInfo();
 
+    }
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
     }
 }
