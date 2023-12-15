@@ -88,7 +88,7 @@
             new SqlParameter("@Role","Admin"),
     };
         await DALCRUD.CRUD("SP_SaveRegistrationForm", sp);
-    
+        nm.NavigateTo("/login", forceLoad: true);
     }
 
 }
