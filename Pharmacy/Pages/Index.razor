@@ -1,4 +1,4 @@
-﻿@* 
+﻿ @page "/"
 @inject NavigationManager nm
 
 @code{
@@ -10,10 +10,10 @@
 
     public void loadpage()
     {
-        nm.NavigateTo("/Identity/Account/Login", forceLoad: true);
+        nm.NavigateTo("/login", forceLoad: true);
         
     }
 
 }
 
- *@
+ 
