@@ -1,19 +1,29 @@
-﻿@page "/add_medicine_record"
-    @page "/add_medicine_record/{id}"
+﻿// Define the page routes and authorize access for roles.
+@page "/add_medicine_record"
+@page "/add_medicine_record/{id}"
+@attribute [Authorize(Roles = "Admin,User")]
+
 <section class="content" style="background-color: #f0f6f9;">
     <div class="container-fluid">
 
+        <!-- Main content section -->
         <div class="row justify-content-center pt-5">
             <div class="col-md-9">
+                <!-- Card for adding or updating medicine record -->
                 <div class="card card-primary" style="border: 2px solid #288AA7; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <!-- Card header with title -->
                     <div class="card-header text-center" style="background-color: #288AA7; color: #fff; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
                         <h3 style="font-weight: bold;"><i class="fas fa-plus-circle"></i> Add Medicine Record</h3>
                     </div>
 
+                    <!-- Card body containing the form -->
                     <div class="card-body">
                         <form>
+                            <!-- Form divided into two columns -->
                             <div class="row">
+                                <!-- First column for input fields -->
                                 <div class="col-md-6">
+                                    <!-- Medicine Name input -->
                                     <div class="form-group">
                                         <label for="medicineName">Medicine Name</label>
                                         <div class="input-group">
@@ -24,6 +34,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Unit Price input -->
                                     <div class="form-group">
                                         <label for="unitPrice">Unit Price</label>
                                         <div class="input-group">
@@ -34,6 +45,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Location input -->
                                     <div class="form-group">
                                         <label for="location">Location</label>
                                         <div class="input-group">
@@ -44,6 +56,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Stock input -->
                                     <div class="form-group">
                                         <label for="stock">Stock</label>
                                         <div class="input-group">
@@ -53,10 +66,11 @@
                                             <input type="text" class="form-control" @bind="model.Stock" placeholder="Enter Stock">
                                         </div>
                                     </div>
-
                                 </div>
 
+                                <!-- Second column for additional input fields -->
                                 <div class="col-md-6">
+                                    <!-- Manufacturer input -->
                                     <div class="form-group">
                                         <label for="manufacturer">Manufacturer</label>
                                         <div class="input-group">
@@ -67,6 +81,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Supplier input -->
                                     <div class="form-group">
                                         <label for="supplier">Supplier</label>
                                         <div class="input-group">
@@ -77,6 +92,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Manufacture Date input -->
                                     <div class="form-group">
                                         <label for="mfgDate">Manufacture Date</label>
                                         <div class="input-group">
@@ -87,6 +103,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Expiry Date input -->
                                     <div class="form-group">
                                         <label for="expDate">Expiry Date</label>
                                         <div class="input-group">
@@ -99,8 +116,11 @@
                                 </div>
                             </div>
 
+                            <!-- Card footer with buttons -->
                             <div class="card-footer text-center" style="background-color: #fff; border-top: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                                <!-- Button to submit the form -->
                                 <button @onclick="SaveMedicineRecord" class="btn btn-primary" style="background-color: #288AA7; border: none;"><i class="fas fa-check"></i> Submit</button>
+                                <!-- Button to navigate to the medicines page -->
                                 <a href="/medicinerecord" class="btn btn-secondary" style="background-color: #288AA7; border: none;"><i class="fas fa-eye"></i> See Medicines</a>
                             </div>
                         </form>
@@ -108,32 +128,39 @@
                 </div>
             </div>
         </div>
-
     </div>
 </section>
 
-
-
-
-
+<!-- Code block containing C# logic for the component -->
 @code {
-    public string? PageName { get; set; }= "Add Medicine Record";
+    // Properties for page and button names
+    public string? PageName { get; set; } = "Add Medicine Record";
     public string? ButtonName { get; set; } = "Save";
+
+    // Parameter for medicine record ID
     [Parameter]
     public string? id { get; set; }
+
+    // Medicine record model
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
 
+    // Array for user roles
     public string[] v { get; set; } = { "Guest", "Guest" };
 
-
+    // Property for authenticated user's name
     public string? value1 { get; set; }
+
+    // Cascading parameter for authentication state
     [CascadingParameter]
     private Task<AuthenticationState> authenticatestate { get; set; }
+
+    // Initialization method
     protected override void OnInitialized()
     {
         DisplayGreeting();
-
     }
+
+    // Method to display user greeting
     private async Task DisplayGreeting()
     {
         var authState = await authenticatestate;
@@ -141,34 +168,39 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+
+    // Method to save medicine record
     protected async Task SaveMedicineRecord()
     {
-
+        // Check if ID is null (indicating a new record)
         if (id == null)
         {
+            // Extract pharmacy ID from user roles
             int pharmacyId = Convert.ToInt32(v[0]);
 
+            // Set parameters for new record
             SqlParameter[] sp =
             {
-             
-             new SqlParameter("@pharmacyId",pharmacyId),
-             new SqlParameter("@EntererId",2),
-            new SqlParameter("@Name",model!.Name),
-            new SqlParameter("@UnitPrice", model.UnitPrice),
-            new SqlParameter("@Location", model.Location),
-            new SqlParameter("@Stock", model.Stock),
-            new SqlParameter("@Manufacturer", model.Manufacturer),
-            new SqlParameter("@Supplier", model.Supplier),
-            new SqlParameter("@MfgDate",model.MfgDate.ToString()),
-            new SqlParameter("@ExpDate", model.ExpDate.ToString())
-    };
+                new SqlParameter("@pharmacyId",pharmacyId),
+                new SqlParameter("@EntererId",2),
+                new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@UnitPrice", model.UnitPrice),
+                new SqlParameter("@Location", model.Location),
+                new SqlParameter("@Stock", model.Stock),
+                new SqlParameter("@Manufacturer", model.Manufacturer),
+                new SqlParameter("@Supplier", model.Supplier),
+                new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+                new SqlParameter("@ExpDate", model.ExpDate.ToString())
+        };
+
+            // Call CRUD method to save new record
             await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
         }
         else
         {
+            // Set parameters for updating existing record
             SqlParameter[] sp =
             {
-              
                 new SqlParameter("@pk_MedId",id),
                 new SqlParameter("@Name",model!.Name),
                 new SqlParameter("@UnitPrice", model.UnitPrice),
@@ -178,30 +210,41 @@
                 new SqlParameter("@Supplier", model.Supplier),
                 new SqlParameter("@MfgDate",model.MfgDate.ToString()),
                 new SqlParameter("@ExpDate", model.ExpDate.ToString())
+        };
 
-    };
+            // Call CRUD method to update existing record
             await DALCRUD.CRUD("SP_UpdateMedicine", sp);
+        }
     }
-    }
+
+    // DataTable for storing data
     DataTable dt = new DataTable();
 
-
+    // Method executed when parameters are set
     protected override async Task OnParametersSetAsync()
     {
+        // Check if ID is not null (indicating an update)
         if (id != null)
         {
-
+            // Set page and button names for update
             PageName = "Update Medicine Record";
-            ButtonName= "Update";
+            ButtonName = "Update";
+
+            // Set parameters for getting medicine record by ID
             SqlParameter[] sp =
             {
                 new SqlParameter("@id",id)
-    };
+        };
+
+            // Read data from database and store in DataTable
             dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordByID", sp);
+
+            // Convert DataTable data into array and update the model
             ConvertDataIntoArray();
         }
     }
 
+    // Method to convert DataTable data into array and update the model
     private void ConvertDataIntoArray()
     {
         foreach (DataRow row in dt.Rows)
@@ -218,11 +261,6 @@
                     MfgDate = Convert.ToDateTime(row["MfgDate"]),
                     ExpDate = Convert.ToDateTime(row["ExpDate"])
                 };
-
-
         }
-
     }
-
-    
 }

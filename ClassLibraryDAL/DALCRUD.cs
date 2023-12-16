@@ -213,6 +213,7 @@ namespace ClassLibraryDAL
                     ee.Password = sdr["Password"].ToString();
                     ee.PharmacyName = sdr["pharmacyName"].ToString();
                     ee.Role = sdr["Role"].ToString();
+                    ee.UserImg = sdr["UserImg"].ToString();
 
 
                 }

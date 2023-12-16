@@ -1,7 +1,7 @@
-﻿﻿
-@inject NavigationManager nm
+﻿@inject NavigationManager nm
 @inject AuthenticationStateProvider authStateProvider
 @inherits LayoutComponentBase
+@attribute [Authorize(Roles = "User,Admin")]
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -14,31 +14,33 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index3.html" class="nav-link">Home</a>
+                <a href="/dashboard" class="nav-link">Home</a>
             </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">Contact</a>
-            </li>
+           
         </ul>
 
         <!-- Right navbar links -->
-
         <ul class="navbar-nav ml-auto">
-            <h5 class="mx-3 mt-2"> rehan</h5>
 
-            <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
-                <span class="oi oi-info" aria-hidden="true"></span> Logout
-            </NavLink>
+            <h5 class="mx-3 mt-2">@v[1]</h5>
+            <AuthorizeView Roles="Admin,User">
+                <Authorized>
+                    <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
+                        <span class="oi oi-info" aria-hidden="true"></span> Logout
+                    </NavLink>
+                </Authorized>
+
+
+            </AuthorizeView>
         </ul>
     </nav>
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link" style="text-decoration:none;">
+        <a href="/dashboard" class="brand-link" style="text-decoration:none;">
             <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light"></span>
-
+            <span class="brand-text font-weight-light">@v[2]</span>
         </a>
 
         <!-- Sidebar -->
@@ -46,10 +48,18 @@
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
+                    @if (v[4] == "User")
+                    {
+                        <img src="@v[3]" class="img-circle elevation-2" alt="User Image">
+
+                    }
+                    else
+                    {
+                        <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
+                    }
                 </div>
                 <div class="info">
-                    <a href="#" style="text-decoration:none;" class="d-block"></a>
+                    <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
                 </div>
 
             </div>
@@ -83,7 +93,7 @@
                                 </a>
                             </li>
                             <li class="nav-item menu-open">
-                                <a href="#" class="nav-link active">
+                                <a href="/dashboard" class="nav-link active">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
                                     <p>
                                         Inventory
@@ -141,29 +151,15 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/salesrecord" class="nav-link">
-                                    <i class="nav-icon fas fa-copy"></i>
+                                <a href="salesrecord" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
                                     <p>
-                                        Sales Record
-                                        <i class="fas fa-angle-left right"></i>
-                                        <span class="badge badge-info right">6</span>
+                                        Sales Report
+                                        <span class="right badge badge-danger">New</span>
                                     </p>
                                 </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="/salesrecord" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Sales Report</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Payments Report</p>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
+
 
                         </Authorized>
 
@@ -172,7 +168,7 @@
                     <AuthorizeView Roles="Admin">
                         <Authorized>
                             <li class="nav-item menu-open">
-                                <a href="#" class="nav-link active">
+                                <a href="/employee" class="nav-link active">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
                                     <p>
                                         Employees
@@ -239,7 +235,7 @@
         nm.NavigateTo("/login", forceLoad: true);
 
     }
-    public string[] v { get; set; } = { "Guest", "Guest", "Pharmacy" };
+    public string[] v = new string[5] { "Guest", "Guest", "Pharmacy", "Guest", "Guest", };
 
 
     public string? value1 { get; set; }
@@ -252,10 +248,33 @@
     }
     private async Task DisplayGreeting()
     {
-        var authState = await authenticatestate;
-        value1 = $"{authState.User.Identity.Name}";
-        v = value1.Split(',');
-        StateHasChanged();
+        try
+        {
+            var authState = await authenticatestate;
+
+            // Check if the user identity exists and is not null or empty
+            if (authState.User?.Identity?.Name != null && !string.IsNullOrEmpty(authState.User.Identity.Name))
+            {
+                value1 = authState.User.Identity.Name;
+                v = value1.Split(',');
+            }
+            else
+            {
+                // Handle the case where the user identity is not available
+                // You can set default values or handle it based on your application logic
+                value1 = "DefaultName";
+                v = new string[] { "Guest", "Guest", "Pharmacy", "Guest", "Guest" };
+            }
+
+            StateHasChanged();
+        }
+        catch
+        {
+            // Handle exceptions, for instance, redirect to the login page
+            nm.NavigateTo("/login", forceLoad: true);
+        }
     }
+
+
 
 }

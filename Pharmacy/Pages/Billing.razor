@@ -1,33 +1,35 @@
-﻿@page "/billing"
-@attribute [Authorize(Roles = "Admin")]
+﻿@* The following code represents a Razor component for a billing page. *@
 
+@* Page directive with authorization roles. *@
+@page "/billing"
+@attribute [Authorize(Roles = "Admin,User")]
 
+@* HTML content for the billing page. *@
 <h3 style="color: #333; font-family: 'Arial', sans-serif; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 20px; text-align: center;">Billing</h3>
 
-
-
 <section>
+    <!-- EditForm for submitting billing data -->
     <EditForm Model="_ModelBilling" OnSubmit="SubmitForm">
         <table>
+            <!-- Billing ID input -->
             <tr>
                 <td>
-                    <strong>
-                        Billing ID
-                    </strong>
+                    <strong>Billing ID</strong>
                 </td>
                 <td>
                     <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
                 </td>
             </tr>
+            <!-- Button to get initial data -->
             <tr>
                 <td>
                     <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
                 </td>
             </tr>
+            <!-- Discount and TotalPrice inputs -->
             <tr>
                 <td>
                     <strong>Discount</strong>
-
                 </td>
                 <td>
                     <input name="Email" @bind="_ModelBilling.Discount" class="form-control" required></input>
@@ -39,40 +41,38 @@
                     <input name="ID" @bind="_ModelBilling.TotalPrice" class="form-control" required></input>
                 </td>
             </tr>
+            <!-- DiscountPerc and Phone inputs -->
             <tr>
                 <td>
                     <strong>DiscountPerc</strong>
-
                 </td>
                 <td>
                     <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" class="form-control" required></input>
                 </td>
                 <td>
                     <strong>Phone</strong>
-
                 </td>
                 <td>
                     <input name="Phone" @bind="_ModelBilling.DiscountPerc" class="form-control" required></input>
                 </td>
             </tr>
+            <!-- Button to trigger change -->
             <tr>
                 <td>
                     <button style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
                 </td>
             </tr>
         </table>
-
     </EditForm>
 </section>
 
 <style>
-    /* Style for the form container */
+    <!-- CSS styles for the form and table -->
     .form-container {
         max-width: 300px;
         margin: 0 auto;
     }
 
-    /* Style for the form input */
     .form-control {
         width: 100%;
         padding: 10px;
@@ -82,22 +82,18 @@
         box-sizing: border-box;
     }
 
-    /* Style for the strong tag */
     strong {
         color: #333;
     }
 
-    /* Style for the table cells */
     td {
         padding: 10px;
     }
 
-    /* Style for the floating input container */
     .form-floating {
         position: relative;
     }
 
-        /* Style for the floating label */
         .form-floating label {
             position: absolute;
             top: 0;
@@ -107,7 +103,6 @@
             transition: 0.2s ease all;
         }
 
-        /* Style for the floating input when focused or not empty */
         .form-floating input:focus,
         .form-floating input:not(:placeholder-shown) {
             padding-top: 18px;
@@ -115,31 +110,30 @@
         }
 </style>
 
-
 <section>
+    <!-- Card section for displaying a table of data -->
     <div class="card">
-
-        <!-- /.card-header -->
         <div class="card-body">
+            <!-- Search input and button -->
             <div class="d-flex gap-2">
-              <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-
-            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>   
+                <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+                <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
             </div>
+            <!-- Table to display data -->
             <div class="table-responsive mt-3">
                 <table id="myTable" class="table table-bordered table-striped ">
                     <thead>
+                        <!-- Table header -->
                         <tr>
                             <th>pk_MedicineId</th>
                             <th>Name</th>
                             <th>UnitPrice</th>
                             <th>Location</th>
                             <th>Quantity</th>
-
                         </tr>
                     </thead>
                     <tbody>
-
+                        <!-- Loop through rows in DataTable and display data -->
                         @foreach (DataRow row in dt.Rows)
                         {
                             <tr>
@@ -148,12 +142,11 @@
                                 <td>@row["UnitPrice"]</td>
                                 <td>@row["Location"]</td>
                                 <td>@row["Quantity"]</td>
-
                             </tr>
                         }
                     </tbody>
                     <tfoot>
-
+                        <!-- Pagination section -->
                         <tr>
                             <td colspan="10">
                                 <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
@@ -163,42 +156,41 @@
                 </table>
             </div>
         </div>
-        <!-- /.card-body -->
     </div>
 </section>
 
-
 @code {
+    <!-- C# code block for the component -->
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
     DataTable dt = new DataTable();
 
+    <!-- Form submission method -->
     private void SubmitForm()
     {
         // _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
         // GetMedicineData(_ModelBilling.pk_BillingId);
-
     }
 
+    <!-- Method to get initial data -->
     public void GetInitialData()
     {
         _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
         GetMedicineData(_ModelBilling.pk_BillingId);
     }
 
+    <!-- Method to get medicine data asynchronously -->
     public async void GetMedicineData(int fk_BillingId)
     {
         SqlParameter[] sp =
         {
             new SqlParameter("@fk_BillingId",fk_BillingId)
-
     };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
-        StateHasChanged();  
+        StateHasChanged();
     }
 
-
-
+    <!-- Variables and methods for pagination -->
     List<DataRow> allDataRows = new List<DataRow>();
     string searchTerm = "";
     IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
@@ -208,6 +200,7 @@
 
     PagingInfo pagingInfo = new PagingInfo();
 
+    <!-- Initialization and parameter setting methods -->
     protected override async Task OnInitializedAsync()
     {
         // dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
@@ -218,16 +211,18 @@
     {
         CreatePagingInfo();
     }
+
+    <!-- Method to create pagination information -->
     public void CreatePagingInfo()
     {
         pagingInfo.CurrentPage = page;
         pagingInfo.TotalItems = allDataRows.Count;
         pagingInfo.ItemsPerPage = pageSize;
 
-        // Apply search filter
+        <!-- Apply search filter -->
         var filteredData = allDataRows.Where(row =>
-      row["Name"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-      row["Location"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+            row["Name"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+            row["Location"].ToString()!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
         pagingInfo.TotalItems = filteredData.Count;
 
@@ -244,16 +239,18 @@
         Console.WriteLine($"Current Page: {page}, Total Items: {pagingInfo.TotalItems}, Page Size: {pageSize}, Skip: {skip}");
     }
 
+    <!-- Method to handle page change -->
     public void PageChanged(int newPage)
     {
         page = newPage;
         CreatePagingInfo();
-
     }
+
+    <!-- Method to handle search text change -->
     private void SearchTextChanged(ChangeEventArgs e)
     {
         searchTerm = e.Value.ToString();
         CreatePagingInfo();
-        // You can add additional logic here if needed
+        <!-- You can add additional logic here if needed -->
     }
 }

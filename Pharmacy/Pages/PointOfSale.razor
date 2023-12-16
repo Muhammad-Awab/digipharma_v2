@@ -1,6 +1,6 @@
 ﻿@page "/pointofsale/{Page:int}"
 @page "/pointofsale"
-
+@attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
 
 
@@ -8,8 +8,8 @@
 
         <div class="d-flex gap-2">
 
-            <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
         </div>
         <div class="row">
             <div class="table-responsive col-md-7">
@@ -39,7 +39,8 @@
                                     <td style="background-color:red;">@row["Stock"]</td>
 
                                 </tr>
-                            } else
+                            }
+                            else
                             {
                                 <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
                                     <td>@row["pk_MedId"]</td>
@@ -118,7 +119,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <h3>Billing Id : @BillingId</h3>
+        <h3>Billing ID : @BillingId</h3>
         <table id="myTable" class="table table-bordered ">
             <thead class="table-primary">
                 <tr>
@@ -158,7 +159,7 @@
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
-            <input class="form-control" @bind="DiscountPerc" @onclick="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage" />
+            <input class="form-control" @bind="DiscountPerc" @onclick="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
@@ -194,9 +195,9 @@
     public decimal MedicineTotalprice { get; set; }
     public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
-    public int DiscountPrice { get; set; }
+    public int DiscountPrice { get; set; } 
     public int DiscountPerc { get; set; }
-    public int POSId { get; set; } = 1;
+    public int POSId { get; set; } 
 
 
     public int BillingId { get; set; }
@@ -262,23 +263,6 @@
            };
         await DALCRUD.CRUD("SP_checkoutBilling", parameters);
     }
-
-
-    public void calculatediscountprice()
-    {
-        MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
-    }
-
-
-    public void calculatediscountpercentage()
-   {
-        int a = 100;
-        DiscountPerc = (DiscountPerc / a);
-        DiscountPerc = (int)MedicineTotalprice * DiscountPerc;
-        MedicineGrandTotal = MedicineTotalprice - DiscountPerc;
-    }
-
-
     private void OnDeleteDialogClose(bool accepted)
     {
         DeleteDialogOpen = false;
@@ -407,6 +391,28 @@
         page = newPage;
         CreatePagingInfo();
 
+    }
+
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
+    }
+
+    public void calculatediscountprice()
+    {
+        MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+    }
+
+
+    public void calculatediscountpercentage()
+    {
+        int a = 100;
+        DiscountPerc = (DiscountPerc / a);
+        DiscountPerc = (int)MedicineTotalprice * DiscountPerc;
+        MedicineGrandTotal = MedicineTotalprice - DiscountPerc;
     }
 
 

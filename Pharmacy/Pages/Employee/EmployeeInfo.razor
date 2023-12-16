@@ -1,5 +1,8 @@
 ﻿@page "/employeeinfo"
    @page "/employeeinfo/{id}"
+@attribute [Authorize(Roles = "Admin")]
+   @using Amazon.S3;
+@using Amazon.S3.Model;
 <div class="container pt-5">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-8 col-sm-10 col-12">
@@ -46,6 +49,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <InputFile OnChange="UploadImage" />
+                    </div>
                     <button @onclick="SaveEmployeeRecord" class="btn btn-primary btn-block" style="background-color: #5E2C5E; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                         <i class="fas fa-check"></i> @ButtonName
                     </button>
@@ -57,13 +63,54 @@
 </div>
 
 
-
+@if (imguploading==true)
+{
+<Pharmacy.Pages.Generics.UploadModal></Pharmacy.Pages.Generics.UploadModal>
+}
 @code {
-    public string? PageName { get; set; } = "Add Medicine Record";
+    public string? PageName { get; set; } = "Add Employee Record";
     public string? ButtonName { get; set; } = "Save";
     [Parameter]
     public string? id { get; set; }
     protected EntEmployeeRecord? model { get; set; } = new EntEmployeeRecord();
+
+
+    private bool? imguploading = false;
+    private string? imageUrl = null;
+
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        imguploading = true;
+        IBrowserFile browserFile = e.File;
+
+        using (var stream = new MemoryStream())
+        {
+            await browserFile.OpenReadStream().CopyToAsync(stream);
+
+            using (var s3Client = new AmazonS3Client("AKIAYU57GRKTZX3AJ4XA", "RaTLe6Ls1EJPPGLFRXFvBEUkzrmXPtDOXpmdLoOC", Amazon.RegionEndpoint.USEast1)) // Replace with your AWS credentials
+            {
+                var request = new PutObjectRequest
+                    {
+                        BucketName = "pkversity",
+                        Key = browserFile.Name,
+                        InputStream = stream,
+                        ContentType = browserFile.ContentType
+                    };
+
+                await s3Client.PutObjectAsync(request);
+                var urlRequest = new GetPreSignedUrlRequest
+                    {
+                        BucketName = "pkversity",
+                        Key = browserFile.Name,
+                        Expires = DateTime.Now.AddYears(1) // Adjust the expiration time as needed
+                    };
+
+                imageUrl = s3Client.GetPreSignedURL(urlRequest);
+                model.UserImg = imageUrl;
+                imguploading = false;
+            }
+        }
+    }
 
     protected async Task SaveEmployeeRecord()
     {
@@ -82,6 +129,7 @@
            new SqlParameter("@Username", model.Username),
            new SqlParameter("@Password", model.Password),
            new SqlParameter("@Role", "User"),
+           new SqlParameter("@UserImg", model.UserImg)
     };
             await DALCRUD.CRUD("SP_SaveEmployeeRecord", sp);
             nm.NavigateTo("/", forceLoad: true);
@@ -100,7 +148,8 @@
            new SqlParameter("@DateOfJoining",model.DateOfJoining.ToString()),
            new SqlParameter("@Username", model.Username),
            new SqlParameter("@Password", model.Password),
-           
+           new SqlParameter("@UserImg", model.UserImg)
+
     };
             await DALCRUD.CRUD("SP_UpdateEmployeeRecord", sp);
         }
@@ -155,9 +204,9 @@
                     WorkExperience = row["WorkExperience"].ToString(),
                     DateOfJoining = Convert.ToDateTime(row["DateOfJoining"]),
                     Address = row["Address"].ToString(),
-                            Username = row["Username"].ToString(),
-                            Password = row["Password"].ToString()
-                    
+                    Username = row["Username"].ToString(),
+                    Password = row["Password"].ToString()
+
                 };
 
 

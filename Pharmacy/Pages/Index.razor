@@ -1,9 +1,19 @@
-﻿@page "/"
+﻿ @page "/"
+@inject NavigationManager nm
 
 @code{
-
     protected override void OnInitialized()
     {
-        nm.NavigateTo("/login", true);
+        loadpage();
     }
+
+
+    public void loadpage()
+    {
+        nm.NavigateTo("/login", forceLoad: true);
+        
+    }
+
 }
+
+ 
