@@ -109,23 +109,32 @@
 <Chart Config="_config" ></Chart>
 </div>
 @code{
+    // Private field to store counts retrieved from the data access layer
     private EntCounts? CountList;
 
+    // Method to load counts from the data access layer
     private void LaodCount()
     {
-
+        // Retrieve counts based on the first element of the 'v' array
         this.CountList = DALCRUD.GetCount(int.Parse(v[0]));
-
     }
 
+    // Private field to store pie chart configuration
     private PieConfig _config;
 
+    // Override method called when the component is initialized
     protected override void OnInitialized()
     {
+        // Display a greeting
         DisplayGreeting();
+
+        // Load counts
         LaodCount();
+
+        // Check if counts are available
         if (CountList != null)
         {
+            // Initialize pie chart configuration
             _config = new PieConfig
                 {
                     Options = new PieOptions
@@ -139,45 +148,55 @@
                         AspectRatio = 1,
                         MaintainAspectRatio = false,
                         ResponsiveAnimationDuration = 200
-
                     }
                 };
 
-
+            // Add labels for the pie chart
             foreach (string color in new[] { "Medicine Records", "User Records", "Sales Record" })
             {
                 _config.Data.Labels.Add(color);
             }
 
+            // Create a dataset for the pie chart with counts and corresponding colors
             PieDataset<int> dataset = new PieDataset<int>(new[] { CountList!.MedCounts, CountList!.UserCounts, CountList!.SalesCounts })
                 {
                     BackgroundColor = new[]
-                                {
-            ColorUtil.ColorHexString(255, 99, 132), // Slice 1 aka "Red"
-            ColorUtil.ColorHexString(255, 205, 86), // Slice 2 aka "Yellow"
-            ColorUtil.ColorHexString(75, 192, 192), // Slice 3 aka "Green"
-
-        }
+                    {
+                ColorUtil.ColorHexString(255, 99, 132),   // Slice 1 aka "Red"
+                ColorUtil.ColorHexString(255, 205, 86),   // Slice 2 aka "Yellow"
+                ColorUtil.ColorHexString(75, 192, 192),   // Slice 3 aka "Green"
+            }
                 };
 
+            // Add the dataset to the pie chart configuration
             _config.Data.Datasets.Add(dataset);
         }
     }
 
-
+    // Array property representing some values
     public string[] v { get; set; } = { "1", "Guest", "Pharmacy" };
 
-
+    // Nullable string property
     public string? value1 { get; set; }
+
+    // Cascading parameter for authentication state
     [CascadingParameter]
     private Task<AuthenticationState> authenticatestate { get; set; }
-  
+
+    // Method to display a greeting based on authentication state
     private async Task DisplayGreeting()
     {
+        // Get authentication state
         var authState = await authenticatestate;
+
+        // Set the value1 property to the user's identity name
         value1 = $"{authState.User.Identity.Name}";
+
+        // Split the value1 property and update the 'v' array
         v = value1.Split(',');
+
+        // Notify the component that its state has changed
         StateHasChanged();
-    
     }
+
 }

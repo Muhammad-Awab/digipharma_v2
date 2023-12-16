@@ -1,5 +1,10 @@
 ﻿@page "/medicinerecord/{Page:int}"
 @page "/medicinerecord"
+@using OfficeOpenXml;
+@using Pharmacy.Pages
+@using ClosedXML.Excel
+
+@inject IJSRuntime JS
 
 @attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
@@ -10,8 +15,10 @@
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+            <button style="padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-left: 380px;" onclick="ExportToExcel">
+                Export
+            </button>
         </div>
         <div class="table-responsive">
             <table id="myTable" class="table table-bordered">
@@ -115,6 +122,50 @@
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
+    }
+    public void ExportToExcel()
+    {
+        var spreadsheetBytes = DataRowToBytes();
+        SaveSpreadSheetBytes(spreadsheetBytes);
+    }
+
+    private void SaveSpreadSheetBytes(byte[] bytes)
+    {
+        File.WriteAllBytes(path: "./wwwroot/exports/export.xlsx", bytes);
+    }
+
+    private byte[] DataRowToBytes()
+    {
+        using var workbook = new XLWorkbook();
+        var dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("pk_MedId"));
+        dataTable.Columns.Add(new DataColumn("Name"));
+        dataTable.Columns.Add(new DataColumn("UnitPrice"));
+        dataTable.Columns.Add(new DataColumn("Location"));
+        dataTable.Columns.Add(new DataColumn("Stock"));
+
+        allDataRows.ForEach(row =>
+        {
+            var newRow = dataTable.NewRow();
+            newRow["pk_MedId"] = row["pk_MedId"];
+            newRow["Name"] = row["Name"];
+            newRow["UnitPrice"] = row["UnitPrice"];
+            newRow["Location"] = row["Location"];
+            newRow["Stock"] = row["Stock"];
+            dataTable.Rows.Add(newRow);
+        });
+        var worksheet = workbook.Worksheets.Add(dataTable, sheetName: "Products");
+        using var memoryStream = new MemoryStream();
+        workbook.SaveAs(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    private async Task DownloadFileFromURL()
+    {
+        var fileName = "export.xlsx";
+        var fileURL = Path.Combine("https://localhost:5241", "files", fileName);
+
+        await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
     }
     protected override void OnParametersSet()
     {
