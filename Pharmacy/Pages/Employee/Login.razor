@@ -43,7 +43,8 @@
                     UserId = _Model.fk_PharmacyId.ToString(), // Use the appropriate property from your model
                     UserName = _Model.UserFullName, // Use the appropriate property from your model
                     Role = _Model.Role, // Use the appropriate property from your model
-                     PharmacyName = _Model.PharmacyName
+                     PharmacyName = _Model.PharmacyName,
+                         imageUrl=_Model.UserImg
                 });
 
             // Once the authentication state has been updated, navigate to the desired location

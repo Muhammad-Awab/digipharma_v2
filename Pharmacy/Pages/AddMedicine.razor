@@ -1,5 +1,7 @@
 ﻿@page "/add_medicine_record"
     @page "/add_medicine_record/{id}"
+@attribute [Authorize(Roles = "Admin,User")]
+
 <section class="content" style="background-color: #f0f6f9;">
     <div class="container-fluid">
 

@@ -2,6 +2,7 @@
 @inject NavigationManager nm
 @inject AuthenticationStateProvider authStateProvider
 @inherits LayoutComponentBase
+@attribute [Authorize(Roles = "User,Admin")]
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -24,9 +25,15 @@
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
             <h5 class="mx-3 mt-2">@v[1]</h5>
+             <AuthorizeView Roles="Admin,User">
+                        <Authorized>
             <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
                 <span class="oi oi-info" aria-hidden="true"></span> Logout
             </NavLink>
+                </Authorized>
+              
+
+            </AuthorizeView>
         </ul>
     </nav>
     <!-- /.navbar -->
@@ -43,7 +50,13 @@
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
+                    @if (v[4] == "User")
+                    {
+                        <img src="@v[3]" class="img-circle elevation-2" alt="User Image">
+                        
+                    }else{
+                        <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
+                    }
                 </div>
                 <div class="info">
                     <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
@@ -138,29 +151,15 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/salesrecord" class="nav-link">
-                                    <i class="nav-icon fas fa-copy"></i>
+                                <a href="salesrecord" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
                                     <p>
-                                        Sales Record
-                                        <i class="fas fa-angle-left right"></i>
-                                        <span class="badge badge-info right">6</span>
+                                        Sales Report
+                                        <span class="right badge badge-danger">New</span>
                                     </p>
                                 </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="/salesrecord" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Sales Report</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Payments Report</p>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
+                            
 
                         </Authorized>
 
@@ -236,7 +235,7 @@
         nm.NavigateTo("/login", forceLoad:true);
 
     }
-    public string[] v { get; set; } = { "Guest", "Guest","Pharmacy" };
+    public string[] v { get; set; } = { "Guest", "Guest", "Pharmacy", "Guest", "Guest", };
 
 
     public string? value1 { get; set; }
@@ -254,5 +253,6 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+
 
 }

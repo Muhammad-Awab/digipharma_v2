@@ -1,6 +1,6 @@
 ﻿@page "/pointofsale/{Page:int}"
 @page "/pointofsale"
-
+@attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
 
 

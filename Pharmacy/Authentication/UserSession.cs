@@ -7,6 +7,7 @@
         public string? UserId { get; set; }
         public string? PharmacyId { get; set; }
         public string? PharmacyName { get; set; }
+        public string? imageUrl { get; set; }
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page "/"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin,User")]
 @using ChartJs.Blazor.PieChart
 <div class="wrapper">
 

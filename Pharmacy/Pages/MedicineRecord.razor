@@ -1,7 +1,7 @@
 ﻿@page "/medicinerecord/{Page:int}"
 @page "/medicinerecord"
 
-
+@attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
     @*    <div class="card-header">
     <h3 class="card-title">DataTable with default features</h3>
@@ -38,7 +38,10 @@
                             <td><i class="fas fa-flask ml-2"></i> @row["Stock"]  </td>
                             <td>
                                 <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
+                              @if(@v[4]=="Admin"){
                                 <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                            }
+
                             </td>
 
                         </tr>
