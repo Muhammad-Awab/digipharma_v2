@@ -33,8 +33,10 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>@CountList!.MedCounts</h3>
-
+                            @if (CountList != null)
+                            {
+                                <h3>@CountList!.MedCounts</h3>
+                            }
                             <p>Medicine Record</p>
                         </div>
                         <div class="icon">
@@ -48,8 +50,10 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>@CountList!.SalesCounts</h3>
-
+                             @if (CountList != null)
+                            {
+                                <h3>@CountList!.SalesCounts</h3>
+                            }
                             <p>Sales Record</p>
                         </div>
                         <div class="icon">
@@ -63,8 +67,10 @@
                     <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>@CountList!.UserCounts</h3>
-
+                             @if (CountList != null)
+                            {
+                                <h3>@CountList!.UserCounts</h3>
+                            }
                             <p>User Registrations</p>
                         </div>
                         <div class="icon">
@@ -105,50 +111,73 @@
 @code{
     private EntCounts? CountList;
 
-        private void LaodCount()
-        {
-            this.CountList = DALCRUD.GetCount();
+    private void LaodCount()
+    {
 
-        }
+        this.CountList = DALCRUD.GetCount(int.Parse(v[0]));
+
+    }
 
     private PieConfig _config;
 
     protected override void OnInitialized()
     {
+        DisplayGreeting();
         LaodCount();
-        _config = new PieConfig
-            {
-                Options = new PieOptions
-                {
-                    Responsive = true,
-                    Title = new OptionsTitle
-                    {
-                        Display = true,
-                        Text = "Records"
-                    },
-                    AspectRatio = 1, 
-                    MaintainAspectRatio = false, 
-                    ResponsiveAnimationDuration = 200
-
-                }
-            };
-
-        foreach (string color in new[] { "Medicine Records", "User Records", "Sales Record" })
+        if (CountList != null)
         {
-            _config.Data.Labels.Add(color);
-        }
-
-        PieDataset<int> dataset = new PieDataset<int>(new[] { CountList!.MedCounts, CountList!.UserCounts, CountList!.SalesCounts})
-            {
-                BackgroundColor = new[]
+            _config = new PieConfig
+                {
+                    Options = new PieOptions
+                    {
+                        Responsive = true,
+                        Title = new OptionsTitle
                         {
+                            Display = true,
+                            Text = "Records"
+                        },
+                        AspectRatio = 1,
+                        MaintainAspectRatio = false,
+                        ResponsiveAnimationDuration = 200
+
+                    }
+                };
+
+
+            foreach (string color in new[] { "Medicine Records", "User Records", "Sales Record" })
+            {
+                _config.Data.Labels.Add(color);
+            }
+
+            PieDataset<int> dataset = new PieDataset<int>(new[] { CountList!.MedCounts, CountList!.UserCounts, CountList!.SalesCounts })
+                {
+                    BackgroundColor = new[]
+                                {
             ColorUtil.ColorHexString(255, 99, 132), // Slice 1 aka "Red"
             ColorUtil.ColorHexString(255, 205, 86), // Slice 2 aka "Yellow"
             ColorUtil.ColorHexString(75, 192, 192), // Slice 3 aka "Green"
-          
-        }
-            };
 
-        _config.Data.Datasets.Add(dataset);
+        }
+                };
+
+            _config.Data.Datasets.Add(dataset);
+        }
+    }
+
+
+    public string[] v { get; set; } = { "1", "Guest", "Pharmacy" };
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+  
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    
     }
 }

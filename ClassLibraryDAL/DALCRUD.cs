@@ -127,7 +127,7 @@ namespace ClassLibraryDAL
 
             return ee;
         }
-        public static EntCounts GetCount()
+        public static EntCounts GetCount(int pharmacyId)
         {
             EntCounts ee = new EntCounts();
             try
@@ -136,7 +136,7 @@ namespace ClassLibraryDAL
                 SqlConnection con = DBHelper.GetConnection();
                 con.Open();
                 SqlCommand cmd = new SqlCommand("SP_GetTableCounts", con);
-
+                cmd.Parameters.AddWithValue("@fk_PharmacyId", pharmacyId);
                 cmd.CommandType = CommandType.StoredProcedure;
                 SqlDataReader sdr = cmd.ExecuteReader();
 
