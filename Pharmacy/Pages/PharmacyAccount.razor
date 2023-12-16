@@ -1,0 +1,116 @@
+﻿@page "/account/{id}"
+
+
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center pt-5">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header text-center">
+                        <h3>Pharmacy Account</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form>
+                        <div class="card-body no form-control-border">
+
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">PharmacyName</label>
+                                <input type="text" @bind="model!.PharmacyName" class="form-control" placeholder="Enter Username">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">PharmacyAddress</label>
+                                <input type="text" class="form-control" @bind="model.PharmacyAddress" placeholder="Enter Password">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">City</label>
+                                <input type="text" class="form-control" @bind="model.City" placeholder="Enter Password">
+                            </div>
+
+
+
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button @onclick="SavePharmacyAccount" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@code {
+    [Parameter] public string? id { get; set; }
+
+    protected EntRegistration? model { get; set; } = new EntRegistration();
+
+    protected async Task SavePharmacyAccount()
+    {
+        // Check if ID is null (indicating a new record)
+       
+            // Set parameters for updating existing record
+            SqlParameter[] sp =
+            {
+                new SqlParameter("@pk_PharmacyId",id),
+                new SqlParameter("@PharmacyName",model!.PharmacyName),
+                new SqlParameter("@PharmacyAddress", model.PharmacyAddress),
+                new SqlParameter("@City", model.City),
+                
+    };
+
+            // Call CRUD method to update existing record
+        await DALCRUD.CRUD("UpdatePharmacyAccount", sp);
+        
+    }
+
+    DataTable dt = new DataTable();
+    protected override async Task OnParametersSetAsync()
+    {
+        // Check if ID is not null (indicating an update)
+        if (id != null)
+        {
+            // Set page and button names for update
+           
+            // Set parameters for getting medicine record by ID
+            SqlParameter[] sp =
+            {
+                new SqlParameter("@pk_PharmacyId",id)
+    };
+
+            // Read data from database and store in DataTable
+            dt = await DALCRUD.ReadDataSpecific("SP_GetPharmacyAccount", sp);
+
+            // Convert DataTable data into array and update the model
+            ConvertDataIntoArray();
+        }
+    }
+    private void ConvertDataIntoArray()
+    {
+        foreach (DataRow row in dt.Rows)
+        {
+            model = new EntRegistration
+                {
+                    pk_pharmacyId = row["pk_pharmacyId"].ToString(),
+                    PharmacyName = row["PharmacyName"].ToString(),
+                    PharmacyAddress = row["PharmacyAddress"].ToString(),
+                    City = row["PharmacyName"].ToString(),
+                   
+                   
+                };
+        }
+    }
+}
