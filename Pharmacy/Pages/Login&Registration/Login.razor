@@ -4,23 +4,162 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager nm
 
+@* <style>
+    .mb-3 {
+        position: relative;
+    }
 
-<div class=" d-flex align-items-center justify-content-center mt-5">
-    <div class="card gap-3 Login-Card" style="width: 28rem;">
-        <h3 class="text-center">Login</h3>
+    .icon {
+        position: absolute;
+        top: 10px;
+        left: auto;
+        right: 10px;
+    }
+</style>
 
-        <input type="text" @bind="Username" class="form-control" placeholder="Enter Username">
-        <input type="text" class="form-control" @bind="Password" placeholder="Enter Password">
-        <button @onclick="Authenticate" class="btn btn-primary">Login</button>
-        @if (check)
-        {
-            <p class="text-danger text-center">@Message</p>
-        }
+
+<div class="container ">
+    <div class="bg-image">
+    <img src="/dist/img/Pharmacy.jpeg" width="100%" height="100%"/>
+
     </div>
 </div>
 
 
+<div class="container">
+    <div class="row mt-5" style="padding-top:120px">
+        <div class="col-lg-7 offset-lg-2 pt-4 pb-4 border mt-5 col-md-7 col-sm-12">
+            <div class="mb-3 text-center" style="color:darkblue">
+                <h3>LOGIN</h3>
+            </div>
+            <div class="mb-3">
+                <i class="fa fa-user fa icon"> </i>
+                <input @bind="Username" class="form-control" placeholder="User Name" />
+            </div>
+            <div class="mb-3">
+                <i class="fa fa-eye fa icon"> </i>
+                <input @bind="Password" type="password" class="form-control" placeholder="Password" />
+            </div>
+            <div class="mb-3 d-grid gap-2">
+                <button @onclick="Authenticate" class="btn btn-primary" style="background-color:darkblue">Login</button>
+                @if (check)
+                {
+                    <p class="text-danger text-center">@Message</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+ *@
 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .background-image {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8); /* Adjust the alpha (fourth parameter) to set the transparency */
+            border-radius: 1rem;
+        }
+
+        .background-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url('dist/img/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(15px);
+            z-index: -1; /* Place it behind the other content */
+        }
+
+        .custom-card-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
+        }
+    </style>
+    <title>Blurred Background Image</title>
+</head>
+
+<body>
+
+    <section class="vh-100 background-image">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card " style="border-radius: 1rem;">
+                        <div class="row g-0">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <img src="/dist/img/Pharmacy.jpeg"
+                                     alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                                <div class="card-body p-4 p-lg-5 text-black">
+                                    <form>
+
+                                        <form>
+
+                                            <div class="d-flex align-items-center mb-3 pb-1">
+                                                <i class="fas fa-cubes fa-2x me-3"></i>
+                                                <div class="d-flex justify-content-center align-content-center">
+                                                    <span class="h1 fw-bold mb-0">DIGIPHARMA</span>
+                                                </div>
+                                            </div>
+
+                                            <h3 class="fw-normal mb-3 pb-3 justify-content-center align-content-center " style="letter-spacing: 1px;"><b>Let's Ease the humanity!</b></h3>
+
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="form2Example17">Username</label>
+                                                <input type="email" @bind="Username" id="form2Example17" placeholder="Enter Email" class="form-control form-control-lg" />
+
+                                            </div>
+
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="form2Example27">Password</label>
+                                                <input type="password" @bind="Password" id="form2Example27" placeholder="Enter Password" class="form-control form-control-lg" />
+
+                                            </div>
+
+
+                                            <div class="d-flex justify-content-center align-content-center">
+                                                <a><h5 style="color:rgb(255,100,100)">Forgot password?</h5></a>
+                                            </div>
+
+
+                                            <div class="pt-1 mb-4 mt-2">
+                                                <div class="d-flex justify-content-center align-content-center">
+                                                    <button style="width: 166px;height: 35px;" type="button" class="btn btn-danger" @onclick="Authenticate">
+                                                        <h6>LOGIN</h6>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+
+                                        </form>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
 
 @code {
 
@@ -42,12 +181,11 @@
                 {
                     UserId = _Model.pk_pharmacyId, // Use the appropriate property from your model
                     UserName = _Model.Username, // Use the appropriate property from your model
-                    Role = _Model.Role, // Use the appropriate property from your model
-                    PharmacyName=_Model.PharmacyName
+                    Role = _Model.Role // Use the appropriate property from your model
                 });
 
             // Once the authentication state has been updated, navigate to the desired location
-            nm.NavigateTo("/", forceLoad: true);
+            nm.NavigateTo("/aboutus", forceLoad: true);
         }
         else
         {
@@ -55,6 +193,6 @@
             Message = "Invalid UserName and Password ! ";
         }
     }
-
-
 }
+
+

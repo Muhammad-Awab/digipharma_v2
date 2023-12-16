@@ -1,4 +1,4 @@
-﻿﻿ 
+﻿﻿
 @inject NavigationManager nm
 @inject AuthenticationStateProvider authStateProvider
 @inherits LayoutComponentBase
@@ -22,8 +22,10 @@
         </ul>
 
         <!-- Right navbar links -->
+
         <ul class="navbar-nav ml-auto">
-            <h5 class="mx-3 mt-2">@v[1]</h5>
+            <h5 class="mx-3 mt-2"> rehan</h5>
+
             <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
                 <span class="oi oi-info" aria-hidden="true"></span> Logout
             </NavLink>
@@ -35,7 +37,8 @@
         <!-- Brand Logo -->
         <a href="index3.html" class="brand-link" style="text-decoration:none;">
             <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">@v[2]</span>
+            <span class="brand-text font-weight-light"></span>
+
         </a>
 
         <!-- Sidebar -->
@@ -46,9 +49,9 @@
                     <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
+                    <a href="#" style="text-decoration:none;" class="d-block"></a>
                 </div>
-               
+
             </div>
 
             <!-- SidebarSearch Form -->
@@ -71,7 +74,7 @@
                     <AuthorizeView Roles="Admin,User">
                         <Authorized>
                             <li class="nav-item">
-                                <a href="/" class="nav-link">
+                                <a href="/dashboard" class="nav-link">
                                     <i class="nav-icon fas fa-th"></i>
                                     <p>
                                         DashBoard
@@ -233,10 +236,10 @@
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(null);
-        nm.NavigateTo("/login", forceLoad:true);
+        nm.NavigateTo("/login", forceLoad: true);
 
     }
-    public string[] v { get; set; } = { "Guest", "Guest","Pharmacy" };
+    public string[] v { get; set; } = { "Guest", "Guest", "Pharmacy" };
 
 
     public string? value1 { get; set; }

@@ -1,19 +1,9 @@
-﻿@* 
-@inject NavigationManager nm
+﻿@page "/"
 
 @code{
+
     protected override void OnInitialized()
     {
-        loadpage();
+        nm.NavigateTo("/login", true);
     }
-
-
-    public void loadpage()
-    {
-        nm.NavigateTo("/Identity/Account/Login", forceLoad: true);
-        
-    }
-
 }
-
- *@
