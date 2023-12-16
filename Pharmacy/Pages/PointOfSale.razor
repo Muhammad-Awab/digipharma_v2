@@ -8,8 +8,8 @@
 
         <div class="d-flex gap-2">
 
-            <input class="form-control w-50" type="text" @bind="searchTerm" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
-            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
         </div>
         <div class="row">
             <div class="table-responsive col-md-7">
@@ -29,14 +29,29 @@
 
                         @foreach (DataRow row in pagedData)
                         {
-                            <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
-                                <td>@row["pk_MedId"]</td>
-                                <td>@row["Name"]</td>
-                                <td>@row["UnitPrice"]</td>
-                                <td>@row["Location"]</td>
-                                <td>@row["Stock"]</td>
+                            @if ((int)@row["Stock"] == 0)
+                            {
+                                <tr disabled @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                    <td style="background-color:mediumvioletred;">@row["pk_MedId"]</td>
+                                    <td style="background-color:orangered;">@row["Name"]</td>
+                                    <td style="background-color:red;">@row["UnitPrice"]</td>
+                                    <td style="background-color:red;">@row["Location"]</td>
+                                    <td style="background-color:red;">@row["Stock"]</td>
 
-                            </tr>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                    <td>@row["pk_MedId"]</td>
+                                    <td>@row["Name"]</td>
+                                    <td>@row["UnitPrice"]</td>
+                                    <td>@row["Location"]</td>
+                                    <td>@row["Stock"]</td>
+
+                                </tr>
+                            }
+
                         }
                     </tbody>
                     <tfoot>
@@ -104,7 +119,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <h3>@BillingId</h3>
+        <h3>Billing ID : @BillingId</h3>
         <table id="myTable" class="table table-bordered ">
             <thead class="table-primary">
                 <tr>
@@ -140,11 +155,11 @@
 
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Discount Price (Rs)</label>
-            <input type="text" class="form-control" @bind="DiscountPrice" id="exampleFormControlInput1" placeholder="Price ">
+            <input type="text" class="form-control" @bind="DiscountPrice" @onclick="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
-            <input class="form-control" @bind="DiscountPerc" id="exampleFormControlTextarea1" placeholder="Percentage" />
+            <input class="form-control" @bind="DiscountPerc" @onclick="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
@@ -153,7 +168,7 @@
         <div class="mb-3">
             <div class="d-flex gap-5">
                 <p class="fs-3 fw-bold">Grand Total :</p>
-                <p class="fs-3 fw-bold ml-3">@MedicineTotalprice</p>
+                <p class="fs-3 fw-bold ml-3">@MedicineGrandTotal</p>
             </div>
 
         </div>
@@ -178,11 +193,11 @@
     public string? Quantity { get; set; }
     public decimal Medicineprice { get; set; }
     public decimal MedicineTotalprice { get; set; }
-    public decimal MedicineGrandTotal { get; set; } = 100;
+    public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
-    public int DiscountPrice { get; set; } = 25;
-    public int DiscountPerc { get; set; } = 3;
-    public int POSId { get; set; } = 1;
+    public int DiscountPrice { get; set; } 
+    public int DiscountPerc { get; set; }
+    public int POSId { get; set; } 
 
 
     public int BillingId { get; set; }
@@ -376,6 +391,28 @@
         page = newPage;
         CreatePagingInfo();
 
+    }
+
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
+    }
+
+    public void calculatediscountprice()
+    {
+        MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+    }
+
+
+    public void calculatediscountpercentage()
+    {
+        int a = 100;
+        DiscountPerc = (DiscountPerc / a);
+        DiscountPerc = (int)MedicineTotalprice * DiscountPerc;
+        MedicineGrandTotal = MedicineTotalprice - DiscountPerc;
     }
 
 
