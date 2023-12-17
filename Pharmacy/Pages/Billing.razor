@@ -134,7 +134,7 @@
                     </thead>
                     <tbody>
                         <!-- Loop through rows in DataTable and display data -->
-                        @foreach (DataRow row in dt.Rows)
+                        @foreach (DataRow row in pagedData)
                         {
                             <tr>
                                 <td>@row["pk_MedId"]</td>
@@ -187,6 +187,8 @@
     };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        CreatePagingInfo();
         StateHasChanged();
     }
 
