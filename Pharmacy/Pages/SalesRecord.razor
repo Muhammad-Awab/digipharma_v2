@@ -1,7 +1,7 @@
 ﻿@page "/salesrecord"
 @attribute [Authorize(Roles = "Admin,User")]
 <PageTitle>Sales Record</PageTitle>
-<h1 class="text-center"> Sales Record</h1>
+
 
 <div class="container">
     <div class="row">
@@ -23,13 +23,12 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card mt-2">
     <div class="card-header">
         <h3 class="card-title">Sales Record</h3>
     </div>
     <!-- /.card-header -->
-    <div class="card-body">
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+    <div class="card-body table-responsive">
         <table id="myTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
