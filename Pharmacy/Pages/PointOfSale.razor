@@ -1,6 +1,8 @@
 ﻿@page "/pointofsale/{Page:int}"
 @page "/pointofsale"
 @attribute [Authorize(Roles = "Admin,User")]
+@inject ClipboardService ClipboardService
+
 <div class="card">
 
 
@@ -8,7 +10,7 @@
 
         <div class="d-flex gap-2">
 
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <input tabindex="0" class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
             <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
         </div>
         <div class="row">
@@ -31,7 +33,7 @@
                         {
                             @if ((int)@row["Stock"] == 0)
                             {
-                                <tr disabled @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                <tr tabindex="1" disabled @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
                                     <td style="background-color:mediumvioletred;">@row["pk_MedId"]</td>
                                     <td style="background-color:orangered;">@row["Name"]</td>
                                     <td style="background-color:red;">@row["UnitPrice"]</td>
@@ -42,7 +44,7 @@
                             }
                             else
                             {
-                                <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                <tr tabindex="2" @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
                                     <td>@row["pk_MedId"]</td>
                                     <td>@row["Name"]</td>
                                     <td>@row["UnitPrice"]</td>
@@ -98,7 +100,7 @@
 
 
 
-                        <button class="btn btn-success w-100 mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
+                        <button tabindex="4" class="btn btn-success w-100 mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
                     </tfoot>
                 </table>
 
@@ -173,11 +175,25 @@
 
         </div>
 
-        <button @onclick="Checkout" data-bs-dismiss="offcanvas" class="btn btn-primary"> Sell</button>
+        <button @onclick="Checkout" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn btn-primary"> Sell</button>
 
     </div>
 </div>
 
+
+<div class="toast-container position-fixed top-0 end-0 p-3 " data-bs-delay="10000" aria-live="polite">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="...">
+            <strong class="me-auto">DigiPharma</strong>
+            <small>Just Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Billing Id @BillingId is Copied Successfully ! 
+        </div>
+    </div>
+</div>
 
 
 
@@ -195,9 +211,9 @@
     public decimal MedicineTotalprice { get; set; }
     public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
-    public int DiscountPrice { get; set; } 
+    public int DiscountPrice { get; set; }
     public int DiscountPerc { get; set; }
-    public int POSId { get; set; } 
+    public int POSId { get; set; }
 
 
     public int BillingId { get; set; }
@@ -230,7 +246,7 @@
 
         AddPointOfSale(BillingId, MedicineTotalprice);
 
-
+        CopyToClipboard();
 
 
         modelList.Clear();
@@ -245,7 +261,40 @@
         await OnInitializedAsync();
 
 
+
     }
+
+
+    string text;
+
+    async Task ReadFromClipboard()
+    {
+        // Reading from the clipboard may be denied, so you must handle the exception
+        try
+        {
+            text = await ClipboardService.ReadTextAsync();
+        }
+        catch
+        {
+            Console.WriteLine("Cannot read from clipboard");
+        }
+    }
+
+    async Task CopyToClipboard()
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await ClipboardService.WriteTextAsync(BillingId.ToString());
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
+    }
+
+
+
 
 
     public async Task AddPointOfSale(int BillingId, decimal MedicineTotalprice)
@@ -434,4 +483,22 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+
 }
+
+
+
+
+
+<script>
+
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+
+    if (toastTrigger) {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastTrigger.addEventListener('click', () => {
+            toastBootstrap.show()
+        })
+    }
+</script>
