@@ -16,7 +16,7 @@
         <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
             <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
-            <button style="padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-left: 380px;" onclick="ExportToExcel">
+            <button style=" font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;" @onclick="ExportToExcel">
                 Export
             </button>
         </div>
@@ -123,15 +123,18 @@
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
-    public void ExportToExcel()
+private async Task ExportToExcel()
     {
         var spreadsheetBytes = DataRowToBytes();
         SaveSpreadSheetBytes(spreadsheetBytes);
+
+        // Trigger the download using JavaScript
+        await JS.InvokeVoidAsync("downloadFile", "/export.xlsx");
     }
 
     private void SaveSpreadSheetBytes(byte[] bytes)
     {
-        File.WriteAllBytes(path: "./wwwroot/exports/export.xlsx", bytes);
+        File.WriteAllBytes(path: "./wwwroot/export.xlsx", bytes);
     }
 
     private byte[] DataRowToBytes()
@@ -233,4 +236,18 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+    private string downloadScript = @"
+        window.downloadFile = function (filePath) {
+            var anchor = document.createElement('a');
+            anchor.href = filePath;
+            anchor.download = filePath.substring(filePath.lastIndexOf('/') + 1);
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+        };
+    ";
 }
+
+        <script>
+    @((MarkupString)downloadScript)
+</script>
