@@ -44,13 +44,13 @@
             <!-- DiscountPerc and Phone inputs -->
             <tr>
                 <td>
-                    <strong>DiscountPerc</strong>
+                    <strong>Grand Total</strong>
                 </td>
                 <td>
                     <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" class="form-control" required></input>
                 </td>
                 <td>
-                    <strong>Phone</strong>
+                    <strong>Discount Perc</strong>
                 </td>
                 <td>
                     <input name="Phone" @bind="_ModelBilling.DiscountPerc" class="form-control" required></input>
@@ -117,6 +117,7 @@
             <!-- Search input and button -->
             <div class="d-flex gap-2">
                 <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+
                 <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
             </div>
             <!-- Table to display data -->
@@ -142,6 +143,7 @@
                                 <td>@row["UnitPrice"]</td>
                                 <td>@row["Location"]</td>
                                 <td>@row["Quantity"]</td>
+                                <td>  <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString(),(int)@row["Quantity"],(decimal)@row["UnitPrice"]))"><i class="fa-solid fa-trash"></i></a></td>
                             </tr>
                         }
                     </tbody>
@@ -159,10 +161,81 @@
     </div>
 </section>
 
+
+
+
+
+@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}
+
+
+
 @code {
     <!-- C# code block for the component -->
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
     DataTable dt = new DataTable();
+    public int fk_PharmacyId { get; set; }
+    public int Quantityy {get; set ;}
+    public decimal UnitPricee {get;  set;}
+
+    // Array for user roles
+    public string[] v { get; set; } = { "Guest", "Guest" };
+
+    // Property for authenticated user's name
+    public string? value1 { get; set; }
+
+    // Cascading parameter for authentication state
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+
+    public bool DeleteDialogOpen { get; set; }
+    public string? ID { get; set; }
+
+
+    private async Task OnDeleteDialogClose(bool accepted)
+    {
+        DeleteDialogOpen = false;
+        await OnInitializedAsync();
+        StateHasChanged();
+
+    }
+    private void OpenDeleteDialog(string? Id, int Quantity, decimal UnitPrice)
+    {
+        DeleteDialogOpen = true;
+        ID = Id;
+        StateHasChanged();
+        Quantityy = Quantity;
+        UnitPricee = UnitPrice;
+
+    }
+    private async Task OnDelete(string id)
+    {
+        SqlParameter[] sp =
+           {
+             new SqlParameter("@id",int.Parse(id)),
+
+    };
+        await DALCRUD.CRUD("SP_DeleteSalesRecord", sp);
+        _ModelBilling.TotalPrice = UnitPricee * Quantityy;
+        _ModelBilling.GrandTotal = _ModelBilling.GrandTotal - _ModelBilling.TotalPrice;
+        StateHasChanged();
+       
+        DeleteDialogOpen = false;
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 
     <!-- Form submission method -->
     private void SubmitForm()
@@ -181,14 +254,31 @@
     <!-- Method to get medicine data asynchronously -->
     public async void GetMedicineData(int fk_BillingId)
     {
+
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+
+
+
         SqlParameter[] sp =
         {
-            new SqlParameter("@fk_BillingId",fk_BillingId)
+            new SqlParameter("@fk_BillingId",fk_BillingId),
+            new SqlParameter("@fk_PharmacyId",v[0])
     };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
         StateHasChanged();
     }
+
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
+    }
+
 
     <!-- Variables and methods for pagination -->
     List<DataRow> allDataRows = new List<DataRow>();
@@ -247,10 +337,4 @@
     }
 
     <!-- Method to handle search text change -->
-    private void SearchTextChanged(ChangeEventArgs e)
-    {
-        searchTerm = e.Value.ToString();
-        CreatePagingInfo();
-        <!-- You can add additional logic here if needed -->
-    }
 }
