@@ -3,6 +3,45 @@
 @using OfficeOpenXml;
 @using Pharmacy.Pages
 @using ClosedXML.Excel
+@using IronXL;
+@using System.Data.SqlClient;
+@using System.Data;
+
+<PageTitle>Excel File Viewer</PageTitle>
+
+<h1>Open Excel File to View</h1>
+
+<InputFile OnChange="@OpenExcelFileFromDisk" />
+
+@if (displayDataTable != null && displayDataTable.Rows.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                @foreach (DataColumn column in displayDataTable.Columns)
+                {
+                    <th>
+                        @column.ColumnName
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in displayDataTable.Rows)
+            {
+                <tr>
+                    @foreach (DataColumn column in displayDataTable.Columns)
+                    {
+                        <td>
+                            @row[column.ColumnName].ToString()
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 
 @inject IJSRuntime JS
 
@@ -118,12 +157,12 @@
            {
 
                 new SqlParameter("@pharmacyId",v[0]),
-           };
+       };
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
-private async Task ExportToExcel()
+    private async Task ExportToExcel()
     {
         var spreadsheetBytes = DataRowToBytes();
         SaveSpreadSheetBytes(spreadsheetBytes);
@@ -146,6 +185,10 @@ private async Task ExportToExcel()
         dataTable.Columns.Add(new DataColumn("UnitPrice"));
         dataTable.Columns.Add(new DataColumn("Location"));
         dataTable.Columns.Add(new DataColumn("Stock"));
+        dataTable.Columns.Add(new DataColumn("Manufacturer"));
+        dataTable.Columns.Add(new DataColumn("Supplier"));
+        dataTable.Columns.Add(new DataColumn("MfgDate"));
+        dataTable.Columns.Add(new DataColumn("ExpDate"));
 
         allDataRows.ForEach(row =>
         {
@@ -155,6 +198,10 @@ private async Task ExportToExcel()
             newRow["UnitPrice"] = row["UnitPrice"];
             newRow["Location"] = row["Location"];
             newRow["Stock"] = row["Stock"];
+            newRow["Manufacturer"] = row["Manufacturer"];
+            newRow["Supplier"] = row["Supplier"];
+            newRow["MfgDate"] = row["MfgDate"];
+            newRow["ExpDate"] = row["ExpDate"];
             dataTable.Rows.Add(newRow);
         });
         var worksheet = workbook.Worksheets.Add(dataTable, sheetName: "Products");
@@ -197,7 +244,7 @@ private async Task ExportToExcel()
         {
             pagedData = filteredData.Skip(skip).Take(pageSize);
         }
-       
+
     }
 
     public void PageChanged(int newPage)
@@ -246,6 +293,120 @@ private async Task ExportToExcel()
             document.body.removeChild(anchor);
         };
     ";
+
+
+
+
+
+
+    protected DataTable? displayDataTable { get; set; } = new DataTable();
+    private EntMedicineRecord modelimport{ get; set; } = new EntMedicineRecord();
+    async Task OpenExcelFileFromDisk(InputFileChangeEventArgs e)
+    {
+        IronXL.License.LicenseKey = "PASTE TRIAL OR LICENSE KEY";
+
+        MemoryStream ms = new MemoryStream();
+
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        ms.Position = 0;
+
+        WorkBook loadedWorkBook = WorkBook.FromStream(ms);
+        WorkSheet loadedWorkSheet = loadedWorkBook.DefaultWorkSheet;
+
+        displayDataTable = new DataTable();
+
+        RangeRow headerRow = loadedWorkSheet.GetRow(0);
+        for (int col = 0; col < loadedWorkSheet.ColumnCount; col++)
+        {
+            displayDataTable.Columns.Add(headerRow.ElementAt(col).ToString());
+        }
+
+        for (int row = 1; row < loadedWorkSheet.RowCount; row++)
+        {
+            IEnumerable<string> excelRow = loadedWorkSheet.GetRow(row).ToArray().Select(c => c.ToString());
+            displayDataTable.Rows.Add(excelRow.ToArray());
+        }
+        foreach (DataRow row in displayDataTable.Rows)
+        {
+            try
+            {
+                modelimport = new EntMedicineRecord
+                    {
+
+                        Name = row["Name"]?.ToString() ?? string.Empty,
+                        UnitPrice = float.Parse(row["UnitPrice"].ToString()),
+                        Location = row["Location"]?.ToString() ?? string.Empty,
+                        Stock = Convert.ToInt32(row["Stock"] != DBNull.Value ? row["Stock"] : 0),
+                        Manufacturer = row["Manufacturer"]?.ToString() ?? string.Empty,
+                        Supplier = row["Supplier"]?.ToString() ?? string.Empty,
+                        MfgDate = DateTime.Parse(row["MfgDate"]?.ToString()),
+                        ExpDate = DateTime.Parse(row["ExpDate"]?.ToString()),
+
+
+                    };
+
+                await SaveImportData(modelimport);
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception
+                Console.WriteLine($"Error processing row: {ex.Message}");
+            }
+        }
+
+
+    }
+    private async Task ConvertDataIntoArray()
+    {
+        foreach (DataRow row in displayDataTable.Rows)
+        {
+            modelimport = new EntMedicineRecord
+                {
+                    Name = row["Name"]?.ToString() ?? string.Empty,
+                    UnitPrice = float.Parse(row["UnitPrice"].ToString()),
+                    Location = row["Location"]?.ToString() ?? string.Empty,
+                    Stock = Convert.ToInt32(row["Stock"] != DBNull.Value ? row["Stock"] : 0),
+                    Manufacturer = row["Manufacturer"]?.ToString() ?? string.Empty,
+                    Supplier = row["Supplier"]?.ToString() ?? string.Empty,
+                    MfgDate = DateTime.Parse(row["MfgDate"]?.ToString()),
+                    ExpDate = DateTime.Parse(row["ExpDate"]?.ToString()),
+
+
+
+                };
+
+            await SaveImportData(modelimport);
+        }
+
+
+    }
+
+
+
+    private async Task SaveImportData(EntMedicineRecord model)
+    {
+        int pharmacyId = Convert.ToInt32(v[0]);
+
+        // Set parameters for new record
+        SqlParameter[] sp =
+        {
+                 new SqlParameter("@pharmacyId",pharmacyId),
+                new SqlParameter("@EntererId",2),
+                new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@UnitPrice", model.UnitPrice),
+                new SqlParameter("@Location", model.Location),
+                new SqlParameter("@Stock", model.Stock),
+                new SqlParameter("@Manufacturer", model.Manufacturer),
+                new SqlParameter("@Supplier", model.Supplier),
+                new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+                new SqlParameter("@ExpDate", model.ExpDate.ToString())
+               
+    };
+
+        // Call CRUD method to save new record
+        await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+    }
+
 }
 
         <script>
