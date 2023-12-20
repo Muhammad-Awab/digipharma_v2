@@ -16,7 +16,7 @@
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="/dashboard" class="nav-link">Home</a>
             </li>
-           
+
         </ul>
 
         <!-- Right navbar links -->
@@ -59,7 +59,7 @@
                     }
                 </div>
                 <div class="info">
-                    <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
+                    <a href="/dashboard" style="text-decoration:none;" class="d-block">@v[1]</a>
                 </div>
 
             </div>
@@ -150,6 +150,15 @@
                                     </p>
                                 </a>
                             </li>
+
+
+
+                        </Authorized>
+
+                    </AuthorizeView>
+
+                    <AuthorizeView Roles="Admin">
+                        <Authorized>
                             <li class="nav-item">
                                 <a href="salesrecord" class="nav-link">
                                     <i class="nav-icon fas fa-th"></i>
@@ -159,14 +168,6 @@
                                     </p>
                                 </a>
                             </li>
-
-
-                        </Authorized>
-
-                    </AuthorizeView>
-
-                    <AuthorizeView Roles="Admin">
-                        <Authorized>
                             <li class="nav-item menu-open">
                                 <a href="/employee" class="nav-link active">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -192,6 +193,8 @@
 
                                 </ul>
                             </li>
+
+
                         </Authorized>
 
                     </AuthorizeView>
