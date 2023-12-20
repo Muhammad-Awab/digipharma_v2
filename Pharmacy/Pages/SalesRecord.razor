@@ -15,8 +15,8 @@
             <label for="birthday">EndDate:</label>
             <input type="date" @bind="model.To" class="form-control" />
         </div>
-        <div class="col-md-2" >
-            
+        <div class="col-md-2">
+
 
             <button class="btn btn-primary " style="margin-top:2rem;" @onclick="GetSalesRecord">Get Record</button>
         </div>
@@ -32,39 +32,64 @@
         <table id="myTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    
+
                     <th>TotalPrice</th>
                     <th>DiscountPrice </th>
                     <th>DiscountPercentage</th>
                     <th>GrandTotal</th>
-                    
+
                 </tr>
+
             </thead>
             <tbody>
 
                 @foreach (DataRow row in dt.Rows)
                 {
                     <tr>
-                        
-                       
+
                         <td>@row["TotalPrice"]</td>
                         <td>@row["Discount"]</td>
                         <td>@row["DiscountPerc"]</td>
                         <td>@row["GrandTotal"]</td>
-                      
-                      
+
+
                     </tr>
+
                 }
+
             </tbody>
-           
+            <tfoot>
+                <tr>
+                    <td class="fw-bold fs-4"> Total Sale : </td>
+                    <td class="fw-bold fs-4">
+                        @TotalGrandTotal
+                    </td>
+                    <td class="fw-bold fs-4">
+                        Total Profit :
+                    </td>
+                    <td class="fw-bold fs-4">
+                        @TotalGrandTotal
+                    </td>
+                </tr>
+
+
+            </tfoot>
+
+
         </table>
     </div>
     <!-- /.card-body -->
 </div>
-@code{
+@code {
+    private EntSalesRecord modelimport { get; set; } = new EntSalesRecord();
+
+    public int TotalGrandTotal { get; set; } = 0;
     EntPointOfSale model = new EntPointOfSale();
     DataTable dt = new DataTable();
-    protected  async Task GetSalesRecord()
+    List<DataRow> allDataRows = new List<DataRow>();
+    protected List<EntSalesRecord> activitiesList = new();
+
+    protected async Task GetSalesRecord()
     {
         SqlParameter[] sp =
         {
@@ -75,6 +100,27 @@
 
     };
         dt = await DALCRUD.ReadDataSpecific("SP_GetSalesRecord", sp);
+
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+
+        foreach (DataRow dataRow in allDataRows)
+        {
+            EntSalesRecord activity = new EntSalesRecord
+                {
+                    GrandTotal = Convert.ToInt32(dataRow["GrandTotal"]),
+
+                };
+
+            activitiesList.Add(activity);
+        }
+
+
+
+        foreach (var emp in activitiesList)
+        {
+            TotalGrandTotal = TotalGrandTotal + emp.GrandTotal;
+        }
+
     }
 
     public string[] v { get; set; } = { "Guest", "Guest" };

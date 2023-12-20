@@ -12,7 +12,7 @@ namespace ClassLibraryEnt
         public int fk_BillingId { get; set; }
         public float DiscountPrice { get; set; }
         public string? DiscountPercentage { get; set; }
-        public string? GrandTotal { get; set; }
+        public int GrandTotal { get; set; }
         public DateTime CurrentDate { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
