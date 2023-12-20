@@ -118,7 +118,7 @@
             <div class="d-flex gap-2">
                 <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
 
-                <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+                @* <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
             </div>
             <!-- Table to display data -->
             <div class="table-responsive mt-3">
@@ -245,9 +245,13 @@
     }
 
     <!-- Method to get initial data -->
-    public void GetInitialData()
+    public async void GetInitialData()
     {
-        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+
+        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId,int.Parse(v[0]));
         GetMedicineData(_ModelBilling.pk_BillingId);
     }
 
