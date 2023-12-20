@@ -65,9 +65,11 @@
 
 @if (imguploading==true)
 {
-<Pharmacy.Pages.Generics.UploadModal></Pharmacy.Pages.Generics.UploadModal>
+    <Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImageUploadMessage" ImageUploadTitle="@ImageUploadTitle"></Pharmacy.Pages.Generics.UploadModal>
 }
 @code {
+    public string? ImageUploadTitle { get; set; } = "Image Uploading......";
+    public string? ImageUploadMessage { get; set; } = "Please Wait for Upload an Image";
     public string? PageName { get; set; } = "Add Employee Record";
     public string? ButtonName { get; set; } = "Save";
     [Parameter]

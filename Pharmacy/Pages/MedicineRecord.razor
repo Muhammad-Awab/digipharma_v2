@@ -13,34 +13,6 @@
 
 <InputFile OnChange="@OpenExcelFileFromDisk" />
 
-@if (displayDataTable != null && displayDataTable.Rows.Count > 0)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                @foreach (DataColumn column in displayDataTable.Columns)
-                {
-                    <th>
-                        @column.ColumnName
-                    </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DataRow row in displayDataTable.Rows)
-            {
-                <tr>
-                    @foreach (DataColumn column in displayDataTable.Columns)
-                    {
-                        <td>
-                            @row[column.ColumnName].ToString()
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-}
 
 
 @inject IJSRuntime JS
@@ -95,11 +67,11 @@
                 </tbody>
                 <tfoot>
 
-                   @*  <tr>
-                        <td colspan="10">
+                    <tr>
+                        @* <td colspan="10">
                             <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
-                        </td>
-                    </tr> *@
+                        </td> *@
+                    </tr> 
                 </tfoot>
             </table>
         </div>
@@ -112,7 +84,13 @@
 @if (DeleteDialogOpen) {
     <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
 }
+@if(ImportingModalOpen){
+<Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImportingTitle" ImageUploadTitle="@ImportingMessage"></Pharmacy.Pages.Generics.UploadModal>
+}
 @code {
+    private bool ImportingModalOpen { get; set; } = false;
+    private string? ImportingTitle { get; set; } = "Importing......";
+    private string? ImportingMessage { get; set; } = "Importing data from excel file";
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
     public bool DeleteDialogOpen { get; set; }
     public string? ID { get; set; }
@@ -147,7 +125,7 @@
     IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
     [Parameter]
     public int page { get; set; } = 1;
-    int pageSize = 15; // Change this to your desired page size
+    int pageSize = 50; // Change this to your desired page size
 
     PagingInfo pagingInfo = new PagingInfo();
 
@@ -303,6 +281,8 @@
     private EntMedicineRecord modelimport{ get; set; } = new EntMedicineRecord();
     async Task OpenExcelFileFromDisk(InputFileChangeEventArgs e)
     {
+
+        ImportingModalOpen=true;
         IronXL.License.LicenseKey = "PASTE TRIAL OR LICENSE KEY";
 
         MemoryStream ms = new MemoryStream();
@@ -354,32 +334,11 @@
             }
         }
 
-
+        ImportingModalOpen = false;
+        await OnInitializedAsync();
+        StateHasChanged();
     }
-    private async Task ConvertDataIntoArray()
-    {
-        foreach (DataRow row in displayDataTable.Rows)
-        {
-            modelimport = new EntMedicineRecord
-                {
-                    Name = row["Name"]?.ToString() ?? string.Empty,
-                    UnitPrice = float.Parse(row["UnitPrice"].ToString()),
-                    Location = row["Location"]?.ToString() ?? string.Empty,
-                    Stock = Convert.ToInt32(row["Stock"] != DBNull.Value ? row["Stock"] : 0),
-                    Manufacturer = row["Manufacturer"]?.ToString() ?? string.Empty,
-                    Supplier = row["Supplier"]?.ToString() ?? string.Empty,
-                    MfgDate = DateTime.Parse(row["MfgDate"]?.ToString()),
-                    ExpDate = DateTime.Parse(row["ExpDate"]?.ToString()),
-
-
-
-                };
-
-            await SaveImportData(modelimport);
-        }
-
-
-    }
+    
 
 
 

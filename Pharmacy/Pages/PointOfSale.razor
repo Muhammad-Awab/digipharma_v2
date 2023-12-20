@@ -156,12 +156,12 @@
         </table>
 
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Discount Price (Rs)</label>
-            <input type="text" class="form-control" @bind="DiscountPrice" @onclick="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
+            <label for="exampleFormControlInput1" class="form-labelDiscountPrice">Discount Price (Rs)</label>
+            <input type="text" class="form-control" @bind="DiscountPrice" @bind:event="onchange"  @oninput="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
-            <input class="form-control" @bind="DiscountPerc" @onclick="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
+            <input class="form-control" @bind="DiscountPerc" @bind:event="onchange" @oninput="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
@@ -211,7 +211,7 @@
     public decimal MedicineTotalprice { get; set; }
     public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
-    public int DiscountPrice { get; set; }
+    public decimal DiscountPrice { get; set; }
     public int DiscountPerc { get; set; }
     public int POSId { get; set; }
 
@@ -248,7 +248,7 @@
 
         CopyToClipboard();
 
-
+        MedicineGrandTotal = MedicineTotalprice;
         modelList.Clear();
         MedicineTotalprice = 0;
         MedicineTotalQuantity = 0;
@@ -376,7 +376,7 @@
 
             StateHasChanged();
         }
-
+        MedicineGrandTotal = MedicineTotalprice;
 
 
     }
@@ -450,18 +450,39 @@
         // You can add additional logic here if needed
     }
 
-    public void calculatediscountprice()
+    public void calculatediscountprice(ChangeEventArgs e)
     {
-        MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+        if(e.Value.ToString() == "")
+        {
+            DiscountPrice = 0;
+        }
+        else
+        {
+            DiscountPrice = int.Parse(e.Value.ToString());
+            MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+        }
+
+
     }
 
 
-    public void calculatediscountpercentage()
+    public void calculatediscountpercentage(ChangeEventArgs e)
     {
-        int a = 100;
-        DiscountPerc = (DiscountPerc / a);
-        DiscountPerc = (int)MedicineTotalprice * DiscountPerc;
-        MedicineGrandTotal = MedicineTotalprice - DiscountPerc;
+        if (e.Value.ToString() == "")
+        {
+            DiscountPerc = 0;
+        }
+        else
+        {
+
+            DiscountPerc = int.Parse(e.Value.ToString());
+            DiscountPrice = (DiscountPerc * (MedicineTotalprice)) / 100;
+            
+            MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+
+        }
+      
+        
     }
 
 

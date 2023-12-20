@@ -2,11 +2,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Image Uploading......</h4>
+                <h4 class="modal-title">@ImageUploadTitle</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Please Wait for Upload an Image</p>
+                <p>@ImageUploadMessage</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" style="background-color:green !important;color:white;" data-bs-dismiss="modal">Close</button>
@@ -16,3 +16,8 @@
         </div>
     </div>
 </div>
+
+@code{
+    [Parameter] public string? ImageUploadTitle { get; set; }
+    [Parameter] public string? ImageUploadMessage { get; set; }
+}
