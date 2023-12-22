@@ -1,32 +1,106 @@
 ﻿@inherits LayoutComponentBase
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
-	<div class="container-fluid" style="margin-left:2rem">
 
-		<a class="navbar-brand" href="/">
-			<img src="dist/img/logo.png" height="60">
 
-		</a>
-		<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+<style>
+    .navbar {
+        background-color: rgba(100, 100, 255, 0.15) !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.1s ease;
+    }
 
-		<div class="collapse navbar-collapse" id="navbarCollapse">
-			<div class="navbar-nav ms-auto" style="font-family: 'Segoe UI' ; font-weight:400;">
-				<AuthorizeView>
+    .navbar-nav .nav-link {
+        color: black !important;
+        font-family: 'Segoe UI';
+        font-weight: 400;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+        .navbar-nav .nav-link:hover {
+            color: purple !important;
+        }
+
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3px;
+            background-color: purple !important;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease;
+        }
+
+
+
+
+
+    .navbar-brand {
+        position: relative;
+        font-family: 'Kunstler Script';
+        font-weight: 500;
+        font-size: 45px;
+        color: red;
+    }
+
+        .navbar-brand i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            color: #f32020;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar-brand.hidden i {
+            opacity: 100%;
+        }
+
+    .navbar-nav .nav-link:hover::before {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+
+    .navbar-nav .dropdown-menu {
+        animation: fadeIn 0.3s ease;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow sticky-top">
+    <div class="container-fluid" style="margin-left: 2rem">
+
+        <a class="" href="/">
+            <img src="dist/img/logo.png" height="60">
+
+        </a>
+
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto" style="font-family: 'Segoe UI' ; font-weight:400;">
+
+                <AuthorizeView>
     <NotAuthorized>
-				<a href="emplogin" class="nav-item nav-link active">ELogin</a>
-				<a href="login" class="nav-item nav-link active">ALogin</a>
-				<a href="registration" class="nav-item nav-link active">Register</a>
+                        <a href="emplogin" class="nav-item nav-link active fw-bold"><h5 >ELogin</h5></a>
+                        <a href="login" class="nav-item nav-link active fw-bolder text-capitalize"><h5 >ALogin</h5></a>
+                        <a href="registration" class="nav-item nav-link active fw-bold"><h5 >Register</h5></a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            
 
-					</NotAuthorized>
-				</AuthorizeView>
-			</div>
-		</div>
+              
 
-
-
-
-	</div>
+             
+            </div>
+        </div>
+    </div>
 </nav>
+
+
 <main>@Body</main>
