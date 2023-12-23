@@ -9,7 +9,7 @@
 
 <section>
     <!-- EditForm for submitting billing data -->
-    <EditForm Model="_ModelBilling" OnSubmit="SubmitForm">
+    <EditForm Model="_ModelBilling">
         <table>
             <!-- Billing ID input -->
             <tr>
@@ -20,7 +20,7 @@
                     <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
                 </td>
             </tr>
-          
+
             <tr>
                 <td>
                     <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
@@ -161,39 +161,58 @@
     </div>
 </section>
 
-
-
-
-
 @if (DeleteDialogOpen)
 {
     <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
 }
 
-
+@if (QuantityDialogOpen)
+{
+    <Pharmacy.Pages.Generics.Modal Title="Select the Quantity" sendQuantity="@OnQuantityChange" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.Modal>
+}
 
 @code {
-    <!-- C# code block for the component -->
+
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
     DataTable dt = new DataTable();
     public int fk_PharmacyId { get; set; }
     public int Quantityy { get; set; }
     public decimal UnitPricee { get; set; }
     public decimal MedicineTotalPrice { get; set; }
-
-    // Array for user roles
     public string[] v { get; set; } = { "Guest", "Guest" };
-
-    // Property for authenticated user's name
     public string? value1 { get; set; }
-
     [CascadingParameter]
     private Task<AuthenticationState> authenticatestate { get; set; }
-
     public bool DeleteDialogOpen { get; set; }
     public string? ID { get; set; }
+    List<DataRow> allDataRows = new List<DataRow>();
+    string searchTerm = "";
+    IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
+    [Parameter]
+    public int page { get; set; } = 1;
+    int pageSize = 15;
+    PagingInfo pagingInfo = new PagingInfo();
+    public bool QuantityDialogOpen { get; set; }
 
 
+    private void OnQuantityDialogClose(bool accepted)
+    {
+        QuantityDialogOpen = false;
+
+        StateHasChanged();
+
+    }
+
+    private void OnQuantityDialogOpen()
+    {        
+        QuantityDialogOpen = true;
+        StateHasChanged();
+    }
+
+    public void OnQuantityChange()
+    {
+        
+    }
     private async Task OnDeleteDialogClose(bool accepted)
     {
         DeleteDialogOpen = false;
@@ -201,6 +220,7 @@
         StateHasChanged();
 
     }
+
     private void OpenDeleteDialog(string? Id, int Quantity, decimal UnitPrice)
     {
         DeleteDialogOpen = true;
@@ -210,6 +230,7 @@
         UnitPricee = UnitPrice;
 
     }
+
     private async Task OnDelete(string id)
     {
 
@@ -224,9 +245,10 @@
        };
         await DALCRUD.CRUD("SP_DeleteSalesRecord", sp);
 
+        addmedicineback();
 
         DeleteDialogOpen = false;
-        GetInitialData();
+        GetMedicineData(_ModelBilling.pk_BillingId);
 
     }
 
@@ -244,14 +266,17 @@
         GetInitialData();
     }
 
-    <!-- Form submission method -->
-    private void SubmitForm()
+    public async void addmedicineback()
     {
-        // _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
-        // GetMedicineData(_ModelBilling.pk_BillingId);
+
+        SqlParameter[] sp =
+        {
+             new SqlParameter("@pk_MedId",int.Parse(ID)),
+             new SqlParameter("@Stock",Quantityy),
+        };
+        await DALCRUD.CRUD("SP_AddMedicineBack", sp);
     }
 
-    <!-- Method to get initial data -->
     public async void GetInitialData()
     {
         var authState = await authenticatestate;
@@ -262,7 +287,6 @@
         GetMedicineData(_ModelBilling.pk_BillingId);
     }
 
-    <!-- Method to get medicine data asynchronously -->
     public async void GetMedicineData(int fk_BillingId)
     {
 
@@ -275,14 +299,13 @@
         {
             new SqlParameter("@fk_BillingId",fk_BillingId),
             new SqlParameter("@fk_PharmacyId",v[0])
-        };
+    };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
         StateHasChanged();
     }
-
 
     private void SearchTextChanged(ChangeEventArgs e)
     {
@@ -291,30 +314,11 @@
         // You can add additional logic here if needed
     }
 
-
-    <!-- Variables and methods for pagination -->
-    List<DataRow> allDataRows = new List<DataRow>();
-    string searchTerm = "";
-    IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
-    [Parameter]
-    public int page { get; set; } = 1;
-    int pageSize = 15; // Change this to your desired page size
-
-    PagingInfo pagingInfo = new PagingInfo();
-
-    <!-- Initialization and parameter setting methods -->
-    protected override async Task OnInitializedAsync()
-    {
-        // dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
-        // allDataRows = dt.Rows.Cast<DataRow>().ToList();
-        // GetMedicineData(1);
-    }
     protected override void OnParametersSet()
     {
         CreatePagingInfo();
     }
 
-    <!-- Method to create pagination information -->
     public void CreatePagingInfo()
     {
         pagingInfo.CurrentPage = page;
@@ -341,12 +345,10 @@
         Console.WriteLine($"Current Page: {page}, Total Items: {pagingInfo.TotalItems}, Page Size: {pageSize}, Skip: {skip}");
     }
 
-    <!-- Method to handle page change -->
     public void PageChanged(int newPage)
     {
         page = newPage;
         CreatePagingInfo();
     }
 
-    <!-- Method to handle search text change -->
 }
