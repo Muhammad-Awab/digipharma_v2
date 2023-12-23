@@ -181,19 +181,6 @@
 </div>
 
 
-<div class="toast-container position-fixed top-0 end-0 p-3 " data-bs-delay="10000" aria-live="polite">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <img src="..." class="rounded me-2" alt="...">
-            <strong class="me-auto">DigiPharma</strong>
-            <small>Just Now</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            Billing Id @BillingId is Copied Successfully ! 
-        </div>
-    </div>
-</div>
 
 
 
@@ -244,9 +231,10 @@
 
         }
 
-        AddPointOfSale(BillingId, MedicineTotalprice);
-
-        CopyToClipboard();
+        await AddPointOfSale(BillingId, MedicineTotalprice);
+        await CopyToClipboard();
+        await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
+       
 
         MedicineGrandTotal = MedicineTotalprice;
         modelList.Clear();
@@ -263,8 +251,6 @@
 
 
     }
-
-
     string text;
 
     async Task ReadFromClipboard()
@@ -292,6 +278,9 @@
             Console.WriteLine("Cannot write text to clipboard");
         }
     }
+
+
+   
 
 
 
@@ -510,16 +499,3 @@
 
 
 
-
-<script>
-
-    const toastTrigger = document.getElementById('liveToastBtn')
-    const toastLiveExample = document.getElementById('liveToast')
-
-    if (toastTrigger) {
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        toastTrigger.addEventListener('click', () => {
-            toastBootstrap.show()
-        })
-    }
-</script>

@@ -4,104 +4,125 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager nm
 
-<style>
-    .background-image {
-        height: 100vh;
-        position: relative;
-        overflow: hidden;
-    }
+
+<head>
+    <style>
+
+        body, html {
+            overflow: hidden;
+        }
 
 
-    .card {
-        background-color: rgba(255, 255, 255, 0.8); /* Adjust the alpha (fourth parameter) to set the transparency */
-        border-radius: 1rem;
-    }
+        .background-image {
+            height: 100vh;
+            position: relative;
+            overflow: hidden !important
+        }
 
-    .background-image::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-image: url('dist/img/background.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        filter: blur(15px);
-        z-index: -1; /* Place it behind the other content */
-    }
 
-    .custom-card-shadow {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
-    }
-</style>
+        .card {
+            background-color: rgba(255, 255, 255, 0.8); /* Adjust the alpha (fourth parameter) to set the transparency */
+            border-radius: 1rem;
+        }
 
-<section class="vh-100 background-image">
-    <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col col-xl-10">
-                <div class="card " style="border-radius: 1rem;">
-                    <div class="row g-0 align-items-center">
-                        <div class="col-md-6 col-lg-5 d-none d-md-block">
-                            <img src="/dist/img/Pharmacy.jpg"
-                                 alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
-                        </div>
-                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                            <div class="card-body p-4 p-lg-5 text-black">
-                                <form>
+        .background-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url('/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(5px);
+            z-index: -1; /* Place it behind the other content */
+        }
+
+        .custom-card-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
+        }
+    </style>
+    <title>Admin Login</title>
+</head>
+
+<body>
+
+    <section class="vh-30 background-image  ">
+        <div class="container py-5 vh-30">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-xl-10">
+                    <div class="card shadow  bg-body rounded border border-danger " style="border-radius: 1rem; ">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <img src="/dist/img/Pharmacy.jpg"
+                                     alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                                <div class="card-body p-lg-5 text-black">
+
 
                                     <form>
 
                                         <div class="d-flex align-items-center mb-3 pb-1">
                                             <i class="fas fa-cubes fa-2x me-3"></i>
                                             <div class="d-flex justify-content-center align-content-center">
-                                                <span class="h1 fw-bold mb-0">DIGIPHARMA </span>
+                                                <span class="h1 fw-bold mb-0"> <span style="color:blue">DIGI</span>PHARMA</span>
                                             </div><span class="badge bg-secondary">Admin</span>
                                         </div>
 
-                                        <h3 class="fw-normal mb-3 pb-3 justify-content-center align-content-center " style="letter-spacing: 1px;"><b>Let's Ease the humanity!</b></h3>
+                                        <h3 class="fw-normal mb-3 pb-3 justify-content-center align-content-center " style="letter-spacing: 1px;"><b>Let's Ease the <span style="color:blue">humanity!</span></b></h3>
 
                                         <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example17">Username</label>
-                                            <input type="email" @bind="Username" id="form2Example17" placeholder="Enter Email" class="form-control form-control-lg" />
+                                            <label class="form-label" for="form2Example17">Email address</label>
+                                            <input type="email" id="form2Example17" placeholder="Enter Email" class="form-control form-control-lg border border-danger" @bind="Username" />
 
                                         </div>
 
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form2Example27">Password</label>
-                                            <input type="password" @bind="Password" id="form2Example27" placeholder="Enter Password" class="form-control form-control-lg" />
+                                            <input type="password" id="form2Example27" placeholder="Enter Password" class="form-control form-control-lg border border-danger" @bind=Password />
 
                                         </div>
+
 
 
 
 
                                         <div class="pt-1 mb-4 mt-2">
                                             <div class="d-flex justify-content-center align-content-center">
-                                                <button style="width: 166px;height: 35px;" type="button" class="btn btn-danger" @onclick="Authenticate">
+                                                <button style="width: 166px;height: 35px;" type="button" class="btn btn-primary" @onclick="Authenticate">
                                                     <h6>LOGIN</h6>
                                                 </button>
-
                                             </div>
-                                          
                                         </div>
 
-                                        <div class="d-flex justify-content-center align-content-center">
-                                            <a href="registration" style="text-decoration:none;"><h7 style="color:rgb(255,100,100)">Dont have an Account SignUp?</h7></a>
+
+
+                                        <div class="pt-1 mt-2">
+                                            <div class="d-flex justify-content-center align-content-center">
+                                                <button style="width: 166px;height: 35px;" type="button" class="btn btn-success">
+                                                    <a href="/registration" style="text-decoration:none"> <h6 class="fw-bolder" style="color:white">Register</h6> </a>
+
+
+                                                </button>
+                                            </div>
                                         </div>
+
 
                                     </form>
-                                </form>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
+</body>
 
 
 @code {
