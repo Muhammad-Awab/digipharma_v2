@@ -232,6 +232,7 @@
         }
 
         await AddPointOfSale(BillingId, MedicineTotalprice);
+        await CopyToClipboard();
         await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
        
 
@@ -250,9 +251,34 @@
 
 
     }
+    string text;
 
+    async Task ReadFromClipboard()
+    {
+        // Reading from the clipboard may be denied, so you must handle the exception
+        try
+        {
+            text = await ClipboardService.ReadTextAsync();
+        }
+        catch
+        {
+            Console.WriteLine("Cannot read from clipboard");
+        }
+    }
 
-   
+    async Task CopyToClipboard()
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await ClipboardService.WriteTextAsync(BillingId.ToString());
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
+    }
+
 
    
 
