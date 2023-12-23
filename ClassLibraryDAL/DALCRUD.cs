@@ -102,7 +102,6 @@ namespace ClassLibraryDAL
             return new DataTable();
 
         }
-
         public static EntBilling GetBillingRecordById(int BillingId,int fk_PharmacyId)
         {
             EntBilling ee = new EntBilling();
@@ -157,7 +156,6 @@ namespace ClassLibraryDAL
             }
             return ee;
         }
-
         public static EntRegistration GetUserByName(string? username)
         {
             EntRegistration ee = new EntRegistration();
@@ -216,7 +214,6 @@ namespace ClassLibraryDAL
                     ee.Role = sdr["Role"].ToString();
                     ee.UserImg = sdr["UserImg"].ToString();
 
-
                 }
                 con.Close();
             }
@@ -227,5 +224,6 @@ namespace ClassLibraryDAL
             return ee;
 
         }
+
     }
 }

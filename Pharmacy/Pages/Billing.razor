@@ -20,7 +20,7 @@
                     <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
                 </td>
             </tr>
-            <!-- Button to get initial data -->
+          
             <tr>
                 <td>
                     <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
@@ -32,13 +32,13 @@
                     <strong>Discount</strong>
                 </td>
                 <td>
-                    <input name="Email" @bind="_ModelBilling.Discount" class="form-control" required></input>
+                    <input name="Email" @bind="_ModelBilling.Discount" @bind:event="onchange" class="form-control" required></input>
                 </td>
                 <td>
                     <strong>TotalPrice</strong>
                 </td>
                 <td>
-                    <input name="ID" @bind="_ModelBilling.TotalPrice" class="form-control" required></input>
+                    <input name="ID" @bind="_ModelBilling.TotalPrice" @bind:event="onchange" class="form-control" required></input>
                 </td>
             </tr>
             <!-- DiscountPerc and Phone inputs -->
@@ -47,19 +47,19 @@
                     <strong>Grand Total</strong>
                 </td>
                 <td>
-                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" class="form-control" required></input>
+                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" @bind:event="onchange" class="form-control" required></input>
                 </td>
                 <td>
                     <strong>Discount Perc</strong>
                 </td>
                 <td>
-                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" class="form-control" required></input>
+                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" @bind:event="onchange" class="form-control" required></input>
                 </td>
             </tr>
             <!-- Button to trigger change -->
             <tr>
                 <td>
-                    <button style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
+                    <button @onclick="UpdateSalesRecord" style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
                 </td>
             </tr>
         </table>
@@ -177,8 +177,9 @@
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
     DataTable dt = new DataTable();
     public int fk_PharmacyId { get; set; }
-    public int Quantityy {get; set ;}
-    public decimal UnitPricee {get;  set;}
+    public int Quantityy { get; set; }
+    public decimal UnitPricee { get; set; }
+    public decimal MedicineTotalPrice { get; set; }
 
     // Array for user roles
     public string[] v { get; set; } = { "Guest", "Guest" };
@@ -186,7 +187,6 @@
     // Property for authenticated user's name
     public string? value1 { get; set; }
 
-    // Cascading parameter for authentication state
     [CascadingParameter]
     private Task<AuthenticationState> authenticatestate { get; set; }
 
@@ -212,30 +212,37 @@
     }
     private async Task OnDelete(string id)
     {
+
+        MedicineTotalPrice = UnitPricee * Quantityy;
+        _ModelBilling.GrandTotal = _ModelBilling.GrandTotal - MedicineTotalPrice;
+        _ModelBilling.TotalPrice = _ModelBilling.TotalPrice - MedicineTotalPrice;
+
         SqlParameter[] sp =
            {
              new SqlParameter("@id",int.Parse(id)),
 
-    };
+       };
         await DALCRUD.CRUD("SP_DeleteSalesRecord", sp);
-        _ModelBilling.TotalPrice = UnitPricee * Quantityy;
-        _ModelBilling.GrandTotal = _ModelBilling.GrandTotal - _ModelBilling.TotalPrice;
-        StateHasChanged();
-       
-        DeleteDialogOpen = false;
 
+
+        DeleteDialogOpen = false;
+        GetInitialData();
 
     }
 
+    public async void UpdateSalesRecord()
+    {
+        SqlParameter[] sp1 =
+       {
+             new SqlParameter("@id",_ModelBilling.pk_BillingId),
+             new SqlParameter("@TotalPrice", _ModelBilling.TotalPrice),
+             new SqlParameter("@GrandTotal",_ModelBilling.GrandTotal),
 
+       };
+        await DALCRUD.CRUD("SP_UpdateSalesRecord", sp1);
 
-
-
-
-
-
-
-
+        GetInitialData();
+    }
 
     <!-- Form submission method -->
     private void SubmitForm()
@@ -251,7 +258,7 @@
         value1 = $"{authState.User.Identity.Name}";
         v = value1.Split(',');
 
-        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId,int.Parse(v[0]));
+        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId, int.Parse(v[0]));
         GetMedicineData(_ModelBilling.pk_BillingId);
     }
 
@@ -264,12 +271,11 @@
         v = value1.Split(',');
 
 
-
         SqlParameter[] sp =
         {
             new SqlParameter("@fk_BillingId",fk_BillingId),
             new SqlParameter("@fk_PharmacyId",v[0])
-    };
+        };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
