@@ -134,7 +134,8 @@
            new SqlParameter("@UserImg", model.UserImg)
     };
             await DALCRUD.CRUD("SP_SaveEmployeeRecord", sp);
-            nm.NavigateTo("/", forceLoad: true);
+            await JS.InvokeVoidAsync("alert", $"Employee Data Save Sucessfully");
+
         }
         else
         {
@@ -154,6 +155,7 @@
 
     };
             await DALCRUD.CRUD("SP_UpdateEmployeeRecord", sp);
+            await JS.InvokeVoidAsync("alert", $"Employee Data Update Sucessfully");
         }
     }
 

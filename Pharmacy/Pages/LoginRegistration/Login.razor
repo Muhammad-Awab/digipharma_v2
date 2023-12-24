@@ -87,10 +87,12 @@
                                         </div>
 
 
+                                        <label class="form-label text-danger" for="form2Example27">@Message</label>
 
 
 
-                                        <div class="pt-1 mb-4 mt-2">
+
+                                        <div class="mb-4">
                                             <div class="d-flex justify-content-center align-content-center">
                                                 <button style="width: 166px;height: 35px;" type="button" class="btn btn-primary" @onclick="Authenticate">
                                                     <h6>LOGIN</h6>
@@ -161,6 +163,7 @@
         {
             check = true;
             Message = "Invalid UserName and Password ! ";
+            await JS.InvokeVoidAsync("alert", $"Invalid Username or Password");
         }
     }
 

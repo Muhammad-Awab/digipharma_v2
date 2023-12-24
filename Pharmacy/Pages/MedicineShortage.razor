@@ -7,9 +7,11 @@
 
 
 @attribute [Authorize(Roles = "Admin,User")]
+<div class="content-header">
+    <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Medicines Shortage</h5>
+</div>
 <div class="card">
-
-    <div class="card-body">
+   
         <div class="d-flex gap-2 mt-2 mb-3">
         </div>
         <div class="table-responsive">
@@ -36,7 +38,7 @@
                                 <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
                                 <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
                                 <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
-                                <td><i class="fas fa-flask ml-2"></i> @row["Stock"]  </td>
+                                <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
 
 
                             </tr>
@@ -50,7 +52,7 @@
         </div>
     </div>
 
-</div>
+
 
 
 @code {
