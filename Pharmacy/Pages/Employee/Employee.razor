@@ -1,15 +1,18 @@
 ﻿@page "/employee"
 @attribute [Authorize(Roles = "Admin")]
+<div class="content-header">
+    <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Employee</h5>
+</div>
 <section class="content">
     <div class="container-fluid">
-        <div class="row pt-5">
+        <div class="row pt-3">
             <div class="col-lg-3 col-md-6">
-                <div class="card bg-light border-dark">
+                <div class="card bg-light border-danger">
                     <div class="card-body text-center">
-                        <i class="fas fa-exclamation-triangle fa-3x" style="color: #f39c12;"></i>
-                        <p class="card-text mt-3">See Employee</p>
+                        <i class="fas fa-user fa-3x" style="color:#dc3545"></i>
+                        <p class="card-text mt-3 fw-bold fs-5">See Employee</p>
                     </div>
-                    <div class="card-footer bg-dark text-center">
+                    <div class="card-footer bg-danger text-center">
                         <a href="/employeeRecord" style="text-decoration:none" class="text-white">Click to see Employee <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -18,8 +21,8 @@
             <div class="col-lg-3 col-md-6">
                 <div class="card bg-light border-warning">
                     <div class="card-body text-center">
-                        <i class="fas fa-file fa-3x" style="color: #FFAB00;"></i>
-                        <p class="card-text mt-3">Add New Employee</p>
+                        <i class="fas fa-plus-circle fa-3x" style="color: #FFAB00;"></i>
+                        <p class="card-text mt-3 fw-bold fs-5">Add New Employee</p>
                     </div>
                     <div class="card-footer bg-warning text-center">
                         <a href="/employeeinfo" style="text-decoration:none" class="text-dark">Click to Add <i class="fas fa-arrow-circle-right"></i></a>
@@ -29,4 +32,3 @@
         </div>
     </div>
 </section>
-
