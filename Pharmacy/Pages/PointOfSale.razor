@@ -8,7 +8,7 @@
 
     <div class="card-body">
 
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 mb-4">
 
             <input tabindex="0" class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
             <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
@@ -94,6 +94,7 @@
                     <tfoot>
                         <tr>
                             <td class="fw-bold ml-5">Total</td>
+                            <td></td>
                             <td class="fw-bold">@MedicineTotalQuantity </td>
                             <td class="fw-bold">@MedicineTotalprice </td>
                         </tr>
@@ -372,7 +373,7 @@
     IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
     [Parameter]
     public int page { get; set; } = 1;
-    int pageSize = 14; // Change this to your desired page size
+    int pageSize = 10; // Change this to your desired page size
 
     PagingInfo pagingInfo = new PagingInfo();
 
