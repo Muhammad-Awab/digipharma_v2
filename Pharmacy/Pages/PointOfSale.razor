@@ -157,7 +157,7 @@
 
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-labelDiscountPrice">Discount Price (Rs)</label>
-            <input type="text" class="form-control" @bind="DiscountPrice" @bind:event="onchange"  @oninput="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
+            <input type="text" class="form-control" @bind="DiscountPrice" @bind:event="onchange" @oninput="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
@@ -204,45 +204,54 @@
 
     private async Task Checkout()
     {
-        foreach (var data in modelList)
+        if (modelList.Count != 0)
         {
-            SqlParameter[] parameters = new SqlParameter[]
-             {
+
+
+            foreach (var data in modelList)
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                 {
                  new SqlParameter("@pk_POSId",data.pk_POSId),
                  new SqlParameter("@pharmacyId",v[0]),
                  new SqlParameter("@fk_BillingId",data.fk_BillingId),
                  new SqlParameter("@fk_MedId",data.fk_MedId),
                  new SqlParameter("@Quantity",data.Quantity),
-             };
-            await DALCRUD.CRUD("SP_checkout", parameters);
+                 };
+                await DALCRUD.CRUD("SP_checkout", parameters);
 
 
-            SqlParameter[] sp =
-          {
+                SqlParameter[] sp =
+              {
             new SqlParameter("@medId",data.fk_MedId),
             new SqlParameter("@quantity", data.Quantity),
-    };
-            await DALCRUD.CRUD("SP_SellMedicine", sp);
+          };
+                await DALCRUD.CRUD("SP_SellMedicine", sp);
+
+            }
+
+            await AddPointOfSale(BillingId, MedicineTotalprice);
+            await CopyToClipboard();
+            await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
+
+
+            MedicineGrandTotal = MedicineTotalprice;
+            modelList.Clear();
+            MedicineTotalprice = 0;
+            MedicineTotalQuantity = 0;
+            POSId += 1;
+            Random rnd = new Random();
+            BillingId = rnd.Next();
+
+
+            StateHasChanged();
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", $"The Cart is Empty ");
 
         }
-
-        await AddPointOfSale(BillingId, MedicineTotalprice);
-        await CopyToClipboard();
-        await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
-       
-
-        MedicineGrandTotal = MedicineTotalprice;
-        modelList.Clear();
-        MedicineTotalprice = 0;
-        MedicineTotalQuantity = 0;
-        POSId += 1;
-        Random rnd = new Random();
-        BillingId = rnd.Next();
-
-
-        StateHasChanged();
-        await OnInitializedAsync();
-
 
 
     }
@@ -275,7 +284,7 @@
     }
 
 
-   
+
 
 
 
@@ -436,7 +445,7 @@
 
     public void calculatediscountprice(ChangeEventArgs e)
     {
-        if(e.Value.ToString() == "")
+        if (e.Value.ToString() == "")
         {
             DiscountPrice = 0;
         }
@@ -461,12 +470,12 @@
 
             DiscountPerc = int.Parse(e.Value.ToString());
             DiscountPrice = (DiscountPerc * (MedicineTotalprice)) / 100;
-            
+
             MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
 
         }
-      
-        
+
+
     }
 
 

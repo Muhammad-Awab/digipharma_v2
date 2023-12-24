@@ -1,8 +1,9 @@
 ﻿@page "/employeeinfo"
-   @page "/employeeinfo/{id}"
+@page "/employeeinfo/{id}"
 @attribute [Authorize(Roles = "Admin")]
    @using Amazon.S3;
 @using Amazon.S3.Model;
+
 <div class="container pt-5">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-8 col-sm-10 col-12">
@@ -11,7 +12,6 @@
                     <h3 class="font-weight-bold"><i class="fas fa-user-plus"></i> @PageName</h3>
                 </div>
                 <div class="card-body">
-
                     <div class="form-group">
                         <label for="employeeName"><i class="fas fa-user"></i> Employee Name</label>
                         <input type="text" @bind="model!.UserFullName" class="form-control" id="employeeName" placeholder="Enter name">
@@ -63,7 +63,7 @@
 </div>
 
 
-@if (imguploading==true)
+@if (imguploading == true)
 {
     <Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImageUploadMessage" ImageUploadTitle="@ImageUploadTitle"></Pharmacy.Pages.Generics.UploadModal>
 }

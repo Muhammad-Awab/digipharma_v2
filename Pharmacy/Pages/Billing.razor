@@ -174,6 +174,7 @@
 @code {
 
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
+
     DataTable dt = new DataTable();
     public int fk_PharmacyId { get; set; }
     public int Quantityy { get; set; }
@@ -204,15 +205,16 @@
     }
 
     private void OnQuantityDialogOpen()
-    {        
+    {
         QuantityDialogOpen = true;
         StateHasChanged();
     }
 
     public void OnQuantityChange()
     {
-        
+
     }
+
     private async Task OnDeleteDialogClose(bool accepted)
     {
         DeleteDialogOpen = false;
@@ -262,8 +264,10 @@
 
        };
         await DALCRUD.CRUD("SP_UpdateSalesRecord", sp1);
-
         GetInitialData();
+        await JS.InvokeVoidAsync("alert", $"Record Successfully Updated for {_ModelBilling.pk_BillingId}");
+        nm.NavigateTo("/billing", true);
+
     }
 
     public async void addmedicineback()
@@ -273,7 +277,7 @@
         {
              new SqlParameter("@pk_MedId",int.Parse(ID)),
              new SqlParameter("@Stock",Quantityy),
-        };
+    };
         await DALCRUD.CRUD("SP_AddMedicineBack", sp);
     }
 
@@ -285,6 +289,15 @@
 
         _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId, int.Parse(v[0]));
         GetMedicineData(_ModelBilling.pk_BillingId);
+        if (_ModelBilling.pk_BillingId == 0)
+        {
+            await JS.InvokeVoidAsync("alert", $"No Record Found ");
+
+        }
+
+
+
+
     }
 
     public async void GetMedicineData(int fk_BillingId)
