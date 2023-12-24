@@ -6,48 +6,48 @@
     <div class="content-header">
         <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Inventory</h5>
     </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-xs-2 col-sm-12 ">
-                <!-- small box -->
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h5>List of Medicines</h5>
-                        <p>See Record</p>
-                        <i class="fas fa-list " style="color:black;"></i>
+    <div class="container-fluid">
+        <div class="row pt-3">
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-light border-success">
+                    <div class="card-body text-center">
+                        <i class="fas fa-pills fa-3x " style="color: #218838;"></i>
+                        <p class="card-text mt-3 fw-bold fs-5">See Medicines</p>
                     </div>
-                    <a href="/medicinerecord" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-xs-2 col-sm-12">
-                <!-- small box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h5>Medicine Shortage</h5>
-                        <p>See items</p>
-                        <i class="fas fa-circle " style="color:black;"></i>
+                    <div class="card-footer bg-success text-center">
+                        <a href="/medicinerecord" style="text-decoration:none" class="text-white">Click to see Medicines <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
-                    <a href="/medicineshortage" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
-            <!-- ./col -->
-            <div class="col-lg-3 col-xs-2 col-sm-12">
-                <!-- small box -->
-                <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h5>Add New Medicine</h5>
-                        <p>Add Item</p>
-                        <i class="fas fa-circle " style="color:black;"></i>
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-light border-warning">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x" style="color: #FFAB00;"></i>
+                        <p class="card-text mt-3 fw-bold fs-5">Medicine Shortage</p>
                     </div>
-                    <a href="/add_medicine_record" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <div class="card-footer bg-warning text-center">
+                        <a href="/medicineshortage" style="text-decoration:none" class="text-dark">See Medicine Record <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-light border-danger">
+                    <div class="card-body text-center">
+                        <i class="fas fa-plus-circle fa-3x" style="color: #dc3545;"</i>
+                        <p class="card-text mt-3 fw-bold fs-5">Add New Medicine</p>
+                    </div>
+                    <div class="card-footer bg-danger text-center">
+                        <a href="/add_medicine_record" style="text-decoration:none" class="text-dark">Click to Add <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
 
 
 @code {
