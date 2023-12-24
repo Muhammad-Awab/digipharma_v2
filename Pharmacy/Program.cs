@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Pharmacy.Authentication;
 using Pharmacy.Pages.Generics;
+using Neodynamic.Blazor;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +17,8 @@ builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddAuthenticationCore();
 builder.Services.AddScoped<ClipboardService>();
+builder.Services.AddJSPrintManager(); // JSPrintManager service
 
-builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddServerSideBlazor();
