@@ -1,174 +1,122 @@
-﻿@* The following code represents a Razor component for a billing page. *@
-
-@* Page directive with authorization roles. *@
-@page "/billing"
+﻿@page "/billing"
 @attribute [Authorize(Roles = "Admin,User")]
 
-@* HTML content for the billing page. *@
-<h3 style="color: #333; font-family: 'Arial', sans-serif; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 20px; text-align: center;">Billing</h3>
+<div class="container mt-2">
+    <h2 class="text-black mb-4">BILLING DETAILS</h2>
 
-<section>
-    <!-- EditForm for submitting billing data -->
-    <EditForm Model="_ModelBilling">
-        <table>
-            <!-- Billing ID input -->
-            <tr>
-                <td>
-                    <strong>Billing ID</strong>
-                </td>
-                <td>
-                    <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
-                </td>
-            </tr>
+    <section class="mb-4">
+        <EditForm Model="_ModelBilling">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group h6">
+                        <label for="billingId">Billing ID</label>
+                        <input id="billingId" name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control border-2 border-primary-subtle" />
 
-            <tr>
-                <td>
-                    <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
-                </td>
-            </tr>
-            <!-- Discount and TotalPrice inputs -->
-            <tr>
-                <td>
-                    <strong>Discount</strong>
-                </td>
-                <td>
-                    <input name="Email" @bind="_ModelBilling.Discount" @bind:event="onchange" class="form-control" required></input>
-                </td>
-                <td>
-                    <strong>TotalPrice</strong>
-                </td>
-                <td>
-                    <input name="ID" @bind="_ModelBilling.TotalPrice" @bind:event="onchange" class="form-control" required></input>
-                </td>
-            </tr>
-            <!-- DiscountPerc and Phone inputs -->
-            <tr>
-                <td>
-                    <strong>Grand Total</strong>
-                </td>
-                <td>
-                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" @bind:event="onchange" class="form-control" required></input>
-                </td>
-                <td>
-                    <strong>Discount Perc</strong>
-                </td>
-                <td>
-                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" @bind:event="onchange" class="form-control" required></input>
-                </td>
-            </tr>
-            <!-- Button to trigger change -->
-            <tr>
-                <td>
-                    <button @onclick="UpdateSalesRecord" style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
-                </td>
-            </tr>
-        </table>
-    </EditForm>
-</section>
+                    </div>
+                </div>
 
-<style>
-    <!-- CSS styles for the form and table -->
-    .form-container {
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    strong {
-        color: #333;
-    }
-
-    td {
-        padding: 10px;
-    }
-
-    .form-floating {
-        position: relative;
-    }
-
-        .form-floating label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            padding: 10px;
-            transition: 0.2s ease all;
-        }
-
-        .form-floating input:focus,
-        .form-floating input:not(:placeholder-shown) {
-            padding-top: 18px;
-            padding-bottom: 3px;
-        }
-</style>
-
-<section>
-    <!-- Card section for displaying a table of data -->
-    <div class="card">
-        <div class="card-body">
-            <!-- Search input and button -->
-            <div class="d-flex gap-2">
-                <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-
-                @* <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
             </div>
-            <!-- Table to display data -->
-            <div class="table-responsive mt-3">
-                <table id="myTable" class="table table-bordered table-striped ">
-                    <thead>
-                        <!-- Table header -->
-                        <tr>
-                            <th>pk_MedicineId</th>
-                            <th>Name</th>
-                            <th>UnitPrice</th>
-                            <th>Location</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Loop through rows in DataTable and display data -->
-                        @foreach (DataRow row in pagedData)
-                        {
+            <div class="row">
+                <div class="col-md-7 ">
+                    <button class="btn btn-info " @onclick="GetInitialData">GetData</button>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="totalPrice">Total Price</label>
+                        <input id="totalPrice" name="ID" @bind="_ModelBilling.TotalPrice" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="discount">Discount</label>
+                        <input id="discount" name="Email" @bind="_ModelBilling.Discount" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="Phone" @bind="_ModelBilling.DiscountPerc" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group h6 ">
+                        <label for="discountPerc">Discount Percentage</label>
+                        <input id="discountPerc" type="text" name="UserName" @bind="_ModelBilling.GrandTotal" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button @onclick="UpdateSalesRecord" class="btn btn-info">Update Billing</button>
+                </div>
+            </div>
+        </EditForm>
+    </section>
+
+    <section>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="input-group w-50">
+                        <input class="form-control border-2 border-primary-subtle" type="text" @bind="searchTerm" id="myInput" placeholder="Search for names.." title="Type in a name">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-info" @onclick="CreatePagingInfo">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
                             <tr>
-                                <td>@row["pk_MedId"]</td>
-                                <td>@row["Name"]</td>
-                                <td>@row["UnitPrice"]</td>
-                                <td>@row["Location"]</td>
-                                <td>@row["Quantity"]</td>
-                                <td>  <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString(),(int)@row["Quantity"],(decimal)@row["UnitPrice"]))"><i class="fa-solid fa-trash"></i></a></td>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-pills"></i> Medicine ID</th>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-prescription-bottle-alt"></i> Name</th>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-dollar-sign"></i> Unit Price</th>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-map-marker-alt"></i> Location</th>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-flask"></i> Quantity</th>
+                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-flask"></i> Action</th>
+
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <!-- Pagination section -->
-                        <tr>
-                            <td colspan="10">
-                                <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in pagedData)
+                            {
+                                <tr>
+                                    <td>@row["pk_MedId"]</td>
+                                    <td>@row["Name"]</td>
+                                    <td>@row["UnitPrice"]</td>
+                                    <td>@row["Location"]</td>
+                                    <td>@row["Quantity"]</td>
+                                    <td><a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString(),(int)@row["Quantity"],(decimal)@row["UnitPrice"]))"><i class="fa-solid fa-trash"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="10">
+                                    <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
+
 
 @if (DeleteDialogOpen)
 {
     <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
-}
-
-@if (QuantityDialogOpen)
-{
-    <Pharmacy.Pages.Generics.Modal Title="Select the Quantity" sendQuantity="@OnQuantityChange" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.Modal>
 }
 
 @code {

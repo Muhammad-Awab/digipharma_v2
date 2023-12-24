@@ -1,85 +1,64 @@
 ﻿@page "/salesrecord"
 @attribute [Authorize(Roles = "Admin")]
-<PageTitle>Sales Record</PageTitle>
-
 
 <div class="container">
+    <h2 class="text-left">Sales Record</h2>
+
     <div class="row">
         <div class="col-md-5">
             <div class="form-group">
-                <label for="birthday">StartDate:</label>
+                <label for="startDate">Start Date:</label>
                 <input type="date" @bind="model.From" class="form-control" />
             </div>
         </div>
         <div class="col-md-5">
-            <label for="birthday">EndDate:</label>
+            <label for="endDate">End Date:</label>
             <input type="date" @bind="model.To" class="form-control" />
         </div>
         <div class="col-md-2">
-
-
-            <button class="btn btn-primary " style="margin-top:2rem;" @onclick="GetSalesRecord">Get Record</button>
+            <button class="btn btn-info  text-white" style="margin-top:2rem;" @onclick="GetSalesRecord">Get Record</button>
         </div>
     </div>
 </div>
 
-<div class="card mt-2">
-    <div class="card-header">
-        <h3 class="card-title">Sales Record</h3>
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body table-responsive">
+<div class="card mt-4">
+
+    <div class="card-body table-responsive" style="background-color:#EEEEEE">
         <table id="myTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
-
-                    <th>TotalPrice</th>
-                    <th>DiscountPrice </th>
-                    <th>DiscountPercentage</th>
-                    <th>GrandTotal</th>
-
+                    <th class=" text-white" style="background-color:#4DB6AC"><i class="fas fa-tag"></i> Total Price</th>
+                    <th class=" text-white" style="background-color:#4DB6AC"><i class="fas fa-percent"></i> Discount Price</th>
+                    <th class=" text-white" style="background-color:#4DB6AC"><i class="fas fa-percent"></i> Discount Percentage</th>
+                    <th class=" text-white" style="background-color:#4DB6AC"><i class="fas fa-dollar-sign"></i> Grand Total</th>
                 </tr>
-
             </thead>
             <tbody>
-
                 @foreach (DataRow row in dt.Rows)
                 {
                     <tr>
-
                         <td>@row["TotalPrice"]</td>
                         <td>@row["Discount"]</td>
                         <td>@row["DiscountPerc"]</td>
                         <td>@row["GrandTotal"]</td>
-
-
                     </tr>
-
                 }
-
             </tbody>
             <tfoot>
                 <tr>
-                    <td class="fw-bold fs-4"> Total Sale : </td>
-                    <td class="fw-bold fs-4">
-                        @TotalGrandTotal
-                    </td>
-                    <td class="fw-bold fs-4">
-                        Total Profit :
-                    </td>
-                    <td class="fw-bold fs-4">
-                        @TotalGrandTotal
-                    </td>
+                    <td colspan="3" class="fw-bold fs-5 text-end"><i class="fas fa-chart-line"></i> Total Sale:</td>
+                    <td class="fw-bold fs-4">@TotalGrandTotal</td>
                 </tr>
-
-
+                <tr>
+                    <td colspan="3" class="fw-bold fs-5 text-end"><i class="fas fa-money-bill-wave"></i>Total Profit:</td>
+                    <td class="fw-bold fs-4">@TotalGrandTotal</td>
+                </tr>
             </tfoot>
-
-
         </table>
     </div>
-    <!-- /.card-body -->
 </div>
+
+
 @code {
     private EntSalesRecord modelimport { get; set; } = new EntSalesRecord();
 
