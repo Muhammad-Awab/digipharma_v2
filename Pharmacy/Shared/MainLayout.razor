@@ -93,30 +93,30 @@
                                 </a>
                             </li>
                             <li class="nav-item menu-open">
-                                <a href="/dashboard" class="nav-link active">
+                                <a href="/inventory" class="nav-link active">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
                                     <p>
-                                        Inventory
+                                        Visit Inventory
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="/inventory" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Visit Inventory</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a href="/medicinerecord" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>List Of Medicines</p>
+                                            <p>See Medicines</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/add_medicine_record" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Medicine Record</p>
+                                            <p>Add New Medicine</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/medicineshortage" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Medicine Shortage</p>
                                         </a>
                                     </li>
 
@@ -124,8 +124,8 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="pointofsale" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                <a href="/pointofsale" class="nav-link">
+                                    <i class="nav-icon fas fa-cash-register"></i>
                                     <p>
                                         Point Of Sale
                                         <span class="right badge badge-danger">New</span>
@@ -134,7 +134,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/billing" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                    <i class="nav-icon fas fa-money-bill"></i>
                                     <p>
                                         Billing
                                         <span class="right badge badge-danger">New</span>
@@ -142,35 +142,30 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="aboutus" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
-                                    <p>
-                                        About Us
-                                        <span class="right badge badge-danger">New</span>
-                                    </p>
-                                </a>
-                            </li>
-
-
-
-                        </Authorized>
-
-                    </AuthorizeView>
-
-                    <AuthorizeView Roles="Admin">
-                        <Authorized>
-                            <li class="nav-item">
                                 <a href="salesrecord" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                    <i class="nav-icon fas fa-chart-bar"></i>
                                     <p>
                                         Sales Report
                                         <span class="right badge badge-danger">New</span>
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="aboutus" class="nav-link">
+                                    <i class="nav-icon fas fa-info-circle"></i>
+                                    <p>
+                                        About Us
+                                        <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
+                            </Authorized>
+                            </AuthorizeView>
+                    <AuthorizeView Roles="Admin">
+                        <Authorized>
                             <li class="nav-item menu-open">
                                 <a href="/employee" class="nav-link active">
-                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <i class="nav-icon fas fa-user"></i>
                                     <p>
                                         Employees
                                         <i class="right fas fa-angle-left"></i>
@@ -178,13 +173,13 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="/employee" class="nav-link">
+                                        <a href="/employeeinfo" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>EmployeeInfo</p>
+                                            <p>Add Employee</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/employeeinfo" class="nav-link">
+                                        <a href="/employeeRecord" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Registered Employees</p>
                                         </a>
@@ -193,14 +188,10 @@
 
                                 </ul>
                             </li>
-
-
                         </Authorized>
 
                     </AuthorizeView>
-
-
-                </ul>
+                    </ul>
             </nav>
             <!-- /.sidebar-menu -->
         </div>
