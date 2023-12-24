@@ -31,30 +31,30 @@
 
                         @foreach (DataRow row in pagedData)
                         {
-                            @if ((int)@row["Stock"] == 0)
+                            @if ((int)row["Stock"] == 0)
                             {
-                                <tr tabindex="1" disabled @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
-                                    <td style="background-color:mediumvioletred;">@row["pk_MedId"]</td>
-                                    <td style="background-color:orangered;">@row["Name"]</td>
-                                    <td style="background-color:red;">@row["UnitPrice"]</td>
-                                    <td style="background-color:red;">@row["Location"]</td>
-                                    <td style="background-color:red;">@row["Stock"]</td>
-
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr tabindex="2" @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                <tr style="background-color: red !important;">
                                     <td>@row["pk_MedId"]</td>
                                     <td>@row["Name"]</td>
                                     <td>@row["UnitPrice"]</td>
                                     <td>@row["Location"]</td>
                                     <td>@row["Stock"]</td>
-
                                 </tr>
                             }
-
+                            else
+                            {
+                                <tr style="cursor: pointer; background-color: orangered;" @onclick="@(()=>OpenQuantityDialog((int)row["pk_MedId"], row["Name"].ToString(), row["UnitPrice"].ToString()))">
+                                    <td>@row["pk_MedId"]</td>
+                                    <td>@row["Name"]</td>
+                                    <td>@row["UnitPrice"]</td>
+                                    <td>@row["Location"]</td>
+                                    <td>@row["Stock"]</td>
+                                </tr>
+                            }
                         }
+
+
+                        
                     </tbody>
                     <tfoot>
 
