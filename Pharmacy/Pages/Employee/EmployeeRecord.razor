@@ -1,10 +1,9 @@
 ﻿@page "/employeeRecord"
 @attribute [Authorize(Roles = "Admin")]
+<div class="content-header">
+    <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Medicines Shortage</h5>
+</div>
 <div class="card">
-    @*    <div class="card-header">
-    <h3 class="card-title">DataTable with default features</h3>
-    </div> *@
-    <!-- /.card-header -->
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
@@ -40,8 +39,8 @@
                             <td><i class="fa-solid fa-briefcase"></i> @row["WorkExperience"]  </td>
                             <td><i class="fa-solid fa-calendar-days"></i> @row["DateOfJoining"]  </td>
                             <td>
-                                <a href="@($"/employeeinfo/{row["pk_UserId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_UserId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                                <a href="@($"/employeeinfo/{row["pk_UserId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
+                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_UserId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
                             </td>
 
                         </tr>

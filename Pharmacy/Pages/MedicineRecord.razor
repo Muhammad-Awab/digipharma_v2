@@ -52,11 +52,11 @@
                             <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
                             <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
                             <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
-                            <td><i class="fas fa-flask ml-2"></i> @row["Stock"]  </td>
+                            <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
                             <td>
-                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
                               @if(@v[4]=="Admin"){
-                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                                    <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
                             }
 
                             </td>
