@@ -22,10 +22,22 @@
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
             <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-       @*      <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
+            @*      <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
             <button style=" font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;" @onclick="ExportToExcel">
                 Export
             </button>
+
+            <select class="form-select" aria-label="Default select example" @onchange="_CategoryEdit">
+                <option value="1">---Select Category---</option>
+                @foreach (var emp in CategoryList)
+
+                {
+
+                    <option value="@emp.CategoryName">@emp.CategoryName</option>
+
+                }
+            </select>
+
         </div>
         <div class="table-responsive">
             <table id="myTable" class="table table-bordered">
@@ -52,9 +64,10 @@
                             <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
                             <td>
                                 <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
-                              @if(@v[4]=="Admin"){
+                                @if (@v[4] == "Admin")
+                                {
                                     <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
-                            }
+                                }
 
                             </td>
 
@@ -66,8 +79,8 @@
                     <tr>
                         <td colspan="10">
                             <PaginationMedicineRecord PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></PaginationMedicineRecord>
-                        </td> 
-                    </tr> 
+                        </td>
+                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -77,11 +90,13 @@
 
 
 
-@if (DeleteDialogOpen) {
-    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
 }
-@if(ImportingModalOpen){
-<Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImportingTitle" ImageUploadTitle="@ImportingMessage"></Pharmacy.Pages.Generics.UploadModal>
+@if (ImportingModalOpen)
+{
+    <Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImportingTitle" ImageUploadTitle="@ImportingMessage"></Pharmacy.Pages.Generics.UploadModal>
 }
 @code {
     private bool ImportingModalOpen { get; set; } = false;
@@ -115,6 +130,7 @@
         await OnInitializedAsync();
 
     }
+
     DataTable dt = new DataTable();
     List<DataRow> allDataRows = new List<DataRow>();
     string searchTerm = "";
@@ -127,15 +143,55 @@
 
     protected override async Task OnInitializedAsync()
     {
-        SqlParameter[] sp =
-           {
 
-                new SqlParameter("@pharmacyId",v[0]),
+        CategoryList = DALCRUD.GetCategory();
+
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
        };
-        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
+
+    public async void GetAllData()
+    {
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        CreatePagingInfo();
+    }
+
+    public async void GetDatabyCategory()
+    {
+
+
+        SqlParameter[] sp =
+       {
+
+         new SqlParameter("@pharmacyId",v[0]),
+         new SqlParameter("@CategoryName",CategoryEdit),
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordbyCategory", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        CreatePagingInfo();
+    }
+
+
     private async Task ExportToExcel()
     {
         var spreadsheetBytes = DataRowToBytes();
@@ -268,17 +324,12 @@
         };
     ";
 
-
-
-
-
-
     protected DataTable? displayDataTable { get; set; } = new DataTable();
-    private EntMedicineRecord modelimport{ get; set; } = new EntMedicineRecord();
+    private EntMedicineRecord modelimport { get; set; } = new EntMedicineRecord();
     async Task OpenExcelFileFromDisk(InputFileChangeEventArgs e)
     {
 
-        ImportingModalOpen=true;
+        ImportingModalOpen = true;
         IronXL.License.LicenseKey = "PASTE TRIAL OR LICENSE KEY";
 
         MemoryStream ms = new MemoryStream();
@@ -334,10 +385,6 @@
         await OnInitializedAsync();
         StateHasChanged();
     }
-    
-
-
-
     private async Task SaveImportData(EntMedicineRecord model)
     {
         int pharmacyId = Convert.ToInt32(v[0]);
@@ -355,15 +402,35 @@
                 new SqlParameter("@Supplier", model.Supplier),
                 new SqlParameter("@MfgDate",model.MfgDate.ToString()),
                 new SqlParameter("@ExpDate", model.ExpDate.ToString())
-               
+
     };
 
         // Call CRUD method to save new record
         await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
     }
 
+    private List<EntCategory>? CategoryList = new List<EntCategory>();
+
+    private string? CategoryEdit { get; set; }
+
+    private void _CategoryEdit(ChangeEventArgs e)
+    {
+        CategoryEdit = e.Value as string;
+        StateHasChanged();
+        if (CategoryEdit == "1")
+        {
+            OnInitializedAsync();
+        }
+        else
+        {
+            GetDatabyCategory();
+        }
+
+
+    }
+
 }
 
-        <script>
+<script>
     @((MarkupString)downloadScript)
 </script>

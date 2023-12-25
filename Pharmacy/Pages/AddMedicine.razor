@@ -31,7 +31,28 @@
                                             </div>
                                             <input type="text" class="form-control" @bind="model!.Name" placeholder="Enter Medicine Name">
                                         </div>
-                                         
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="medicineName">Medicine Category</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-prescription-bottle"></i></span>
+                                            </div>
+                                            <select class="form-select" aria-label="Default select example" @onchange="_CategoryEdit">
+                                                <option ID="DropDown">---Select Category---</option>
+                                                @foreach (var emp in CategoryList)
+
+                                                {
+
+                                                    <option value="@emp.CategoryName">@emp.CategoryName</option>
+
+                                                }
+                                            </select>
+                                        </div>
+
                                     </div>
 
 
@@ -44,7 +65,7 @@
                                             </div>
                                             <input type="number" @bind="model.UnitPrice" class="form-control" placeholder="Enter Unit Price">
                                         </div>
-                                        
+
                                     </div>
 
                                     <!-- Location input -->
@@ -167,6 +188,7 @@
     // Initialization method
     protected override void OnInitialized()
     {
+        CategoryList = DALCRUD.GetCategory();
         DisplayGreeting();
     }
 
@@ -194,6 +216,7 @@
                 new SqlParameter("@pharmacyId",pharmacyId),
                 new SqlParameter("@EntererId",2),
                 new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@CategoryName",CategoryEdit),
                 new SqlParameter("@UnitPrice", model.UnitPrice),
                 new SqlParameter("@Location", model.Location),
                 new SqlParameter("@Stock", model.Stock),
@@ -214,6 +237,7 @@
             {
                 new SqlParameter("@pk_MedId",id),
                 new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@CategoryName",CategoryEdit),
                 new SqlParameter("@UnitPrice", model.UnitPrice),
                 new SqlParameter("@Location", model.Location),
                 new SqlParameter("@Stock", model.Stock),
@@ -265,6 +289,7 @@
                 {
                     pk_MedId = Convert.ToInt32(row["pk_MedId"]),
                     Name = row["Name"].ToString(),
+                    CategoryName = row["CategoryName"].ToString(),
                     UnitPrice = Convert.ToInt32(row["UnitPrice"]),
                     Location = row["Location"].ToString(),
                     Stock = Convert.ToInt32(row["Stock"]),
@@ -275,4 +300,15 @@
                 };
         }
     }
+
+    private List<EntCategory>? CategoryList = new List<EntCategory>();
+
+    private string? CategoryEdit { get; set; }
+
+    private void _CategoryEdit(ChangeEventArgs e)
+    {
+        CategoryEdit = e.Value as string;
+    }
+
+
 }

@@ -33,6 +33,8 @@ namespace ClassLibraryEnt
         [Required]
 
         public DateTime? ExpDate { get; set; }
-
+        [Required]
+        public string CategoryName { get; set; }
+        
     }
 }

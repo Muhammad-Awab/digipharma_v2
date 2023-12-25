@@ -11,46 +11,59 @@
     <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Medicines Shortage</h5>
 </div> *@
 <div class="card">
-   
-        <div class="d-flex gap-2 mt-2 mb-3">
-        </div>
-        <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
-                    <tr>
-                        <th>pk_MedicineId</th>
-                        <th>Name</th>
-                        <th>UnitPrice</th>
-                        <th>Location</th>
-                        <th>Stock</th>
 
+    <div>
+        <select class="form-select" aria-label="Default select example" @onchange="_CategoryEdit">
+            <option value="1">---Select Category---</option>
+            @foreach (var emp in CategoryList)
 
-                    </tr>
-                </thead>
-                <tbody>
+            {
 
-                    @foreach (DataRow row in dt.Rows)
-                    {
-                        @if ((int)@row["Stock"] < 10)
-                        {
-                            <tr>
-                                <td>@row["pk_MedId"]  </td>
-                                <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
-                                <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
-                                <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
-                                <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
+                <option value="@emp.CategoryName">@emp.CategoryName</option>
 
-
-                            </tr>
-                        }
-
-                    }
-                </tbody>
-                <tfoot>
-                </tfoot>
-            </table>
-        </div>
+            }
+        </select>
     </div>
+
+    <div class="d-flex gap-2 mt-2 mb-3">
+    </div>
+    <div class="table-responsive">
+        <table id="myTable" class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>pk_MedicineId</th>
+                    <th>Name</th>
+                    <th>UnitPrice</th>
+                    <th>Location</th>
+                    <th>Stock</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (DataRow row in dt.Rows)
+                {
+                    @if ((int)@row["Stock"] < 10)
+                    {
+                        <tr>
+                            <td>@row["pk_MedId"]  </td>
+                            <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
+                            <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
+                            <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
+                            <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
+
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+</div>
 
 
 
@@ -70,15 +83,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+        CategoryList = DALCRUD.GetCategory();
         DisplayGreeting();
 
         SqlParameter[] sp =
-           {
+    {
 
-                new SqlParameter("@pharmacyId",v[0]),
+         new SqlParameter("@pharmacyId",v[0]),
+
+
        };
-        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
 
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+        
 
     }
 
@@ -92,5 +110,55 @@
 
 
 
+    public async void GetAllData()
+    {
+        SqlParameter[] sp =
+    {
 
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+
+    }
+
+    public async void GetDatabyCategory()
+    {
+
+
+        SqlParameter[] sp =
+       {
+
+         new SqlParameter("@pharmacyId",v[0]),
+         new SqlParameter("@CategoryName",CategoryEdit),
+
+       };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordbyCategory", sp);
+
+    }
+
+
+
+
+    private List<EntCategory>? CategoryList = new List<EntCategory>();
+
+    private string? CategoryEdit { get; set; }
+
+    private void _CategoryEdit(ChangeEventArgs e)
+    {
+        CategoryEdit = e.Value as string;
+        StateHasChanged();
+        if (CategoryEdit == "1")
+        {
+            GetAllData();
+        }
+        else
+        {
+            GetDatabyCategory();
+        }
+
+
+    }
 }
