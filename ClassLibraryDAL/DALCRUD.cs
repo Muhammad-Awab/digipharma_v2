@@ -225,5 +225,34 @@ namespace ClassLibraryDAL
 
         }
 
+        public static List<EntCategory> GetCategory()
+        {
+            List<EntCategory> CategoryList = new List<EntCategory>();
+            try
+            {
+                SqlConnection con = DBHelper.GetConnection();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SP_GetCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    EntCategory ee = new EntCategory();
+                    ee.CategoryId = (int)sdr["CategoryId"];
+                    ee.CategoryName = sdr["CategoryName"].ToString();
+
+                    CategoryList.Add(ee);
+                }
+                con.Close();
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+          
+            return CategoryList;
+        }
     }
 }

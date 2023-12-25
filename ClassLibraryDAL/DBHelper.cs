@@ -12,8 +12,8 @@ namespace ClassLibraryDAL
         public static SqlConnection GetConnection()
         {
             string[] connectionStrings = {
-                //@"Server=tcp:eu-az-sql-serv1.database.windows.net,1433;Initial Catalog=d3sxd3x0ems31qt;Persist Security Info=False;User ID=uv76v2xmjupncgz;Password=48UFIUPwu&2x9qz#c$8qnH#y3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-                @"Data Source=.;Initial Catalog=db_pharmacy;Integrated Security=True" // Add your second connection string here
+               // @"Server=tcp:eu-az-sql-serv1.database.windows.net,1433;Initial Catalog=d3sxd3x0ems31qt;Persist Security Info=False;User ID=uv76v2xmjupncgz;Password=48UFIUPwu&2x9qz#c$8qnH#y3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+                @"Data Source=.;Initial Catalog=db_pharmacy;Integrated Security=True" 
             };
 
             SqlConnection con = null;
