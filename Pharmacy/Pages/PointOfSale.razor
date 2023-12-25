@@ -54,7 +54,7 @@
                         }
 
 
-                        
+
                     </tbody>
                     <tfoot>
 
@@ -68,7 +68,10 @@
 
             </div>
             <div class="table-responsive col-md-5">
+                <div class="d-flex justify-content-between">
                 <h2 class="sub-header">Billing</h2>
+                <button class="btn btn-success mb-2" @onclick="ReleasePayment">Release Payment</button>
+                </div>
                 <table id="myTable" class="table table-bordered ">
                     <thead class="table-primary">
                         <tr>
@@ -177,6 +180,7 @@
         </div>
 
         <button @onclick="Checkout" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn btn-primary"> Sell</button>
+        <button @onclick="PaymentHold" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn btn-primary"> Payment Hold</button>
 
     </div>
 </div>
@@ -184,6 +188,8 @@
 @code {
     // protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
     private List<EntPointOfSale>? modelList { get; set; } = new List<EntPointOfSale>();
+    private List<EntPointOfSale>? modelList1 { get; set; } = new List<EntPointOfSale>();
+    private List<EntPointOfSale>? modelList2 { get; set; } = new List<EntPointOfSale>();
     // protected EntBilling? model_point_of_sale { get; set; }
     private EntBilling? pointOfSale { get; set; } = new EntBilling();
     // public bool check = true;
@@ -192,6 +198,8 @@
     public string? Quantity { get; set; }
     public decimal Medicineprice { get; set; }
     public decimal MedicineTotalprice { get; set; }
+    public decimal MedicineTotalpriceHold { get; set; }
+    public decimal MedicineTotalQuantityHold { get; set; }
     public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
     public decimal DiscountPrice { get; set; }
@@ -207,8 +215,6 @@
     {
         if (modelList.Count != 0)
         {
-
-
             foreach (var data in modelList)
             {
                 SqlParameter[] parameters = new SqlParameter[]
@@ -226,7 +232,7 @@
               {
             new SqlParameter("@medId",data.fk_MedId),
             new SqlParameter("@quantity", data.Quantity),
-          };
+      };
                 await DALCRUD.CRUD("SP_SellMedicine", sp);
 
             }
@@ -236,7 +242,9 @@
             await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
 
 
+
             MedicineGrandTotal = MedicineTotalprice;
+            modelList1 = modelList;
             modelList.Clear();
             MedicineTotalprice = 0;
             MedicineTotalQuantity = 0;
@@ -284,7 +292,28 @@
         }
     }
 
+    private async Task PaymentHold()
+    {
+        modelList1 = modelList;
 
+
+        modelList=new List<EntPointOfSale>();
+
+        MedicineTotalpriceHold = MedicineTotalprice;
+        MedicineTotalQuantityHold = MedicineTotalQuantity;
+        MedicineTotalprice = 0;
+        MedicineTotalQuantity = 0;
+
+
+    }
+    private async Task ReleasePayment()
+    {
+        
+        modelList = modelList1;
+MedicineTotalprice = MedicineTotalpriceHold;
+        MedicineTotalQuantity = MedicineTotalQuantityHold;
+     
+    }
 
 
 
