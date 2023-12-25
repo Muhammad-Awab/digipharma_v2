@@ -174,7 +174,7 @@
         CreatePagingInfo();
     }
 
-    public async void GetDatabyCategory()
+    public async Task GetDatabyCategory()
     {
 
 
@@ -188,6 +188,7 @@
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordbyCategory", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        StateHasChanged();
         CreatePagingInfo();
     }
 
@@ -413,17 +414,17 @@
 
     private string? CategoryEdit { get; set; }
 
-    private void _CategoryEdit(ChangeEventArgs e)
+    private async Task _CategoryEdit(ChangeEventArgs e)
     {
         CategoryEdit = e.Value as string;
         StateHasChanged();
         if (CategoryEdit == "1")
         {
-            OnInitializedAsync();
+           await OnInitializedAsync();
         }
         else
         {
-            GetDatabyCategory();
+            await GetDatabyCategory();
         }
 
 
