@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-info">
+                    <div class="small-box bg-danger" >
                         <div class="inner">
                             @if (CountList != null)
                             {
@@ -65,7 +65,7 @@
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-warning">
+                    <div class="small-box bg-warning text-white">
                         <div class="inner">
                              @if (CountList != null)
                             {
@@ -74,15 +74,15 @@
                             <p>User Registrations</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-person-add"></i>
+                            <i class="ion ion-person-add "></i>
                         </div>
-                        <a href="/employeeRecord" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/employeeRecord" class="small-box-footer  ">More info <i class="fas fa-arrow-circle-right "></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-danger">
+                    <div class="small-box text-white" style="background-color: #288AA7;">
                         <div class="inner">
                             <h3>65</h3>
 
@@ -105,9 +105,28 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<div class="container">
-<Chart Config="_config" ></Chart>
+<div class="container mt-5">
+    <div class="card  mx-auto" style="max-width: 500px;">
+        <div class="card-header  text-white" style="background-color:#11333A">
+            <div class="card-title fw-4 fs-3">
+                <i class="fas fa-chart-pie me-2"></i> Records Chart
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12 col-md-8">
+                    <div class="chart-container">
+                        <Chart Config="_config"></Chart>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-3 text-center">
+                    <p class="text">Sales Data - Year 2023</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @code{
     // Private field to store counts retrieved from the data access layer
     private EntCounts? CountList;
@@ -125,7 +144,7 @@
     // Override method called when the component is initialized
     protected override void OnInitialized()
     {
-        // Display a greeting
+        // Takes value from session
         DisplayGreeting();
 
         // Load counts
@@ -181,7 +200,7 @@
 
     // Cascading parameter for authentication state
     [CascadingParameter]
-    private Task<AuthenticationState> authenticatestate { get; set; }
+    private Task<AuthenticationState> authenticatestate { get; set; } 
 
     // Method to display a greeting based on authentication state
     private async Task DisplayGreeting()
@@ -193,7 +212,7 @@
         value1 = $"{authState.User.Identity.Name}";
 
         // Split the value1 property and update the 'v' array
-        v = value1.Split(',');
+            v = value1.Split(',');
 
         // Notify the component that its state has changed
         StateHasChanged();

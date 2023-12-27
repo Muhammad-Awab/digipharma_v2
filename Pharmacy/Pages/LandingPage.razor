@@ -1,0 +1,120 @@
+﻿@page "/landingpage"
+@layout NavLayout
+
+<style>
+    .startup-image {
+        max-width: 100%;
+    }
+
+    .overlay {
+        background: linear-gradient(360deg, #CE376B, #0E1A62);
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    .navbar {
+        background-color: #1a1a1a;
+    }
+
+        .navbar a.nav-link {
+            color: #ffffff !important;
+        }
+
+    .btn-light {
+        background-color: #ffffff;
+        color: #1a1a1a;
+    }
+
+        .btn-light:hover {
+            background-color: #f2f2f2;
+        }
+
+    .text-white {
+        color: #ffffff !important;
+    }
+
+    .text-hover-primary:hover {
+        color: #ec6ead !important;
+    }
+
+    /* Adjusted text size */
+    .h1 {
+        font-size: 2.5rem;
+    }
+
+    .fw-normal {
+        font-weight: normal;
+    }
+</style> 
+<div class="overlay"></div>
+<section class="vh-100 background-image">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-10">
+                <div class="row g-0 align-items-center">
+                    <nav class="navbar bg-dark fixed-top border-body opacity-100" data-bs-theme="dark">
+                        <nav class="nav me-auto">
+                            <a class="nav-link" href="/registration">
+                                <i class="fas fa-user-plus me-1"></i> Register
+                            </a>
+                            <a class="nav-link" href="/aboutus">
+                                <i class="fas fa-info-circle me-1"></i> About Us
+                            </a>
+                            <a class="nav-link" href="/login">
+                                <i class="fas fa-phone-alt me-1"></i> Contact Us
+                            </a>
+                            <!-- Button on right -->
+                            <button type="button" class="btn btn-light position-relative">
+                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                                <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span>
+                                </span>
+                            </button>
+                        </nav>
+                    </nav>
+
+                    <div class="col-md-6 col-lg-5 d-none d-md-block">
+                        <img src="/dist/img/ce351420c5b09a45b3173dc222e76b84-removebg.png"
+                             alt="login form" class="img-fluid" style="border-radius: 1rem; width: 100%;" />
+                    </div>
+                    <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 d-flex align-items-center mb-3 pb-1 text-white">
+                                    <div class="d-flex flex-column justify-content-center align-content-center">
+                                        <span class="h1 fw-bold mb-0">
+                                            <i class="fas fa-cubes fa-1x me-3"></i>Welcome to DigiPharma
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center text-white">
+                                    <h3 class="fw-normal mb-3 pb-3"><b>Tranforming health care digitaly</b></h3>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 text-center text-white">
+                                    <h3 class="fw-normal mb-3 pb-3"><b>Let's Ease humanity!</b></h3>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="d-flex justify-content-center align-content-center ">
+                                        <a href="registration" class="text-decoration-none text-white">
+                                            <h7 class="text-hover-primary">Don't have an Account? Sign Up</h7>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
