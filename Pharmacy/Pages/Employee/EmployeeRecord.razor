@@ -7,23 +7,23 @@
 <div class="card">
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <input class="form-control w-50 border-2 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
 
            @*  <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
         </div>
         <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
+            <table id="myTable" class="table table-bordered ">
+                <thead class="table-success">
                     <tr>
 
-                        <th>ID</th>
-                        <th>Full Name</th>
-                        <th>Phone Number</th>
+                        <th class="text-white" style="background-color: #288AA7">ID</th>
+                        <th class="text-white" style="background-color: #288AA7">Full Name</th>
+                        <th class="text-white" style="background-color: #288AA7">Phone Number</th>
                         @* <th>Address</th> *@
-                        <th>Qualification</th>
-                        <th>Work Experience</th>
-                        <th>Date Of Joining</th>
-                        <th>Actions</th>
+                        <th class="text-white" style="background-color: #288AA7">Qualification</th>
+                        <th class="text-white" style="background-color: #288AA7">Work Experience</th>
+                        <th class="text-white" style="background-color: #288AA7">Date Of Joining</th>
+                        <th class="text-white" style="background-color: #288AA7">Actions</th>
 
                     </tr>
                 </thead>

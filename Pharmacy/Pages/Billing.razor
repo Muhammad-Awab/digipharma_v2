@@ -18,7 +18,7 @@
             </div>
             <div class="row">
                 <div class="col-md-7 ">
-                    <button class="btn btn-info " @onclick="GetInitialData">GetData</button>
+                    <button class="btn " style=" background-color: #288AA7" @onclick="GetInitialData">GetData</button>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <button @onclick="UpdateSalesRecord" class="btn btn-info">Update Billing</button>
+                    <button @onclick="UpdateSalesRecord" class="btn " style=" background-color: #288AA7">Update Billing</button>
                 </div>
             </div>
         </EditForm>
@@ -68,7 +68,7 @@
                     <div class="input-group w-50">
                         <input class="form-control border-2 border-primary-subtle" type="text" @bind="searchTerm" id="myInput" placeholder="Search for names.." title="Type in a name">
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-info" @onclick="CreatePagingInfo">Search</button>
+                            <button type="button" class="btn " style=" background-color: #288AA7" @onclick="CreatePagingInfo">Search</button>
                         </div>
                     </div>
                 </div>
@@ -77,12 +77,12 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-pills"></i> Medicine ID</th>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-prescription-bottle-alt"></i> Name</th>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-dollar-sign"></i> Unit Price</th>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-map-marker-alt"></i> Location</th>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-flask"></i> Quantity</th>
-                                <th class="text-black" style="background-color: #4FC3F7;"><i class="fas fa-flask"></i> Action</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-pills"></i> Medicine ID</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-prescription-bottle-alt"></i> Name</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-dollar-sign"></i> Unit Price</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-map-marker-alt"></i> Location</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-flask"></i> Quantity</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-flask"></i> Action</th>
 
                             </tr>
                         </thead>

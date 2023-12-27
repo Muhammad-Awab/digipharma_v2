@@ -7,11 +7,11 @@
 @using System.Data.SqlClient;
 @using System.Data;
 
-@* <PageTitle>Excel File Viewer</PageTitle>
+<PageTitle>Excel File Viewer</PageTitle>
 
 <h1>Open Excel File to View</h1>
 
-<InputFile OnChange="@OpenExcelFileFromDisk" /> *@
+<InputFile OnChange="@OpenExcelFileFromDisk" />
 
 @attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
@@ -21,13 +21,13 @@
     <!-- /.card-header -->
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-            @*      <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
-            <button style=" font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;" @onclick="ExportToExcel">
+            <input class="form-control w-50  border-1 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            @*      <button type="button" class="btn btn-primary " @onclick="CreatePagingInfo">Search</button> *@
+            <button style=" font-size: 16px; background-color: #288AA7; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;" @onclick="ExportToExcel">
                 Export
             </button>
 
-            <select class="form-select" aria-label="Default select example" @onchange="_CategoryEdit">
+            <select class="form-select border-1 border-primary-subtle" aria-label="Default select example" @onchange="_CategoryEdit">
                 <option value="1">---Select Category---</option>
                 @foreach (var emp in CategoryList)
 
@@ -40,15 +40,15 @@
 
         </div>
         <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
+            <table id="myTable" class="table table-bordered" style="background-color:#E55246">
+                <thead class="table-danger" >
                     <tr>
-                        <th>pk_MedicineId</th>
-                        <th>Name</th>
-                        <th>UnitPrice</th>
-                        <th>Location</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
+                        <th class="text-white" style ="background-color:#E55246">pk_MedicineId</th>
+                        <th class="text-white" style="background-color:#E55246">Name</th>
+                        <th class="text-white" style="background-color:#E55246">UnitPrice</th>
+                        <th class="text-white" style="background-color:#E55246">Location</th>
+                        <th class="text-white" style="background-color:#E55246">Stock</th>
+                        <th class="text-white" style="background-color:#E55246">Actions</th>
 
                     </tr>
                 </thead>

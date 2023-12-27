@@ -10,20 +10,20 @@
 
         <div class="d-flex gap-2 mb-4">
 
-            <input tabindex="0" class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <input tabindex="0" class="form-control w-50 border-1 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
             <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
         </div>
         <div class="row">
             <div class="table-responsive col-md-7">
 
                 <table id="myTable" class="table table-hover">
-                    <thead class="table-primary">
+                    <thead class="table-danger">
                         <tr>
-                            <th>pk_MedicineId</th>
-                            <th>Name</th>
-                            <th>UnitPrice</th>
-                            <th>Location</th>
-                            <th>Stock</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-id-card"></i> pk_MedicineId</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-pills ml-2    "></i> Name</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fa-solid fa-money-bil"></i> UnitPrice</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fa-solid fa-location-dot"></i> Location</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-cubes ml-2"></i> Stock</th>
 
                         </tr>
                     </thead>
@@ -69,14 +69,14 @@
             </div>
             <div class="table-responsive col-md-5">
                 <h2 class="sub-header">Billing</h2>
-                <table id="myTable" class="table table-bordered ">
-                    <thead class="table-primary">
+                <table id="myTable" class="table table-bordered" >
+                    <thead class="table-danger ">
                         <tr>
-                            <th>POS_Id</th>
-                            <th>Medicine Name</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Action</th>
+                            <th class="text-white" style="background-color:#E55246">POS_Id</th>
+                            <th class="text-white" style="background-color:#E55246">Medicine Name</th>
+                            <th class="text-white" style="background-color:#E55246">Quantity</th>
+                            <th class="text-white" style="background-color:#E55246">Price</th>
+                            <th class="text-white" style="background-color:#E55246">Action</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -87,7 +87,7 @@
                                 <td>@item.MedicineName</td>
                                 <td>@item.Quantity</td>
                                 <td>@item.Medicineprice</td>
-                                <td><button class="btn btn-danger" @onclick="@(()=>DeleteRecord(item.fk_MedId))">Delete</button></td>
+                                <td><button class="btn text-white" style="background-color:#11333A" @onclick="@(()=>DeleteRecord(item.fk_MedId))">Delete</button></td>
                             </tr>
                         }
                     </tbody>
@@ -101,8 +101,9 @@
 
 
 
-                        <button tabindex="4" class="btn btn-success w-100 mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
+                        <button tabindex="4" class="btn w-100 mt-4 text-white" style=" background-color: #288AA7" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
                     </tfoot>
+
                 </table>
 
             </div>
@@ -124,12 +125,12 @@
     <div class="offcanvas-body">
         <h3>Billing ID : @BillingId</h3>
         <table id="myTable" class="table table-bordered ">
-            <thead class="table-primary">
+            <thead class="table-danger">
                 <tr>
 
-                    <th>Medicine Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
+                    <th class="text-white" style="background-color:#E55246">Medicine Name</th>
+                    <th class="text-white" style="background-color:#E55246">Quantity</th>
+                    <th class="text-white" style="background-color:#E55246">Price</th>
 
                 </tr>
             </thead>
@@ -176,7 +177,7 @@
 
         </div>
 
-        <button @onclick="Checkout" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn btn-primary"> Sell</button>
+        <button @onclick="Checkout" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn text-white" style="background-color:#11333A" > Sell</button>
 
     </div>
 </div>
