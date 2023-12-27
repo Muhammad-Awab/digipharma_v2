@@ -44,12 +44,15 @@
                                             <select class="form-select" aria-label="Default select example" @onchange="_CategoryEdit">
                                                 <option ID="DropDown">---Select Category---</option>
                                                 @foreach (var emp in CategoryList)
-
                                                 {
 
                                                     <option value="@emp.CategoryName">@emp.CategoryName</option>
-
                                                 }
+                                                @if(CategoryEdit!=null)
+                                                {
+                                                    <option value="@CategoryEdit" selected>@CategoryEdit</option>
+                                                }
+                                                
                                             </select>
                                         </div>
 
@@ -299,6 +302,7 @@
                     ExpDate = Convert.ToDateTime(row["ExpDate"])
                 };
         }
+        CategoryEdit = model.CategoryName;
     }
 
     private List<EntCategory>? CategoryList = new List<EntCategory>();

@@ -7,11 +7,11 @@
 @using System.Data.SqlClient;
 @using System.Data;
 
-@* <PageTitle>Excel File Viewer</PageTitle>
+<PageTitle>Excel File Viewer</PageTitle>
 
 <h1>Open Excel File to View</h1>
 
-<InputFile OnChange="@OpenExcelFileFromDisk" /> *@
+<InputFile OnChange="@OpenExcelFileFromDisk" /> 
 
 @attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
@@ -217,6 +217,7 @@
         dataTable.Columns.Add(new DataColumn("Location"));
         dataTable.Columns.Add(new DataColumn("Stock"));
         dataTable.Columns.Add(new DataColumn("Manufacturer"));
+        dataTable.Columns.Add(new DataColumn("CategoryName"));
         dataTable.Columns.Add(new DataColumn("Supplier"));
         dataTable.Columns.Add(new DataColumn("MfgDate"));
         dataTable.Columns.Add(new DataColumn("ExpDate"));
@@ -230,6 +231,7 @@
             newRow["Location"] = row["Location"];
             newRow["Stock"] = row["Stock"];
             newRow["Manufacturer"] = row["Manufacturer"];
+            newRow["CategoryName"] = row["CategoryName"];
             newRow["Supplier"] = row["Supplier"];
             newRow["MfgDate"] = row["MfgDate"];
             newRow["ExpDate"] = row["ExpDate"];
@@ -366,6 +368,7 @@
                         Location = row["Location"]?.ToString() ?? string.Empty,
                         Stock = Convert.ToInt32(row["Stock"] != DBNull.Value ? row["Stock"] : 0),
                         Manufacturer = row["Manufacturer"]?.ToString() ?? string.Empty,
+                        CategoryName = row["CategoryName"]?.ToString() ?? string.Empty,
                         Supplier = row["Supplier"]?.ToString() ?? string.Empty,
                         MfgDate = DateTime.Parse(row["MfgDate"]?.ToString()),
                         ExpDate = DateTime.Parse(row["ExpDate"]?.ToString()),
@@ -400,6 +403,7 @@
                 new SqlParameter("@Location", model.Location),
                 new SqlParameter("@Stock", model.Stock),
                 new SqlParameter("@Manufacturer", model.Manufacturer),
+                new SqlParameter("@CategoryName", model.CategoryName),
                 new SqlParameter("@Supplier", model.Supplier),
                 new SqlParameter("@MfgDate",model.MfgDate.ToString()),
                 new SqlParameter("@ExpDate", model.ExpDate.ToString())
