@@ -12,11 +12,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Dashboard</h1>
+                    <h1 class="m-0" style="font-size: 40px;font-weight:bold;">Dashboard</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                         <li class="breadcrumb-item active">Dashboard v1</li>
                     </ol>
                 </div><!-- /.col -->
@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-info">
+                    <div class="small-box bg-danger" >
                         <div class="inner">
                             @if (CountList != null)
                             {
@@ -42,7 +42,7 @@
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/medicinerecord" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -59,13 +59,13 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/salesrecord" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-warning">
+                    <div class="small-box bg-warning text-white">
                         <div class="inner">
                              @if (CountList != null)
                             {
@@ -74,15 +74,15 @@
                             <p>User Registrations</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-person-add"></i>
+                            <i class="ion ion-person-add "></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/employeeRecord" class="small-box-footer  ">More info <i class="fas fa-arrow-circle-right "></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-danger">
+                    <div class="small-box text-white" style="background-color: #288AA7;">
                         <div class="inner">
                             <h3>65</h3>
 
@@ -91,7 +91,7 @@
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/dashboard" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -104,9 +104,10 @@
     </section>
     <!-- /.content -->
 </div>
+<!-- /.content-wrapper -->
 <div class="container mt-5">
-    <div class="card bg-dark mx-auto" style="max-width: 600px;">
-        <div class="card-header bg-dark text-white">
+    <div class="card  mx-auto" style="max-width: 500px;">
+        <div class="card-header  text-white" style="background-color:#11333A">
             <div class="card-title fw-4 fs-3">
                 <i class="fas fa-chart-pie me-2"></i> Records Chart
             </div>
@@ -126,8 +127,7 @@
     </div>
 </div>
 
-
-@code {
+@code{
     // Private field to store counts retrieved from the data access layer
     private EntCounts? CountList;
 
@@ -144,7 +144,7 @@
     // Override method called when the component is initialized
     protected override void OnInitialized()
     {
-        // Display a greeting
+        // Takes value from session
         DisplayGreeting();
 
         // Load counts
@@ -162,7 +162,7 @@
                         Title = new OptionsTitle
                         {
                             Display = true,
-                            Text = "Statistics Record"
+                            Text = "Records"
                         },
                         AspectRatio = 1,
                         MaintainAspectRatio = false,
@@ -181,10 +181,10 @@
                 {
                     BackgroundColor = new[]
                     {
-                    ColorUtil.ColorHexString(255, 99, 132),   // Slice 1 aka "Red"
-                    ColorUtil.ColorHexString(255, 205, 86),   // Slice 2 aka "Yellow"
-                    ColorUtil.ColorHexString(75, 192, 192),   // Slice 3 aka "Green"
-                }
+                ColorUtil.ColorHexString(255, 99, 132),   // Slice 1 aka "Red"
+                ColorUtil.ColorHexString(255, 205, 86),   // Slice 2 aka "Yellow"
+                ColorUtil.ColorHexString(75, 192, 192),   // Slice 3 aka "Green"
+            }
                 };
 
             // Add the dataset to the pie chart configuration
@@ -200,7 +200,7 @@
 
     // Cascading parameter for authentication state
     [CascadingParameter]
-    private Task<AuthenticationState> authenticatestate { get; set; }
+    private Task<AuthenticationState> authenticatestate { get; set; } 
 
     // Method to display a greeting based on authentication state
     private async Task DisplayGreeting()
@@ -212,9 +212,10 @@
         value1 = $"{authState.User.Identity.Name}";
 
         // Split the value1 property and update the 'v' array
-        v = value1.Split(',');
+            v = value1.Split(',');
 
         // Notify the component that its state has changed
         StateHasChanged();
     }
+
 }

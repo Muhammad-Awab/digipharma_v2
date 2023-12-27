@@ -7,16 +7,16 @@
 
 <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="main-header navbar navbar-expand text-white" style="background-color:#11333A">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            <li class="nav-item  ">
+                <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/dashboard" class="nav-link">Home</a>
+                <a href="/dashboard" class="nav-link text-white">Home</a>
             </li>
-           
+
         </ul>
 
         <!-- Right navbar links -->
@@ -25,7 +25,7 @@
             <h5 class="mx-3 mt-2">@v[1]</h5>
             <AuthorizeView Roles="Admin,User">
                 <Authorized>
-                    <NavLink class="btn btn-outline-primary" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
+                    <NavLink class="btn mr-3 text-white" style="background-color:#E55246" @onclick="logout" href="javascript:void(0)" Match="NavLinkMatch.All">
                         <span class="oi oi-info" aria-hidden="true"></span> Logout
                     </NavLink>
                 </Authorized>
@@ -36,17 +36,17 @@
     </nav>
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar elevation-4 " style="background-color:#11333A">
         <!-- Brand Logo -->
         <a href="@($"/account/{@v[0]}")" class="brand-link" style="text-decoration:none;">
             <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">@v[2]</span>
+            <span class="brand-text text-white">@v[2]</span>
         </a>
 
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex text-white">
                 <div class="image">
                     @if (v[4] == "User")
                     {
@@ -55,21 +55,21 @@
                     }
                     else
                     {
-                        <img src="dist/img/Awab.jpeg" class="img-circle elevation-2" alt="User Image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaDGuMSGROb9tTNzjwJO2k963svuEa-zBfAbSXxP9-clT2nNUpI8Z9z-KwKdck3i4lh6k&usqp=CAU" class="img-circle elevation-2" alt="User Image">
                     }
                 </div>
-                <div class="info">
-                    <a href="#" style="text-decoration:none;" class="d-block">@v[1]</a>
+                <div class="info ">
+                    <a href="/dashboard" style="text-decoration:none;" class="d-block text-white">@v[1]</a>
                 </div>
 
             </div>
 
             <!-- SidebarSearch Form -->
-            <div class="form-inline">
+            <div class="form-inline ">
                 <div class="input-group" data-widget="sidebar-search">
                     <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
                     <div class="input-group-append">
-                        <button class="btn btn-sidebar">
+                        <button class="btn btn-sidebar text-white">
                             <i class="fas fa-search fa-fw"></i>
                         </button>
                     </div>
@@ -77,15 +77,15 @@
             </div>
 
             <!-- Sidebar Menu -->
-            <nav class="mt-2">
+            <nav class="mt-2 text-white">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <AuthorizeView Roles="Admin,User">
                         <Authorized>
                             <li class="nav-item">
-                                <a href="/dashboard" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                <a href="/dashboard" class="nav-link text-white">
+                                    <i class="nav-icon fas fa-th text-white"></i>
                                     <p>
                                         DashBoard
                                         <span class="right badge badge-danger">New</span>
@@ -93,27 +93,28 @@
                                 </a>
                             </li>
                             <li class="nav-item menu-open">
-                                <a href="/inventory" class="nav-link active">
+                                <a href="/inventory" class="nav-link text-white">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>Visit Inventory
-                                        <i class="right fas fa-angle-left"></i>
+                                    <p>
+                                        Visit Inventory
+                                       @*  <i class="right fas fa-angle-left"></i> *@
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="/medicinerecord" class="nav-link">
+                                        <a href="/medicinerecord" class="nav-link text-white">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>See Medicines</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/add_medicine_record" class="nav-link">
+                                        <a href="/add_medicine_record" class="nav-link text-white">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Add New Medicine</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/medicineshortage" class="nav-link">
+                                        <a href="/medicineshortage" class="nav-link text-white">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Medicine Shortage</p>
                                         </a>
@@ -123,7 +124,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a href="/pointofsale" class="nav-link">
+                                <a href="/pointofsale" class="nav-link text-white">
                                     <i class="nav-icon fas fa-cash-register"></i>
                                     <p>
                                         Point Of Sale
@@ -132,7 +133,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/billing" class="nav-link">
+                                <a href="/billing" class="nav-link text-white">
                                     <i class="nav-icon fas fa-money-bill"></i>
                                     <p>
                                         Billing
@@ -141,7 +142,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="salesrecord" class="nav-link">
+                                <a href="salesrecord" class="nav-link text-white">
                                     <i class="nav-icon fas fa-chart-bar"></i>
                                     <p>
                                         Sales Report
@@ -150,7 +151,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="aboutus" class="nav-link">
+                                <a href="aboutus" class="nav-link text-white">
                                     <i class="nav-icon fas fa-info-circle"></i>
                                     <p>
                                         About Us
@@ -158,30 +159,27 @@
                                     </p>
                                 </a>
                             </li>
-
-                        </Authorized>
-
-                    </AuthorizeView>
-
+                            </Authorized>
+                            </AuthorizeView>
                     <AuthorizeView Roles="Admin">
                         <Authorized>
                             <li class="nav-item menu-open">
-                                <a href="/employee" class="nav-link active">
+                                <a href="/employee" class="nav-link text-white">
                                     <i class="nav-icon fas fa-user"></i>
                                     <p>
                                         Employees
-                                        <i class="right fas fa-angle-left"></i>
+                                       @*  <i class="right fas fa-angle-left"></i> *@
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="/employee" class="nav-link">
+                                        <a href="/employeeinfo" class="nav-link text-white">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>EmployeeInfo</p>
+                                            <p>Add Employee</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/employeeinfo" class="nav-link">
+                                        <a href="/employeeRecord" class="nav-link text-white">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Registered Employees</p>
                                         </a>
@@ -193,9 +191,7 @@
                         </Authorized>
 
                     </AuthorizeView>
-
-
-                </ul>
+                    </ul>
             </nav>
             <!-- /.sidebar-menu -->
         </div>
@@ -214,7 +210,7 @@
     </aside>
     <!-- /.control-sidebar -->
     <!-- Main Footer -->
-    <footer class="main-footer">
+    <footer class="main-footer" style="background-color: #DCEDC8">
         <strong>Copyright &copy; 2023-2025 DigiPharma</strong>
         All rights reserved.
         <div class="float-right d-none d-sm-inline-block">

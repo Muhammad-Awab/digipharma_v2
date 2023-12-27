@@ -6,10 +6,64 @@
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
+          <Pharmacy.Pages.PageNotFound></Pharmacy.Pages.PageNotFound>
+            
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+
+<style>
+    .logo-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white; /* Change background color as needed */
+    }
+
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Adjust the image to fit within its container */
+        }
+</style>
+
+@code {
+    private bool showLogo = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulating an asynchronous operation (e.g., fetching data, loading resources)
+        // You can replace this with your actual loading process
+        await Task.Delay(1000); // Simulate a delay of 2 seconds
+
+        showLogo = false;
+    }
+}
+
+@if (showLogo)
+{
+    <div class="logo-container">
+        <div class="absCenter ">
+            <div class="loaderPill">
+                <div class="loaderPill-anim">
+                    <div class="loaderPill-anim-bounce">
+                        <div class="loaderPill-anim-flop">
+                            <div class="loaderPill-pill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loaderPill-floor">
+                    <div class="loaderPill-floor-shadow"></div>
+                </div>
+                <div class="loaderPill-text">Loading....</div>
+            </div>
+        </div>
+        <!-- You can style the logo container as needed -->
+    </div>
+}

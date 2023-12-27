@@ -1,189 +1,265 @@
-﻿@* The following code represents a Razor component for a billing page. *@
-
-@* Page directive with authorization roles. *@
-@page "/billing"
+﻿@page "/billing"
 @attribute [Authorize(Roles = "Admin,User")]
 
-@* HTML content for the billing page. *@
-<h3 style="color: #333; font-family: 'Arial', sans-serif; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 20px; text-align: center;">Billing</h3>
+<div class="container mt-2">
+    <h2 class="text-black mb-4">BILLING DETAILS</h2>
 
-<section>
-    <!-- EditForm for submitting billing data -->
-    <EditForm Model="_ModelBilling" OnSubmit="SubmitForm">
-        <table>
-            <!-- Billing ID input -->
-            <tr>
-                <td>
-                    <strong>Billing ID</strong>
-                </td>
-                <td>
-                    <input name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control"></input>
-                </td>
-            </tr>
-            <!-- Button to get initial data -->
-            <tr>
-                <td>
-                    <button @onclick="GetInitialData" style="background-color: green; color: white; border: none; padding: 10px 15px; cursor: pointer;">GetData</button>
-                </td>
-            </tr>
-            <!-- Discount and TotalPrice inputs -->
-            <tr>
-                <td>
-                    <strong>Discount</strong>
-                </td>
-                <td>
-                    <input name="Email" @bind="_ModelBilling.Discount" class="form-control" required></input>
-                </td>
-                <td>
-                    <strong>TotalPrice</strong>
-                </td>
-                <td>
-                    <input name="ID" @bind="_ModelBilling.TotalPrice" class="form-control" required></input>
-                </td>
-            </tr>
-            <!-- DiscountPerc and Phone inputs -->
-            <tr>
-                <td>
-                    <strong>DiscountPerc</strong>
-                </td>
-                <td>
-                    <input type="text" name="UserName" @bind="_ModelBilling.GrandTotal" class="form-control" required></input>
-                </td>
-                <td>
-                    <strong>Phone</strong>
-                </td>
-                <td>
-                    <input name="Phone" @bind="_ModelBilling.DiscountPerc" class="form-control" required></input>
-                </td>
-            </tr>
-            <!-- Button to trigger change -->
-            <tr>
-                <td>
-                    <button style="background-color: blue; color: white; border: none; padding: 10px 15px; cursor: pointer;">Change</button>
-                </td>
-            </tr>
-        </table>
-    </EditForm>
-</section>
+    <section class="mb-4">
+        <EditForm Model="_ModelBilling">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group h6">
+                        <label for="billingId">Billing ID</label>
+                        <input id="billingId" name="ID" @bind="_ModelBilling.pk_BillingId" class="form-control border-2 border-primary-subtle" />
 
-<style>
-    <!-- CSS styles for the form and table -->
-    .form-container {
-        max-width: 300px;
-        margin: 0 auto;
-    }
+                    </div>
+                </div>
 
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    strong {
-        color: #333;
-    }
-
-    td {
-        padding: 10px;
-    }
-
-    .form-floating {
-        position: relative;
-    }
-
-        .form-floating label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            padding: 10px;
-            transition: 0.2s ease all;
-        }
-
-        .form-floating input:focus,
-        .form-floating input:not(:placeholder-shown) {
-            padding-top: 18px;
-            padding-bottom: 3px;
-        }
-</style>
-
-<section>
-    <!-- Card section for displaying a table of data -->
-    <div class="card">
-        <div class="card-body">
-            <!-- Search input and button -->
-            <div class="d-flex gap-2">
-                <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-                <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
             </div>
-            <!-- Table to display data -->
-            <div class="table-responsive mt-3">
-                <table id="myTable" class="table table-bordered table-striped ">
-                    <thead>
-                        <!-- Table header -->
-                        <tr>
-                            <th>pk_MedicineId</th>
-                            <th>Name</th>
-                            <th>UnitPrice</th>
-                            <th>Location</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Loop through rows in DataTable and display data -->
-                        @foreach (DataRow row in pagedData)
-                        {
+            <div class="row">
+                <div class="col-md-7 ">
+                    <button class="btn " style=" background-color: #288AA7" @onclick="GetInitialData">GetData</button>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="totalPrice">Total Price</label>
+                        <input id="totalPrice" name="ID" @bind="_ModelBilling.TotalPrice" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="discount">Discount</label>
+                        <input id="discount" name="Email" @bind="_ModelBilling.Discount" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <div class="form-group h6">
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="Phone" @bind="_ModelBilling.DiscountPerc" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group h6 ">
+                        <label for="discountPerc">Discount Percentage</label>
+                        <input id="discountPerc" type="text" name="UserName" @bind="_ModelBilling.GrandTotal" required class="form-control border-2 border-primary-subtle" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button @onclick="UpdateSalesRecord" class="btn " style=" background-color: #288AA7">Update Billing</button>
+                </div>
+            </div>
+        </EditForm>
+    </section>
+
+    <section>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="input-group w-50">
+                        <input class="form-control border-2 border-primary-subtle" type="text" @bind="searchTerm" id="myInput" placeholder="Search for names.." title="Type in a name">
+                        <div class="input-group-append">
+                            <button type="button" class="btn " style=" background-color: #288AA7" @onclick="CreatePagingInfo">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
                             <tr>
-                                <td>@row["pk_MedId"]</td>
-                                <td>@row["Name"]</td>
-                                <td>@row["UnitPrice"]</td>
-                                <td>@row["Location"]</td>
-                                <td>@row["Quantity"]</td>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-pills"></i> Medicine ID</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-prescription-bottle-alt"></i> Name</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-dollar-sign"></i> Unit Price</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-map-marker-alt"></i> Location</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-flask"></i> Quantity</th>
+                                <th class="text-white" style="background-color:#11333A"><i class="fas fa-flask"></i> Action</th>
+
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <!-- Pagination section -->
-                        <tr>
-                            <td colspan="10">
-                                <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in pagedData)
+                            {
+                                <tr>
+                                    <td>@row["pk_MedId"]</td>
+                                    <td>@row["Name"]</td>
+                                    <td>@row["UnitPrice"]</td>
+                                    <td>@row["Location"]</td>
+                                    <td>@row["Quantity"]</td>
+                                    <td><a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString(),(int)@row["Quantity"],(decimal)@row["UnitPrice"]))"><i class="fa-solid fa-trash"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="10">
+                                    <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
+
+
+@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}
 
 @code {
-    <!-- C# code block for the component -->
+
     public EntBilling _ModelBilling { get; set; } = new EntBilling();
+
     DataTable dt = new DataTable();
+    public int fk_PharmacyId { get; set; }
+    public int Quantityy { get; set; }
+    public decimal UnitPricee { get; set; }
+    public decimal MedicineTotalPrice { get; set; }
+    public string[] v { get; set; } = { "Guest", "Guest" };
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    public bool DeleteDialogOpen { get; set; }
+    public string? ID { get; set; }
+    List<DataRow> allDataRows = new List<DataRow>();
+    string searchTerm = "";
+    IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
+    [Parameter]
+    public int page { get; set; } = 1;
+    int pageSize = 15;
+    PagingInfo pagingInfo = new PagingInfo();
+    public bool QuantityDialogOpen { get; set; }
 
-    <!-- Form submission method -->
-    private void SubmitForm()
+
+    private void OnQuantityDialogClose(bool accepted)
     {
-        // _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
-        // GetMedicineData(_ModelBilling.pk_BillingId);
+        QuantityDialogOpen = false;
+
+        StateHasChanged();
+
     }
 
-    <!-- Method to get initial data -->
-    public void GetInitialData()
+    private void OnQuantityDialogOpen()
     {
-        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId);
+        QuantityDialogOpen = true;
+        StateHasChanged();
+    }
+
+    public void OnQuantityChange()
+    {
+
+    }
+
+    private async Task OnDeleteDialogClose(bool accepted)
+    {
+        DeleteDialogOpen = false;
+        await OnInitializedAsync();
+        StateHasChanged();
+
+    }
+
+    private void OpenDeleteDialog(string? Id, int Quantity, decimal UnitPrice)
+    {
+        DeleteDialogOpen = true;
+        ID = Id;
+        StateHasChanged();
+        Quantityy = Quantity;
+        UnitPricee = UnitPrice;
+
+    }
+
+    private async Task OnDelete(string id)
+    {
+
+        MedicineTotalPrice = UnitPricee * Quantityy;
+        _ModelBilling.GrandTotal = _ModelBilling.GrandTotal - MedicineTotalPrice;
+        _ModelBilling.TotalPrice = _ModelBilling.TotalPrice - MedicineTotalPrice;
+
+        SqlParameter[] sp =
+           {
+             new SqlParameter("@id",int.Parse(id)),
+
+       };
+        await DALCRUD.CRUD("SP_DeleteSalesRecord", sp);
+
+        addmedicineback();
+
+        DeleteDialogOpen = false;
         GetMedicineData(_ModelBilling.pk_BillingId);
+
     }
 
-    <!-- Method to get medicine data asynchronously -->
-    public async void GetMedicineData(int fk_BillingId)
+    public async void UpdateSalesRecord()
     {
+        SqlParameter[] sp1 =
+       {
+             new SqlParameter("@id",_ModelBilling.pk_BillingId),
+             new SqlParameter("@TotalPrice", _ModelBilling.TotalPrice),
+             new SqlParameter("@GrandTotal",_ModelBilling.GrandTotal),
+
+       };
+        await DALCRUD.CRUD("SP_UpdateSalesRecord", sp1);
+        GetInitialData();
+        await JS.InvokeVoidAsync("alert", $"Record Successfully Updated for {_ModelBilling.pk_BillingId}");
+        nm.NavigateTo("/billing", true);
+
+    }
+
+    public async void addmedicineback()
+    {
+
         SqlParameter[] sp =
         {
-            new SqlParameter("@fk_BillingId",fk_BillingId)
+             new SqlParameter("@pk_MedId",int.Parse(ID)),
+             new SqlParameter("@Stock",Quantityy),
+    };
+        await DALCRUD.CRUD("SP_AddMedicineBack", sp);
+    }
+
+    public async void GetInitialData()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+
+        _ModelBilling = DALCRUD.GetBillingRecordById(_ModelBilling.pk_BillingId, int.Parse(v[0]));
+        GetMedicineData(_ModelBilling.pk_BillingId);
+        if (_ModelBilling.pk_BillingId == 0)
+        {
+            await JS.InvokeVoidAsync("alert", $"No Record Found ");
+
+        }
+
+
+
+
+    }
+
+    public async void GetMedicineData(int fk_BillingId)
+    {
+
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+
+
+        SqlParameter[] sp =
+        {
+            new SqlParameter("@fk_BillingId",fk_BillingId),
+            new SqlParameter("@fk_PharmacyId",v[0])
     };
 
         dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineByBillingId", sp);
@@ -192,29 +268,18 @@
         StateHasChanged();
     }
 
-    <!-- Variables and methods for pagination -->
-    List<DataRow> allDataRows = new List<DataRow>();
-    string searchTerm = "";
-    IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
-    [Parameter]
-    public int page { get; set; } = 1;
-    int pageSize = 15; // Change this to your desired page size
-
-    PagingInfo pagingInfo = new PagingInfo();
-
-    <!-- Initialization and parameter setting methods -->
-    protected override async Task OnInitializedAsync()
+    private void SearchTextChanged(ChangeEventArgs e)
     {
-        // dt = await DALCRUD.ReadTable("SP_GetMedicineRecord");
-        // allDataRows = dt.Rows.Cast<DataRow>().ToList();
-        // GetMedicineData(1);
+        searchTerm = e.Value.ToString();
+        CreatePagingInfo();
+        // You can add additional logic here if needed
     }
+
     protected override void OnParametersSet()
     {
         CreatePagingInfo();
     }
 
-    <!-- Method to create pagination information -->
     public void CreatePagingInfo()
     {
         pagingInfo.CurrentPage = page;
@@ -241,18 +306,10 @@
         Console.WriteLine($"Current Page: {page}, Total Items: {pagingInfo.TotalItems}, Page Size: {pageSize}, Skip: {skip}");
     }
 
-    <!-- Method to handle page change -->
     public void PageChanged(int newPage)
     {
         page = newPage;
         CreatePagingInfo();
     }
 
-    <!-- Method to handle search text change -->
-    private void SearchTextChanged(ChangeEventArgs e)
-    {
-        searchTerm = e.Value.ToString();
-        CreatePagingInfo();
-        <!-- You can add additional logic here if needed -->
-    }
 }

@@ -1,17 +1,17 @@
 ﻿@page "/employeeinfo"
-   @page "/employeeinfo/{id}"
+@page "/employeeinfo/{id}"
 @attribute [Authorize(Roles = "Admin")]
    @using Amazon.S3;
 @using Amazon.S3.Model;
+
 <div class="container pt-5">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-8 col-sm-10 col-12">
             <div class="card bg-light rounded shadow-lg">
-                <div class="card-header text-center" style="background-color: #5E2C5E; color: #fff; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                <div class="card-header text-center" style="background-color:#E55246 ; color: #FFFF; border-bottom: none; border-top-left-radius: 10px; border-top-right-radius: 10px;">
                     <h3 class="font-weight-bold"><i class="fas fa-user-plus"></i> @PageName</h3>
                 </div>
                 <div class="card-body">
-
                     <div class="form-group">
                         <label for="employeeName"><i class="fas fa-user"></i> Employee Name</label>
                         <input type="text" @bind="model!.UserFullName" class="form-control" id="employeeName" placeholder="Enter name">
@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <InputFile OnChange="UploadImage" />
                     </div>
-                    <button @onclick="SaveEmployeeRecord" class="btn btn-primary btn-block" style="background-color: #5E2C5E; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <button @onclick="SaveEmployeeRecord" class="btn btn-primary btn-block" style="background-color:#E55246 ; font-size:20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                         <i class="fas fa-check"></i> @ButtonName
                     </button>
 
@@ -63,11 +63,13 @@
 </div>
 
 
-@if (imguploading==true)
+@if (imguploading == true)
 {
-<Pharmacy.Pages.Generics.UploadModal></Pharmacy.Pages.Generics.UploadModal>
+    <Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImageUploadMessage" ImageUploadTitle="@ImageUploadTitle"></Pharmacy.Pages.Generics.UploadModal>
 }
 @code {
+    public string? ImageUploadTitle { get; set; } = "Image Uploading......";
+    public string? ImageUploadMessage { get; set; } = "Please Wait for Upload an Image";
     public string? PageName { get; set; } = "Add Employee Record";
     public string? ButtonName { get; set; } = "Save";
     [Parameter]
@@ -132,7 +134,8 @@
            new SqlParameter("@UserImg", model.UserImg)
     };
             await DALCRUD.CRUD("SP_SaveEmployeeRecord", sp);
-            nm.NavigateTo("/", forceLoad: true);
+            await JS.InvokeVoidAsync("alert", $"Employee Data Save Sucessfully");
+
         }
         else
         {
@@ -152,6 +155,7 @@
 
     };
             await DALCRUD.CRUD("SP_UpdateEmployeeRecord", sp);
+            await JS.InvokeVoidAsync("alert", $"Employee Data Update Sucessfully");
         }
     }
 

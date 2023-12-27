@@ -1,29 +1,29 @@
 ﻿@page "/employeeRecord"
 @attribute [Authorize(Roles = "Admin")]
+
+@* <div class="content-header">
+    <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Employee Record</h5>
+</div> *@
 <div class="card">
-    @*    <div class="card-header">
-    <h3 class="card-title">DataTable with default features</h3>
-    </div> *@
-    <!-- /.card-header -->
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <input class="form-control w-50 border-2 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
 
-            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
+           @*  <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button> *@
         </div>
         <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
+            <table id="myTable" class="table table-bordered ">
+                <thead class="table-success">
                     <tr>
 
-                        <th>ID</th>
-                        <th>UserFullName</th>
-                        <th>PhoneNumber</th>
+                        <th class="text-white" style="background-color: #288AA7">ID</th>
+                        <th class="text-white" style="background-color: #288AA7">Full Name</th>
+                        <th class="text-white" style="background-color: #288AA7">Phone Number</th>
                         @* <th>Address</th> *@
-                        <th>Qualification</th>
-                        <th>WorkExperience</th>
-                        <th>DateOfJoining</th>
-                        <th>Actions</th>
+                        <th class="text-white" style="background-color: #288AA7">Qualification</th>
+                        <th class="text-white" style="background-color: #288AA7">Work Experience</th>
+                        <th class="text-white" style="background-color: #288AA7">Date Of Joining</th>
+                        <th class="text-white" style="background-color: #288AA7">Actions</th>
 
                     </tr>
                 </thead>
@@ -40,8 +40,8 @@
                             <td><i class="fa-solid fa-briefcase"></i> @row["WorkExperience"]  </td>
                             <td><i class="fa-solid fa-calendar-days"></i> @row["DateOfJoining"]  </td>
                             <td>
-                                <a href="@($"/employeeinfo/{row["pk_UserId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_UserId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                                <a href="@($"/employeeinfo/{row["pk_UserId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
+                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_UserId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
                             </td>
 
                         </tr>

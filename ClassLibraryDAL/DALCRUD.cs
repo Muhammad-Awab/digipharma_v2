@@ -102,8 +102,7 @@ namespace ClassLibraryDAL
             return new DataTable();
 
         }
-
-        public static EntBilling GetBillingRecordById(int BillingId)
+        public static EntBilling GetBillingRecordById(int BillingId,int fk_PharmacyId)
         {
             EntBilling ee = new EntBilling();
 
@@ -112,6 +111,7 @@ namespace ClassLibraryDAL
             con.Open();
             SqlCommand cmd = new SqlCommand("SP_GetBillingRecordById", con);
             cmd.Parameters.AddWithValue("@pk_BillingId", BillingId);
+            cmd.Parameters.AddWithValue("@fk_PharmacyId", fk_PharmacyId);
             cmd.CommandType = CommandType.StoredProcedure;
             SqlDataReader sdr = cmd.ExecuteReader();
 
@@ -156,7 +156,6 @@ namespace ClassLibraryDAL
             }
             return ee;
         }
-
         public static EntRegistration GetUserByName(string? username)
         {
             EntRegistration ee = new EntRegistration();
@@ -215,7 +214,6 @@ namespace ClassLibraryDAL
                     ee.Role = sdr["Role"].ToString();
                     ee.UserImg = sdr["UserImg"].ToString();
 
-
                 }
                 con.Close();
             }
@@ -225,6 +223,36 @@ namespace ClassLibraryDAL
             }
             return ee;
 
+        }
+
+        public static List<EntCategory> GetCategory()
+        {
+            List<EntCategory> CategoryList = new List<EntCategory>();
+            try
+            {
+                SqlConnection con = DBHelper.GetConnection();
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SP_GetCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    EntCategory ee = new EntCategory();
+                    ee.CategoryId = (int)sdr["CategoryId"];
+                    ee.CategoryName = sdr["CategoryName"].ToString();
+
+                    CategoryList.Add(ee);
+                }
+                con.Close();
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+          
+            return CategoryList;
         }
     }
 }

@@ -1,0 +1,163 @@
+﻿@page "/print"
+@inject JSPrintManager JSPrintManager
+
+<div>
+    <strong>JSPM </strong><span>WebSocket Status </span>
+
+    @if (JSPrintManager.Status == JSPMWSStatus.Open)
+    {
+        <span class="badge badge-success">
+            <i class="fa fa-check" /> Open
+        </span>
+    }
+    else if (JSPrintManager.Status == JSPMWSStatus.Closed)
+    {
+        <span class="badge badge-danger">
+            <i class="fa fa-exclamation-circle" /> Closed!
+        </span>
+        <div>
+            <strong>JSPrintManager (JSPM) App</strong> is not installed or not running! <a href="https://neodynamic.com/downloads/jspm" target="_blank">Download JSPM Client App...</a>
+        </div>
+    }
+    else if (JSPrintManager.Status == JSPMWSStatus.Blocked)
+    {
+        <span class="badge badge-warning">
+            <i class="fa fa-times-circle" /> This Website is Blocked!
+        </span>
+    }
+    else if (JSPrintManager.Status == JSPMWSStatus.WaitingForUserResponse)
+    {
+        <span class="badge badge-warning">
+            <i class="fa fa-user-circle" /> Waiting for user response...
+        </span>
+    }
+</div>
+
+@if (JSPrintManager.Status == JSPMWSStatus.Open)
+{
+    @if (JSPrintManager.Printers == null)
+    {
+        <hr />
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Please wait...</span>
+        </div>
+        <strong><em>Getting local printers...</em></strong>
+    }
+    else
+    {
+        <div>
+            <h1>Print ESP/POS commands from Blazor</h1>
+            <hr />
+            <EditForm Model="@MyPrinter">
+                <div class="form-check">
+                    <InputCheckbox class="form-check-input" @bind-Value="UseDefaultPrinter" />Print to <strong>Default Printer?</strong><br />
+                </div>
+                <p>or...</p>
+                <p>Select an <strong>Installed Printer</strong>:</p>
+                <InputSelect @bind-Value="MyPrinter.PrinterName" class="form-control form-control-sm">
+                    @foreach (var p in JSPrintManager.Printers)
+                    {
+                        <option value="@p">@p</option>
+                    }
+                </InputSelect>
+            </EditForm>
+            <br /><br />
+            <input type="button" value="Print Now..." @onclick="DoPrint" />
+        </div>
+    }
+}
+
+
+@code {
+
+    // An Installed Printer instance
+    private InstalledPrinter MyPrinter { get; set; } = new();
+    // Use default printer?
+    private bool UseDefaultPrinter = false;
+
+    // Printing...
+    private void DoPrint()
+    {
+        // Status = Open means that JSPM Client App is up and running!
+        if (JSPrintManager.Status == JSPMWSStatus.Open)
+        {
+            // Create a ClientPrintJob
+            var cpj = new ClientPrintJob();
+            // Set target Printer
+            cpj.ClientPrinter = UseDefaultPrinter ? new DefaultPrinter() : MyPrinter;
+            // Create ESC/POS commands for sample label
+            var esc = (char)0x1B; //ESC byte in hex notation
+            var newLine = (char)0x0A; //LF byte in hex notation
+
+            var cmds = esc + "@"; //Initializes the printer (ESC @)
+            cmds += esc + "!" + (char)0x38; //Emphasized + Double-height + Double-width mode selected (ESC ! (8 + 16 + 32)) 56 dec => 38 hex
+            cmds += "BEST DEAL STORES"; //text to print
+            cmds += newLine + newLine;
+            cmds += esc + "!" + (char)0x00; //Character font A selected (ESC ! 0)
+            cmds += "COOKIES                   5.00";
+            cmds += newLine;
+            cmds += "MILK 65 Fl oz             3.78";
+            cmds += newLine + newLine;
+            cmds += "SUBTOTAL                  8.78";
+            cmds += newLine;
+            cmds += "TAX 5%                    0.44";
+            cmds += newLine;
+            cmds += "TOTAL                     9.22";
+            cmds += newLine;
+            cmds += "CASH TEND                10.00";
+            cmds += newLine;
+            cmds += "CASH DUE                  0.78";
+            cmds += newLine + newLine;
+            cmds += esc + "!" + (char)0x18; //Emphasized + Double-height mode selected (ESC ! (16 + 8)) 24 dec => 18 hex
+            cmds += "# ITEMS SOLD 2";
+            cmds += esc + "!" + (char)0x00; //Character font A selected (ESC ! 0)
+            cmds += newLine + newLine;
+            cmds += "11/03/13  19:53:17";
+            // Set the RAW commands to send to the printer...
+            cpj.PrinterCommands = cmds;
+            // PRINT IT!!!
+            JSPrintManager.SendClientPrintJob(cpj);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Handle OnGetPrinters event...
+            JSPrintManager.OnGetPrinters += () =>
+            {
+                if (JSPrintManager.Printers != null &&
+                    JSPrintManager.Printers.Length > 0)
+                {
+                    // Display installed printers...
+                    StateHasChanged();
+                }
+                else
+                {
+                    Console.WriteLine("No printers found...");
+                }
+
+            };
+
+            // Handle OnStatusChanged event to detect any WSS status change
+            JSPrintManager.OnStatusChanged += () =>
+            {
+                StateHasChanged();
+
+                // Status = Open means that JSPM Client App is up and running!
+                if (JSPrintManager.Status == JSPMWSStatus.Open)
+                {
+                    //Try getting local printers...
+                    JSPrintManager.TryGetPrinters();
+                }
+            };
+
+            // Start WebSocket comm
+            JSPrintManager.Start();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+}
+

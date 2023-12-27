@@ -1,27 +1,29 @@
 ﻿@page "/pointofsale/{Page:int}"
 @page "/pointofsale"
 @attribute [Authorize(Roles = "Admin,User")]
+@inject ClipboardService ClipboardService
+
 <div class="card">
 
 
     <div class="card-body">
 
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 mb-4">
 
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <input tabindex="0" class="form-control w-50 border-1 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
             <!--<button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>-->
         </div>
         <div class="row">
             <div class="table-responsive col-md-7">
 
                 <table id="myTable" class="table table-hover">
-                    <thead class="table-primary">
+                    <thead class="table-danger">
                         <tr>
-                            <th>pk_MedicineId</th>
-                            <th>Name</th>
-                            <th>UnitPrice</th>
-                            <th>Location</th>
-                            <th>Stock</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-id-card"></i> pk_MedicineId</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-pills ml-2    "></i> Name</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fa-solid fa-money-bil"></i> UnitPrice</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fa-solid fa-location-dot"></i> Location</th>
+                            <th class="text-white" style="background-color:#E55246"><i class="fas fa-cubes ml-2"></i> Stock</th>
 
                         </tr>
                     </thead>
@@ -29,30 +31,30 @@
 
                         @foreach (DataRow row in pagedData)
                         {
-                            @if ((int)@row["Stock"] == 0)
+                            @if ((int)row["Stock"] == 0)
                             {
-                                <tr disabled @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
-                                    <td style="background-color:mediumvioletred;">@row["pk_MedId"]</td>
-                                    <td style="background-color:orangered;">@row["Name"]</td>
-                                    <td style="background-color:red;">@row["UnitPrice"]</td>
-                                    <td style="background-color:red;">@row["Location"]</td>
-                                    <td style="background-color:red;">@row["Stock"]</td>
-
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr @onclick="@(()=>OpenQuantityDialog((int)@row["pk_MedId"],@row["Name"].ToString(),@row["UnitPrice"].ToString()))">
+                                <tr style="background-color: red !important;">
                                     <td>@row["pk_MedId"]</td>
                                     <td>@row["Name"]</td>
                                     <td>@row["UnitPrice"]</td>
                                     <td>@row["Location"]</td>
                                     <td>@row["Stock"]</td>
-
                                 </tr>
                             }
-
+                            else
+                            {
+                                <tr style="cursor: pointer; background-color: orangered;" @onclick="@(()=>OpenQuantityDialog((int)row["pk_MedId"], row["Name"].ToString(), row["UnitPrice"].ToString()))">
+                                    <td>@row["pk_MedId"]</td>
+                                    <td>@row["Name"]</td>
+                                    <td>@row["UnitPrice"]</td>
+                                    <td>@row["Location"]</td>
+                                    <td>@row["Stock"]</td>
+                                </tr>
+                            }
                         }
+
+
+                        
                     </tbody>
                     <tfoot>
 
@@ -67,14 +69,14 @@
             </div>
             <div class="table-responsive col-md-5">
                 <h2 class="sub-header">Billing</h2>
-                <table id="myTable" class="table table-bordered ">
-                    <thead class="table-primary">
+                <table id="myTable" class="table table-bordered" >
+                    <thead class="table-danger ">
                         <tr>
-                            <th>POS_Id</th>
-                            <th>Medicine Name</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Action</th>
+                            <th class="text-white" style="background-color:#E55246">POS_Id</th>
+                            <th class="text-white" style="background-color:#E55246">Medicine Name</th>
+                            <th class="text-white" style="background-color:#E55246">Quantity</th>
+                            <th class="text-white" style="background-color:#E55246">Price</th>
+                            <th class="text-white" style="background-color:#E55246">Action</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -85,21 +87,23 @@
                                 <td>@item.MedicineName</td>
                                 <td>@item.Quantity</td>
                                 <td>@item.Medicineprice</td>
-                                <td><button class="btn btn-danger" @onclick="@(()=>DeleteRecord(item.fk_MedId))">Delete</button></td>
+                                <td><button class="btn text-white" style="background-color:#11333A" @onclick="@(()=>DeleteRecord(item.fk_MedId))">Delete</button></td>
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
                             <td class="fw-bold ml-5">Total</td>
+                            <td></td>
                             <td class="fw-bold">@MedicineTotalQuantity </td>
                             <td class="fw-bold">@MedicineTotalprice </td>
                         </tr>
 
 
 
-                        <button class="btn btn-success w-100 mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
+                        <button tabindex="4" class="btn w-100 mt-4 text-white" style=" background-color: #288AA7" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Checkout</button>
                     </tfoot>
+
                 </table>
 
             </div>
@@ -121,12 +125,12 @@
     <div class="offcanvas-body">
         <h3>Billing ID : @BillingId</h3>
         <table id="myTable" class="table table-bordered ">
-            <thead class="table-primary">
+            <thead class="table-danger">
                 <tr>
 
-                    <th>Medicine Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
+                    <th class="text-white" style="background-color:#E55246">Medicine Name</th>
+                    <th class="text-white" style="background-color:#E55246">Quantity</th>
+                    <th class="text-white" style="background-color:#E55246">Price</th>
 
                 </tr>
             </thead>
@@ -154,12 +158,12 @@
         </table>
 
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Discount Price (Rs)</label>
-            <input type="text" class="form-control" @bind="DiscountPrice" @onclick="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
+            <label for="exampleFormControlInput1" class="form-labelDiscountPrice">Discount Price (Rs)</label>
+            <input type="text" class="form-control" @bind="DiscountPrice" @bind:event="onchange" @oninput="calculatediscountprice" id="exampleFormControlInput1" placeholder="Price ">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Discount Percentage(%)</label>
-            <input class="form-control" @bind="DiscountPerc" @onclick="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
+            <input class="form-control" @bind="DiscountPerc" @bind:event="onchange" @oninput="calculatediscountpercentage" id="exampleFormControlTextarea1" placeholder="Percentage"   />
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
@@ -173,14 +177,10 @@
 
         </div>
 
-        <button @onclick="Checkout" data-bs-dismiss="offcanvas" class="btn btn-primary"> Sell</button>
+        <button @onclick="Checkout" data-bs-dismiss="offcanvas" id="liveToastBtn" class="btn text-white" style="background-color:#11333A" > Sell</button>
 
     </div>
 </div>
-
-
-
-
 
 @code {
     // protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
@@ -195,9 +195,9 @@
     public decimal MedicineTotalprice { get; set; }
     public decimal MedicineGrandTotal { get; set; }
     public decimal MedicineTotalQuantity { get; set; }
-    public int DiscountPrice { get; set; } 
+    public decimal DiscountPrice { get; set; }
     public int DiscountPerc { get; set; }
-    public int POSId { get; set; } 
+    public int POSId { get; set; }
 
 
     public int BillingId { get; set; }
@@ -206,46 +206,90 @@
 
     private async Task Checkout()
     {
-        foreach (var data in modelList)
+        if (modelList.Count != 0)
         {
-            SqlParameter[] parameters = new SqlParameter[]
-             {
+
+
+            foreach (var data in modelList)
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                 {
                  new SqlParameter("@pk_POSId",data.pk_POSId),
                  new SqlParameter("@pharmacyId",v[0]),
                  new SqlParameter("@fk_BillingId",data.fk_BillingId),
                  new SqlParameter("@fk_MedId",data.fk_MedId),
                  new SqlParameter("@Quantity",data.Quantity),
-             };
-            await DALCRUD.CRUD("SP_checkout", parameters);
+                 };
+                await DALCRUD.CRUD("SP_checkout", parameters);
 
 
-            SqlParameter[] sp =
-          {
+                SqlParameter[] sp =
+              {
             new SqlParameter("@medId",data.fk_MedId),
             new SqlParameter("@quantity", data.Quantity),
-    };
-            await DALCRUD.CRUD("SP_SellMedicine", sp);
+          };
+                await DALCRUD.CRUD("SP_SellMedicine", sp);
+
+            }
+
+            await AddPointOfSale(BillingId, MedicineTotalprice);
+            await CopyToClipboard();
+            await JS.InvokeVoidAsync("alert", $"Billing Id Copied Sucessfully {BillingId}");
+
+
+            MedicineGrandTotal = MedicineTotalprice;
+            modelList.Clear();
+            MedicineTotalprice = 0;
+            MedicineTotalQuantity = 0;
+            POSId += 1;
+            Random rnd = new Random();
+            BillingId = rnd.Next();
+
+
+            StateHasChanged();
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", $"The Cart is Empty ");
 
         }
 
-        AddPointOfSale(BillingId, MedicineTotalprice);
-
-
-
-
-        modelList.Clear();
-        MedicineTotalprice = 0;
-        MedicineTotalQuantity = 0;
-        POSId += 1;
-        Random rnd = new Random();
-        BillingId = rnd.Next();
-
-
-        StateHasChanged();
-        await OnInitializedAsync();
-
 
     }
+    string text;
+
+    async Task ReadFromClipboard()
+    {
+        // Reading from the clipboard may be denied, so you must handle the exception
+        try
+        {
+            text = await ClipboardService.ReadTextAsync();
+        }
+        catch
+        {
+            Console.WriteLine("Cannot read from clipboard");
+        }
+    }
+
+    async Task CopyToClipboard()
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await ClipboardService.WriteTextAsync(BillingId.ToString());
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
+    }
+
+
+
+
+
+
 
 
     public async Task AddPointOfSale(int BillingId, decimal MedicineTotalprice)
@@ -327,7 +371,7 @@
 
             StateHasChanged();
         }
-
+        MedicineGrandTotal = MedicineTotalprice;
 
 
     }
@@ -339,7 +383,7 @@
     IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
     [Parameter]
     public int page { get; set; } = 1;
-    int pageSize = 14; // Change this to your desired page size
+    int pageSize = 10; // Change this to your desired page size
 
     PagingInfo pagingInfo = new PagingInfo();
 
@@ -401,18 +445,39 @@
         // You can add additional logic here if needed
     }
 
-    public void calculatediscountprice()
+    public void calculatediscountprice(ChangeEventArgs e)
     {
-        MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+        if (e.Value.ToString() == "")
+        {
+            DiscountPrice = 0;
+        }
+        else
+        {
+            DiscountPrice = int.Parse(e.Value.ToString());
+            MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+        }
+
+
     }
 
 
-    public void calculatediscountpercentage()
+    public void calculatediscountpercentage(ChangeEventArgs e)
     {
-        int a = 100;
-        DiscountPerc = (DiscountPerc / a);
-        DiscountPerc = (int)MedicineTotalprice * DiscountPerc;
-        MedicineGrandTotal = MedicineTotalprice - DiscountPerc;
+        if (e.Value.ToString() == "")
+        {
+            DiscountPerc = 0;
+        }
+        else
+        {
+
+            DiscountPerc = int.Parse(e.Value.ToString());
+            DiscountPrice = (DiscountPerc * (MedicineTotalprice)) / 100;
+
+            MedicineGrandTotal = MedicineTotalprice - DiscountPrice;
+
+        }
+
+
     }
 
 
@@ -434,4 +499,9 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+
 }
+
+
+
+

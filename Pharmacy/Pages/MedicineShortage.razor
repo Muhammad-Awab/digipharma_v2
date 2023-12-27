@@ -1,37 +1,164 @@
 ﻿@page "/medicineshortage"
-@attribute [Authorize(Roles = "Admin,User")]
 
-<div class="container-fluid">
-    <div class="row justify-content-center pt-5">
-        <div class="col sm-4 md-4">
-            <table class="table table-bordered table-dark table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Medicine Name</th>
-                        <th scope="col">Quantity Left</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Panadol <i class="fas fa-pills ml-2"></i></td>
-                        <td>3 <i class="fas fa-flask ml-2"></i></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Brufen <i class="fas fa-pills ml-2"></i></td>
-                        <td>2 <i class="fas fa-flask ml-2"></i></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Azomax <i class="fas fa-pills ml-2"></i></td>
-                        <td>1 <i class="fas fa-flask ml-2"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+@using Pharmacy.Pages
+
+@using System.Data.SqlClient;
+@using System.Data;
+
+
+@attribute [Authorize(Roles = "Admin,User")]
+@* <div class="content-header">
+    <h5 class="text-seconadry " style=" font-size: 40px; font-weight: bold;">Medicines Shortage</h5>
+</div> *@
+<div class="card">
+
+    <div>
+        <select class="form-select border-1 border-danger-subtle" aria-label="Default select example" @onchange="_CategoryEdit">
+            <option value="1">---Select Category---</option>
+            @foreach (var emp in CategoryList)
+
+            {
+
+                <option value="@emp.CategoryName">@emp.CategoryName</option>
+
+            }
+        </select>
+    </div>
+
+    <div class="d-flex gap-2 mt-2 mb-3">
+    </div>
+    <div class="table-responsive">
+        <table id="myTable" class="table table-bordered" style="background-color:#E55246">
+            <thead class="table-danger">
+                <tr>
+                    <th class="text-white" style="background-color:#E55246">pk_MedicineId</th>
+                    <th class="text-white" style="background-color:#E55246">Name</th>
+                    <th class="text-white" style="background-color:#E55246">UnitPrice</th>
+                    <th class="text-white" style="background-color:#E55246">Location</th>
+                    <th class="text-white" style="background-color:#E55246">Stock</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (DataRow row in dt.Rows)
+                {
+                    @if ((int)@row["Stock"] < 10)
+                    {
+                        <tr>
+                            <td>@row["pk_MedId"]  </td>
+                            <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
+                            <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
+                            <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
+                            <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
+
+
+                        </tr>
+                    }
+
+                }
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
     </div>
 </div>
 
 
+
+
+@code {
+
+
+
+    public string? value1 { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticatestate { get; set; }
+    protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
+    public string[] v { get; set; } = { "Guest", "Guest" };
+    public string? ID { get; set; }
+    DataTable dt = new DataTable();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        CategoryList = DALCRUD.GetCategory();
+        DisplayGreeting();
+
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+        
+
+    }
+
+    private async Task DisplayGreeting()
+    {
+        var authState = await authenticatestate;
+        value1 = $"{authState.User.Identity.Name}";
+        v = value1.Split(',');
+        StateHasChanged();
+    }
+
+
+
+    public async void GetAllData()
+    {
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+
+    }
+
+    public async void GetDatabyCategory()
+    {
+
+
+        SqlParameter[] sp =
+       {
+
+         new SqlParameter("@pharmacyId",v[0]),
+         new SqlParameter("@CategoryName",CategoryEdit),
+
+       };
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordbyCategory", sp);
+
+    }
+
+
+
+
+    private List<EntCategory>? CategoryList = new List<EntCategory>();
+
+    private string? CategoryEdit { get; set; }
+
+    private void _CategoryEdit(ChangeEventArgs e)
+    {
+        CategoryEdit = e.Value as string;
+        StateHasChanged();
+        if (CategoryEdit == "1")
+        {
+            GetAllData();
+        }
+        else
+        {
+            GetDatabyCategory();
+        }
+
+
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -11,26 +12,29 @@ namespace ClassLibraryEnt
     {
         public int pk_MedId { get; set; }
         public int Enterer { get; set; }
-        public string? Name { get;set; }
-        public float UnitPrice { get;set; }
-        public string? Location { get;set; }
-        public int Stock { get;set; }
-        public string? Manufacturer { get;set; }
-        public string? Supplier { get;set; }
-        public DateTime? MfgDate { get;set; }
-        public DateTime? ExpDate { get;set; }
-        public string? Group { get; set; }
-        public int Position { get; set; }
-        public DateTime? EntryDate { get;set; }
-        public int Number { get; set; }
+        [Required]
+        public string? Name { get; set; }
+        [Range(1, 99999, ErrorMessage = "Kindly Enter the Unit Price.")]
+        public float UnitPrice { get; set; }
+        [Required]
+        public string? Location { get; set; }
+        [Range(1, 99999, ErrorMessage = "Kindly Enter the Stock.")]
 
-        [JsonPropertyName("small")]
-        public string? Sign { get; set; }
-        public double Molar { get; set; }
-        public IList<int>? Electrons { get; set; }
-        public override string ToString()
-        {
-            return $"{Name} - {UnitPrice}";
-        }
+        public int Stock { get; set; }
+        [Required]
+
+        public string? Manufacturer { get; set; }
+        [Required]
+
+        public string? Supplier { get; set; }
+        [Required]
+
+        public DateTime? MfgDate { get; set; }
+        [Required]
+
+        public DateTime? ExpDate { get; set; }
+        [Required]
+        public string CategoryName { get; set; }
+        
     }
 }

@@ -3,8 +3,15 @@
 @using OfficeOpenXml;
 @using Pharmacy.Pages
 @using ClosedXML.Excel
+@using IronXL;
+@using System.Data.SqlClient;
+@using System.Data;
 
-@inject IJSRuntime JS
+<PageTitle>Excel File Viewer</PageTitle>
+
+<h1>Open Excel File to View</h1>
+
+<InputFile OnChange="@OpenExcelFileFromDisk" />
 
 @attribute [Authorize(Roles = "Admin,User")]
 <div class="card">
@@ -14,22 +21,34 @@
     <!-- /.card-header -->
     <div class="card-body">
         <div class="d-flex gap-2 mt-2 mb-3">
-            <input class="form-control w-50" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
-            <button type="button" class="btn btn-primary" @onclick="CreatePagingInfo">Search</button>
-            <button style="padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-left: 380px;" onclick="ExportToExcel">
+            <input class="form-control w-50  border-1 border-primary-subtle" type="text" @bind="searchTerm" @oninput="SearchTextChanged" id="myInput" placeholder="Search for names.." title="Type in a name">
+            @*      <button type="button" class="btn btn-primary " @onclick="CreatePagingInfo">Search</button> *@
+            <button style=" font-size: 16px; background-color: #288AA7; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;" @onclick="ExportToExcel">
                 Export
             </button>
+
+            <select class="form-select border-1 border-primary-subtle" aria-label="Default select example" @onchange="_CategoryEdit">
+                <option value="1">---Select Category---</option>
+                @foreach (var emp in CategoryList)
+
+                {
+
+                    <option value="@emp.CategoryName">@emp.CategoryName</option>
+
+                }
+            </select>
+
         </div>
         <div class="table-responsive">
-            <table id="myTable" class="table table-bordered">
-                <thead class="table-primary">
+            <table id="myTable" class="table table-bordered" style="background-color:#E55246">
+                <thead class="table-danger" >
                     <tr>
-                        <th><i class="fas fa-key"></i>Medicine ID</th>
-                        <th><i class="fas fa-file-alt"></i> Name</th>
-                        <th><i class="fas fa-dollar-sign"></i> Unit Price</th>
-                        <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                        <th><i class="fas fa-cubes"></i> Stock</th>
-                        <th><i class="fas fa-cogs"></i> Actions</th>
+                        <th class="text-white" style ="background-color:#E55246">pk_MedicineId</th>
+                        <th class="text-white" style="background-color:#E55246">Name</th>
+                        <th class="text-white" style="background-color:#E55246">UnitPrice</th>
+                        <th class="text-white" style="background-color:#E55246">Location</th>
+                        <th class="text-white" style="background-color:#E55246">Stock</th>
+                        <th class="text-white" style="background-color:#E55246">Actions</th>
 
                     </tr>
                 </thead>
@@ -39,15 +58,16 @@
                     {
                         <tr>
                             <td>@row["pk_MedId"]  </td>
-                            <td> @row["Name"] </td>
-                            <td> @row["UnitPrice"]</td>
-                            <td>@row["Location"]</td>
-                            <td>@row["Stock"]  </td>
+                            <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
+                            <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
+                            <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
+                            <td><i class="fas fa-cubes ml-2"></i> @row["Stock"]  </td>
                             <td>
                                 <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
-                              @if(@v[4]=="Admin"){
+                                @if (@v[4] == "Admin")
+                                {
                                     <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
-                            }
+                                }
 
                             </td>
 
@@ -56,11 +76,11 @@
                 </tbody>
                 <tfoot>
 
-                   @*  <tr>
+                    <tr>
                         <td colspan="10">
-                            <Pagination PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Pagination>
+                            <PaginationMedicineRecord PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></PaginationMedicineRecord>
                         </td>
-                    </tr> *@
+                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -70,10 +90,18 @@
 
 
 
-@if (DeleteDialogOpen) {
-    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))"   Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+@if (DeleteDialogOpen)
+{
+    <Pharmacy.Pages.Generics.DeleteModal Title="Are you sure?" FunDel="@(()=>OnDelete(@ID))" Text="Do you want to delete" OnClose="@OnDeleteDialogClose"></Pharmacy.Pages.Generics.DeleteModal>
+}
+@if (ImportingModalOpen)
+{
+    <Pharmacy.Pages.Generics.UploadModal ImageUploadMessage="@ImportingTitle" ImageUploadTitle="@ImportingMessage"></Pharmacy.Pages.Generics.UploadModal>
 }
 @code {
+    private bool ImportingModalOpen { get; set; } = false;
+    private string? ImportingTitle { get; set; } = "Importing......";
+    private string? ImportingMessage { get; set; } = "Importing data from excel file";
     protected EntMedicineRecord? model { get; set; } = new EntMedicineRecord();
     public bool DeleteDialogOpen { get; set; }
     public string? ID { get; set; }
@@ -102,36 +130,81 @@
         await OnInitializedAsync();
 
     }
+
     DataTable dt = new DataTable();
     List<DataRow> allDataRows = new List<DataRow>();
     string searchTerm = "";
     IEnumerable<DataRow> pagedData = Enumerable.Empty<DataRow>();
     [Parameter]
     public int page { get; set; } = 1;
-    int pageSize = 15; // Change this to your desired page size
+    int pageSize = 10; // Change this to your desired page size
 
     PagingInfo pagingInfo = new PagingInfo();
 
     protected override async Task OnInitializedAsync()
     {
-        SqlParameter[] sp =
-           {
 
-                new SqlParameter("@pharmacyId",v[0]),
-           };
-        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord",sp);
+        CategoryList = DALCRUD.GetCategory();
+
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
         allDataRows = dt.Rows.Cast<DataRow>().ToList();
         CreatePagingInfo();
     }
-    public void ExportToExcel()
+
+    public async void GetAllData()
+    {
+        SqlParameter[] sp =
+    {
+
+         new SqlParameter("@pharmacyId",v[0]),
+
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecord", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        CreatePagingInfo();
+    }
+
+    public async Task GetDatabyCategory()
+    {
+
+
+        SqlParameter[] sp =
+       {
+
+         new SqlParameter("@pharmacyId",v[0]),
+         new SqlParameter("@CategoryName",CategoryEdit),
+
+       };
+
+        dt = await DALCRUD.ReadDataSpecific("SP_GetMedicineRecordbyCategory", sp);
+        allDataRows = dt.Rows.Cast<DataRow>().ToList();
+        StateHasChanged();
+        CreatePagingInfo();
+    }
+
+
+    private async Task ExportToExcel()
     {
         var spreadsheetBytes = DataRowToBytes();
         SaveSpreadSheetBytes(spreadsheetBytes);
+
+        // Trigger the download using JavaScript
+        await JS.InvokeVoidAsync("downloadFile", "/export.xlsx");
     }
 
     private void SaveSpreadSheetBytes(byte[] bytes)
     {
-        File.WriteAllBytes(path: "./wwwroot/exports/export.xlsx", bytes);
+        File.WriteAllBytes(path: "./wwwroot/export.xlsx", bytes);
     }
 
     private byte[] DataRowToBytes()
@@ -143,6 +216,10 @@
         dataTable.Columns.Add(new DataColumn("UnitPrice"));
         dataTable.Columns.Add(new DataColumn("Location"));
         dataTable.Columns.Add(new DataColumn("Stock"));
+        dataTable.Columns.Add(new DataColumn("Manufacturer"));
+        dataTable.Columns.Add(new DataColumn("Supplier"));
+        dataTable.Columns.Add(new DataColumn("MfgDate"));
+        dataTable.Columns.Add(new DataColumn("ExpDate"));
 
         allDataRows.ForEach(row =>
         {
@@ -152,6 +229,10 @@
             newRow["UnitPrice"] = row["UnitPrice"];
             newRow["Location"] = row["Location"];
             newRow["Stock"] = row["Stock"];
+            newRow["Manufacturer"] = row["Manufacturer"];
+            newRow["Supplier"] = row["Supplier"];
+            newRow["MfgDate"] = row["MfgDate"];
+            newRow["ExpDate"] = row["ExpDate"];
             dataTable.Rows.Add(newRow);
         });
         var worksheet = workbook.Worksheets.Add(dataTable, sheetName: "Products");
@@ -194,7 +275,7 @@
         {
             pagedData = filteredData.Skip(skip).Take(pageSize);
         }
-       
+
     }
 
     public void PageChanged(int newPage)
@@ -233,4 +314,124 @@
         v = value1.Split(',');
         StateHasChanged();
     }
+    private string downloadScript = @"
+        window.downloadFile = function (filePath) {
+            var anchor = document.createElement('a');
+            anchor.href = filePath;
+            anchor.download = filePath.substring(filePath.lastIndexOf('/') + 1);
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+        };
+    ";
+
+    protected DataTable? displayDataTable { get; set; } = new DataTable();
+    private EntMedicineRecord modelimport { get; set; } = new EntMedicineRecord();
+    async Task OpenExcelFileFromDisk(InputFileChangeEventArgs e)
+    {
+
+        ImportingModalOpen = true;
+        IronXL.License.LicenseKey = "PASTE TRIAL OR LICENSE KEY";
+
+        MemoryStream ms = new MemoryStream();
+
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        ms.Position = 0;
+
+        WorkBook loadedWorkBook = WorkBook.FromStream(ms);
+        WorkSheet loadedWorkSheet = loadedWorkBook.DefaultWorkSheet;
+
+        displayDataTable = new DataTable();
+
+        RangeRow headerRow = loadedWorkSheet.GetRow(0);
+        for (int col = 0; col < loadedWorkSheet.ColumnCount; col++)
+        {
+            displayDataTable.Columns.Add(headerRow.ElementAt(col).ToString());
+        }
+
+        for (int row = 1; row < loadedWorkSheet.RowCount; row++)
+        {
+            IEnumerable<string> excelRow = loadedWorkSheet.GetRow(row).ToArray().Select(c => c.ToString());
+            displayDataTable.Rows.Add(excelRow.ToArray());
+        }
+        foreach (DataRow row in displayDataTable.Rows)
+        {
+            try
+            {
+                modelimport = new EntMedicineRecord
+                    {
+
+                        Name = row["Name"]?.ToString() ?? string.Empty,
+                        UnitPrice = float.Parse(row["UnitPrice"].ToString()),
+                        Location = row["Location"]?.ToString() ?? string.Empty,
+                        Stock = Convert.ToInt32(row["Stock"] != DBNull.Value ? row["Stock"] : 0),
+                        Manufacturer = row["Manufacturer"]?.ToString() ?? string.Empty,
+                        Supplier = row["Supplier"]?.ToString() ?? string.Empty,
+                        MfgDate = DateTime.Parse(row["MfgDate"]?.ToString()),
+                        ExpDate = DateTime.Parse(row["ExpDate"]?.ToString()),
+
+
+                    };
+
+                await SaveImportData(modelimport);
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception
+                Console.WriteLine($"Error processing row: {ex.Message}");
+            }
+        }
+
+        ImportingModalOpen = false;
+        await OnInitializedAsync();
+        StateHasChanged();
+    }
+    private async Task SaveImportData(EntMedicineRecord model)
+    {
+        int pharmacyId = Convert.ToInt32(v[0]);
+
+        // Set parameters for new record
+        SqlParameter[] sp =
+        {
+                 new SqlParameter("@pharmacyId",pharmacyId),
+                new SqlParameter("@EntererId",2),
+                new SqlParameter("@Name",model!.Name),
+                new SqlParameter("@UnitPrice", model.UnitPrice),
+                new SqlParameter("@Location", model.Location),
+                new SqlParameter("@Stock", model.Stock),
+                new SqlParameter("@Manufacturer", model.Manufacturer),
+                new SqlParameter("@Supplier", model.Supplier),
+                new SqlParameter("@MfgDate",model.MfgDate.ToString()),
+                new SqlParameter("@ExpDate", model.ExpDate.ToString())
+
+    };
+
+        // Call CRUD method to save new record
+        await DALCRUD.CRUD("SP_SaveMedicineRecord", sp);
+    }
+
+    private List<EntCategory>? CategoryList = new List<EntCategory>();
+
+    private string? CategoryEdit { get; set; }
+
+    private async Task _CategoryEdit(ChangeEventArgs e)
+    {
+        CategoryEdit = e.Value as string;
+        StateHasChanged();
+        if (CategoryEdit == "1")
+        {
+           await OnInitializedAsync();
+        }
+        else
+        {
+            await GetDatabyCategory();
+        }
+
+
+    }
+
 }
+
+<script>
+    @((MarkupString)downloadScript)
+</script>
