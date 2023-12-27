@@ -24,12 +24,12 @@
             <table id="myTable" class="table table-bordered">
                 <thead class="table-primary">
                     <tr>
-                        <th>pk_MedicineId</th>
-                        <th>Name</th>
-                        <th>UnitPrice</th>
-                        <th>Location</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
+                        <th><i class="fas fa-key"></i>Medicine ID</th>
+                        <th><i class="fas fa-file-alt"></i> Name</th>
+                        <th><i class="fas fa-dollar-sign"></i> Unit Price</th>
+                        <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                        <th><i class="fas fa-cubes"></i> Stock</th>
+                        <th><i class="fas fa-cogs"></i> Actions</th>
 
                     </tr>
                 </thead>
@@ -39,14 +39,14 @@
                     {
                         <tr>
                             <td>@row["pk_MedId"]  </td>
-                            <td><i class="fas fa-pills ml-2" /> @row["Name"] </td>
-                            <td><i class="fa-solid fa-money-bill"></i> @row["UnitPrice"]</td>
-                            <td><i class="fa-solid fa-location-dot"></i> @row["Location"]</td>
-                            <td><i class="fas fa-flask ml-2"></i> @row["Stock"]  </td>
+                            <td> @row["Name"] </td>
+                            <td> @row["UnitPrice"]</td>
+                            <td>@row["Location"]</td>
+                            <td>@row["Stock"]  </td>
                             <td>
-                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="@($"/add_medicine_record/{row["pk_MedId"]}")"><i class="fa-solid fa-pen-to-square pe-2" style="color:#4CAF50"></i></a>
                               @if(@v[4]=="Admin"){
-                                <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash"></i></a>
+                                    <a @onclick="@(()=>OpenDeleteDialog(@row["pk_MedId"].ToString()))"><i class="fa-solid fa-trash" style="color:#BE1518"></i></a>
                             }
 
                             </td>

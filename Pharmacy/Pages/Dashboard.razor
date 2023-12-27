@@ -104,11 +104,30 @@
     </section>
     <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
-<div class="container">
-<Chart Config="_config" ></Chart>
+<div class="container mt-5">
+    <div class="card bg-dark mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-dark text-white">
+            <div class="card-title fw-4 fs-3">
+                <i class="fas fa-chart-pie me-2"></i> Records Chart
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12 col-md-8">
+                    <div class="chart-container">
+                        <Chart Config="_config"></Chart>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-3 text-center">
+                    <p class="text">Sales Data - Year 2023</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-@code{
+
+
+@code {
     // Private field to store counts retrieved from the data access layer
     private EntCounts? CountList;
 
@@ -143,7 +162,7 @@
                         Title = new OptionsTitle
                         {
                             Display = true,
-                            Text = "Records"
+                            Text = "Statistics Record"
                         },
                         AspectRatio = 1,
                         MaintainAspectRatio = false,
@@ -162,10 +181,10 @@
                 {
                     BackgroundColor = new[]
                     {
-                ColorUtil.ColorHexString(255, 99, 132),   // Slice 1 aka "Red"
-                ColorUtil.ColorHexString(255, 205, 86),   // Slice 2 aka "Yellow"
-                ColorUtil.ColorHexString(75, 192, 192),   // Slice 3 aka "Green"
-            }
+                    ColorUtil.ColorHexString(255, 99, 132),   // Slice 1 aka "Red"
+                    ColorUtil.ColorHexString(255, 205, 86),   // Slice 2 aka "Yellow"
+                    ColorUtil.ColorHexString(75, 192, 192),   // Slice 3 aka "Green"
+                }
                 };
 
             // Add the dataset to the pie chart configuration
@@ -198,5 +217,4 @@
         // Notify the component that its state has changed
         StateHasChanged();
     }
-
 }
